@@ -1,0 +1,7 @@
+development:
+  host: localhost
+
+production:
+  host: ec2-184-73-124-104.compute-1.amazonaws.com
+
+
