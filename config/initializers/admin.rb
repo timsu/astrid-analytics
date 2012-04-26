@@ -1,5 +1,5 @@
 module Admin
-  USERNAME = ENV['admin_user'] || "admin"
-  PASSWORD = ENV['admin_pass'] || "password"
+  USERNAME = ENV['ADMIN_USER'] || "admin"
+  PASSWORD = ENV['ADMIN_PASS'] || "password"
 end
 
