@@ -1,21 +1,14 @@
 .row
   .span12
     .page-header
-      %h1 Accounts
-      %a(href="#" onclick="$(this).next().toggle()") Add New Account
+      %h1 Environment
+      %a(href="#" onclick="$(this).next().toggle()") Add New Environment
 
       #add_account.hide
         = form_tag("/admin/add_account", :method => :post, :class => :well, :autocomplete => false) do |f|
-          %label Account Name
+          %label Environment Name
           %input(type="text" name="name")
 
-          %label Email Address
-          %input(type="text" name="email")
-
-          %label Password
-          %input(type="password" name="password")
-
-          %br/
           %input(type="submit")
 
 - @accounts.each do |account|

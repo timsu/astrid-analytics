@@ -116,13 +116,4 @@ class ReportsController < ApplicationController
     end
   end
     
-  protected
-  def validate_request
-    authenticate_or_request_with_http_basic do |username, password|
-      return true if username == "rockthe" && password == "casbah!"
-
-      # TODO authenticate by account data
-    end
-  end
-
 end

@@ -20,13 +20,9 @@ class AdminController < ApplicationController
 
   def add_account
     if request.post?
-      salt = rand(36**6).to_s(36)
       account = {
         :id => $redis.scard("accounts") + 1,
         :name => params[:name],
-        :email => params[:email],
-        :salt => salt,
-        :password => Digest::MD5.hexdigest(params[:password] + salt)
       }
         
       $redis.sadd "accounts", account[:id]

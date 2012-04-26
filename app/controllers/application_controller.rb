@@ -22,9 +22,7 @@ class ApplicationController < ActionController::Base
   protected
   def validate_request
     authenticate_or_request_with_http_basic do |username, password|
-      return true if username == "rockthe" && password == "casbah!"
-
-      # TODO authenticate by account data
+      return true if username == Admin::USERNAME && password == Admin::PASSWORD
     end
   end
 
