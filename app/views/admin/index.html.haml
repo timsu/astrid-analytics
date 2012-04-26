@@ -1,0 +1,21 @@
+%h1 Accounts
+
+- @accounts.each do |account|
+  - account_data = @data[account]
+  %h2 Account: #{data[:email]}
+
+  %h3 Clients:
+  %table
+    %tr
+      %td Client
+      %td Secret
+    - @apikeys[account].each do |apikey|
+      - apikey_data = JSON.parse $redis.get "apikeys:" + apikey
+      %tr
+        %td= apikey_data[1]
+        %td= apikey_data[2]
+          
+        
+  %a(href="#") Add New Client
+
+%a(href="#") Add New Account
