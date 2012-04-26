@@ -1,17 +1,60 @@
 :css
   thead tr { background-color: #333; color: white }
   .variant { background-color: #ccc; color: black }
+  .empty { text-align: center; padding: 50px }
+
+:javascript
+  $(document).on("click", "[data-edit=description]", function() {
+    var parent = $(this).parents(".row");
+    var desc = prompt("Enter Description for this Test:")
+    if(desc) {
+      $(".description", parent).text(desc)
+      $.post("/admin/edit_test",
+        { test: parent.data("test"), account: '#{@account}', description: desc });
+    }
+  });
+
+  $(document).on("click", "[data-edit=archive]", function() {
+    var parent = $(this).parents(".row");
+    var archive = confirm("Archive this test?")
+    if(archive) {
+      $(parent).fadeOut();
+      $.post("/admin/edit_test",
+        { test: parent.data("test"), account: '#{@account}', archive: true });
+    }
+  });
+
+  $(document).on("click", "[data-edit=unarchive]", function() {
+    var parent = $(this).parents(".row");
+    $.post("/admin/edit_test", 
+      { test: parent.data("test"), account: '#{@account}', unarchive: true },
+      function() { window.location.reload(); })      
+  });
 
 .row
   .span12
     .page-header
       %h1 Tests for #{@account_data["name"]}
 
-- @tests.each do |test|
+- if @tests.empty?
   .row
+    .span12.empty
+      No Tests!
+
+- @tests.each do |test|
+  - test_data = @test_data[test]
+  .row(data-test="#{test}")
     .span12.well
-      - test_data = @test_data[test]
-      %h2= test
+
+      .pull-right
+        %a(href="#" title="Edit Description" data-edit="description")
+          %i.icon-pencil
+        %a(href="#" title="Archive This Test" data-edit="archive")
+          %i.icon-trash
+
+      %h2
+        = test
+        %small.description= test_data[:description]
 
       %table.table
         %thead
@@ -63,4 +106,17 @@
 
       %hr
 
+- unless @archived.empty?
+  .row
+    .span12
+      .page-header
+        %h3 Archived Tests
+
+  - @archived.each do |test|
+    - test_data = @test_data[test]
+    .row(data-test="#{test}")
+      .span12.well
+
+        %h2
+          %a(href="#" title="Unarchive This Test" data-edit="unarchive")= test
 

@@ -54,14 +54,17 @@ class AdminController < ApplicationController
 
     redirect_to "/admin"
   end
-  
-  ################################################################# HELPERS
-  
-  protected
-  def validate_request
-    authenticate_or_request_with_http_basic do |username, password|
-      username == "rockthe" && password == "casbah!"
-    end
-  end
+    
+  def edit_test
+    test = params[:test]
+    account = params[:account]
+    raise "No test or account specified" unless test and account
 
+    $redis.set "#{account}:#{test}:description", params[:description] if params[:description]
+    $redis.sadd "#{account}:archived", test if params[:archive]
+    $redis.srem "#{account}:archived", test if params[:unarchive]
+
+    render :json => {}
+  end
+  
 end

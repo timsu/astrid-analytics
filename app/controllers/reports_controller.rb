@@ -8,7 +8,10 @@ class ReportsController < ApplicationController
     @account = params[:account]
     @account_data = JSON.parse($redis.get "#{@account}:data")
 
+    raise "Unknown account #{@account}" unless @account_data
+
     @tests = $redis.smembers "#{@account}:tests"
+    @archived = $redis.smembers "#{@account}:archived"
 
     @test_data = @tests.reduce({}) do |result, test|
       variants = $redis.smembers("#{@account}:#{test}:variants")
@@ -16,17 +19,22 @@ class ReportsController < ApplicationController
       days = (days + [0, 3, 7, 14]).uniq.sort
       dates = $redis.smembers("#{@account}:#{test}:dates")
       dates = dates.map { |date| Date.parse(date) }.sort
+      description = $redis.get("#{@account}:#{test}:description")
       
       result[test] = {
         :variants => variants,
         :days => days,
         :dates => dates,
+        :description => description
       }
       result
     end
 
+    @tests = @tests - @archived
+
     @variant_data = {}
     @test_data.each do |test, hash|
+      next if @archived.include? test
       variants = hash[:variants]
       dates = hash[:dates]
       days = hash[:days]
