@@ -2,21 +2,6 @@ class AdminController < ApplicationController
 
   before_filter :validate_request
   
-  ################################################################# REFERENCE
-
-  # redis keys:
-
-  # accounts - map of account ids 
-  # apikeys:<apikey> - json of api key info [account, client, secret]
-
-  # <account>:data - json of account data { id, name, email, salt, password }
-  # <account>:apikeys - set of api keys
-  # <account>:days - set of days we know about
-  # <account>:tests - set of tests we know about
-  # <account>:<test>:variants - set of variants for this test
-  # <account>:<test>:dates - set of dates for this test
-  # <account>:<test>:variants - set of variants for this test
-  
   ################################################################# ACTIONS
 
   def index

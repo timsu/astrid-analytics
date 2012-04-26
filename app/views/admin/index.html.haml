@@ -18,11 +18,14 @@
           %br/
           %input(type="submit")
 
-.row
-  .span12  
-    - @accounts.each do |account|
+- @accounts.each do |account|
+  .row
+    .span12.well
       - account_data = @data[account]
-      %h2 #{account_data["email"]}
+      %h2 
+        = account_data["email"]
+        %small
+          %a(href="/reports/#{account}") View Reports
 
       %table.table
         %thead
@@ -44,11 +47,10 @@
       %a(href="#" onclick="$(this).next().toggle()") Add New Client
 
       .hide
-        = form_tag("/admin/add_client", :method => :post, :class => :well, :autocomplete => false) do |f|
+        = form_tag("/admin/add_client", :method => :post, :class => "form-horizontal", :autocomplete => false) do |f|
           %input(type="hidden" name="account" value="#{account}")
 
-          %label Client Name
-          %input(type="text" name="client")
+          %input(type="text" name="client" placeholder="Client Name")
 
           %input(type="submit")
 

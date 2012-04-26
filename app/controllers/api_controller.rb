@@ -24,47 +24,36 @@ class ApiController < ApplicationController
   before_filter :validate_request
   
   rescue_from Exception, :with => :render_error
-
-  ################################################################# REFERENCE
-
-  # redis keys:
-
-  # apikeys:<apikey> - map of api key to [account, client, secret]
-
-  # <account>:data - hash of account data
-  # <account>:apikeys - set of api keys
-  # <account>:days - set of days we know about
-  # <account>:tests - set of tests we know about
-  # <account>:<test>:variants - set of variants for this test
-  # <account>:<test>:dates - set of dates for this test
-  # <account>:<test>:variants - set of variants for this test
   
   ################################################################# API METHODS
 
   def retention
+    raise ApiError, "Parameter required: 'payload'" if params[:payload].blank?
+    
     @payload = JSON.parse(params[:payload])
+    @payload = [@payload] if @payload.instance_of? Hash
 
     @payload.each do |event|
-      test = event[:test]
+      test = event["test"]
       raise ApiError, "Parameter required: 'test'" unless test
       $redis.sadd "#{@account}:tests", test
 
-      variant = event[:variant]
+      variant = event["variant"]
       raise ApiError, "Parameter required: 'variant'" unless variant
       $redis.sadd "#{@account}:#{test}:variants", variant
 
       date = Date.today
-      date = Time.at(event[:date]).to_date if event[:date]
+      date = Time.at(event["date"]).to_date if event["date"]
       $redis.sadd "#{@account}:#{test}:dates", date
 
-      new = event[:new]
-      raise ApiError, "Parameter required: 'new'" unless new
-      activated = event[:activated]
-      raise ApiError, "Parameter required: 'activated'" unless activated
+      new = event["new"]
+      raise ApiError, "Parameter required: 'new'" unless new != nil
+      activated = event["activated"]
+      raise ApiError, "Parameter required: 'activated'" unless activated != nil
 
       new_activated = (new ? "n" : "o") + (activated ? "a" : "u")
 
-      days = event[:days]
+      days = event["days"]
       days = [days] if days.instance_of? Fixnum
       raise ApiError, "Parameter required: 'days'" unless days
 
@@ -82,8 +71,7 @@ class ApiController < ApplicationController
 
   protected
   def render_error(e)
-    raise e if Rails.env.test?
-    log(e) if e.class != ApiError 
+    raise e if e.class != ApiError 
     render :format => :json, :text => { :status => :error,
       :message => e.to_s }.to_json
   end

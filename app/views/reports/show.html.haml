@@ -1,0 +1,60 @@
+:css
+  thead tr { background-color: black; color: white }
+  .variant { background-color: #999 }
+
+.row
+  .span12
+    .page-header
+      %h1 Tests for #{@account_data["name"]}
+
+- @tests.each do |test|
+  .row
+    .span12.well
+      - test_data = @test_data[test]
+      %h2= test
+
+      %table.table
+        %thead
+          %tr
+            %th(colspan=2) Launched: #{test_data[:dates].first}
+            %th(colspan="#{test_data[:days].length}") Days since first experience
+
+        - test_data[:variants].each do |variant|
+          - variant_data = @variant_data[test][variant]
+          %tr.variant
+            %td(colspan=2) Variant: #{variant}
+            - test_data[:days].each do |day|
+              %td +#{day}
+
+          - [["New Users", :new], ["Existing Activated", :old]].each do |user_state|
+            %tr
+              %td(rowspan=4)= user_state.first
+              %td Total opened x days ago
+              - test_data[:days].each do |day|
+                %td= variant_data[user_state.last][day][:total]
+            %tr
+              %td Opened x days after first open
+              - test_data[:days].each do |day|
+                %td= variant_data[user_state.last][day][:opened]
+            %tr
+              %td % Retained
+              - test_data[:days].each do |day|
+                %td= number_to_percentage variant_data[user_state.last][day][:retained]
+
+        - result_data = @variant_data[test]
+        %tr.variant
+          %td(colspan=2) Results
+          - test_data[:days].each do |day|
+            %td +#{day}
+
+        - [["New Users", :new], ["Existing Activated", :old]].each do |user_state|
+          %tr
+            %td(rowspan=4)= user_state.first
+            %td 
+              %strong Change in retention (% points)
+            - test_data[:days].each do |day|
+              %td= number_to_percentage result_data[user_state.last][day][:delta]
+
+      %hr
+
+
