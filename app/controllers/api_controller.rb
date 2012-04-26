@@ -35,11 +35,11 @@ class ApiController < ApplicationController
 
     @payload.each do |event|
       test = event["test"]
-      raise ApiError, "Parameter required: 'test'" unless test
+      raise ApiError, "Valid parameter required: 'test'" unless test.class == String
       $redis.sadd "#{@account}:tests", test
 
       variant = event["variant"]
-      raise ApiError, "Parameter required: 'variant'" unless variant
+      raise ApiError, "Valid parameter required: 'variant'" unless variant.class == String
       $redis.sadd "#{@account}:#{test}:variants", variant
 
       date = Date.today
@@ -47,15 +47,15 @@ class ApiController < ApplicationController
       $redis.sadd "#{@account}:#{test}:dates", date
 
       new = event["new"]
-      raise ApiError, "Parameter required: 'new'" unless new != nil
+      raise ApiError, "Valid parameter required: 'new'" unless new != nil
       activated = event["activated"]
-      raise ApiError, "Parameter required: 'activated'" unless activated != nil
+      raise ApiError, "Valid parameter required: 'activated'" unless activated != nil
 
       new_activated = (new ? "n" : "o") + (activated ? "a" : "u")
 
       days = event["days"]
       days = [days] if days.instance_of? Fixnum
-      raise ApiError, "Parameter required: 'days'" unless days
+      raise ApiError, "Valid parameter required: 'days'" unless days.class == Array
 
       days.each do |day|
         $redis.sadd "#{@account}:#{test}:days", day
