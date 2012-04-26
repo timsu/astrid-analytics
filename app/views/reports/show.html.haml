@@ -1,6 +1,6 @@
 :css
-  thead tr { background-color: black; color: white }
-  .variant { background-color: #999; color: black }
+  thead tr { background-color: #333; color: white }
+  .variant { background-color: #ccc; color: black }
 
 .row
   .span12
@@ -22,7 +22,9 @@
         - test_data[:variants].each do |variant|
           - variant_data = @variant_data[test][variant]
           %tr.variant
-            %td(colspan=2) Variant: #{variant}
+            %td(colspan=2) 
+              Variant: 
+              %strong= variant
             - test_data[:days].each do |day|
               %td +#{day}
 
@@ -40,7 +42,7 @@
               %td % Retained
               - test_data[:days].each do |day|
                 %td
-                  - if variant_data[user_state.last][day][:retained] == 0
+                  - if variant_data[user_state.last][day][:total] == 0
                     \-
                   - else
                     = number_to_percentage variant_data[user_state.last][day][:retained]
@@ -55,7 +57,7 @@
           %tr
             %td(rowspan=1)= user_state.first
             %td 
-              %strong Change in retention (% points)
+              %strong Delta retention (% points)
             - test_data[:days].each do |day|
               %td= number_to_percentage result_data[user_state.last][day][:delta]
 
