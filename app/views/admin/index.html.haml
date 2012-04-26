@@ -1,21 +1,56 @@
-%h1 Accounts
+.row
+  .span12
+    .page-header
+      %h1 Accounts
+      %a(href="#" onclick="$(this).next().toggle()") Add New Account
 
-- @accounts.each do |account|
-  - account_data = @data[account]
-  %h2 Account: #{data[:email]}
+      #add_account.hide
+        = form_tag("/admin/add_account", :method => :post, :class => :well, :autocomplete => false) do |f|
+          %label Account Name
+          %input(type="text" name="name")
 
-  %h3 Clients:
-  %table
-    %tr
-      %td Client
-      %td Secret
-    - @apikeys[account].each do |apikey|
-      - apikey_data = JSON.parse $redis.get "apikeys:" + apikey
-      %tr
-        %td= apikey_data[1]
-        %td= apikey_data[2]
-          
-        
-  %a(href="#") Add New Client
+          %label Email Address
+          %input(type="text" name="email")
 
-%a(href="#") Add New Account
+          %label Password
+          %input(type="password" name="password")
+
+          %br/
+          %input(type="submit")
+
+.row
+  .span12  
+    - @accounts.each do |account|
+      - account_data = @data[account]
+      %h2 #{account_data["email"]}
+
+      %table.table
+        %thead
+          %tr
+            %th Client
+            %th Api Key
+            %th Secret
+            %th Remove?
+        - @apikeys[account].each do |apikey|
+          - apikey_data = JSON.parse $redis.get "apikeys:" + apikey
+          %tr
+            %td= apikey_data[1]
+            %td= apikey
+            %td= apikey_data[2]
+            %td
+              %a(href="/admin/remove_client/#{apikey}")
+                %i.icon-remove
+
+      %a(href="#" onclick="$(this).next().toggle()") Add New Client
+
+      .hide
+        = form_tag("/admin/add_client", :method => :post, :class => :well, :autocomplete => false) do |f|
+          %input(type="hidden" name="account" value="#{account}")
+
+          %label Client Name
+          %input(type="text" name="client")
+
+          %input(type="submit")
+
+      %hr
+
