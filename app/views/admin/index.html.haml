@@ -1,7 +1,7 @@
 .row
   .span12
     .page-header
-      %h1 Environment
+      %h1 Environments
       %a(href="#" onclick="$(this).next().toggle()") Add New Environment
 
       #add_account.hide
@@ -35,7 +35,7 @@
             %td= apikey_data[2]
             %td
               %a(href="/admin/remove_client/#{apikey}")
-                %i.icon-remove
+                Remove
 
       %a(href="#" onclick="$(this).next().toggle()") Add New Client
 

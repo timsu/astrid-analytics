@@ -34,7 +34,10 @@
 .row
   .span12
     .page-header
-      %h1 Tests for #{@account_data["name"]}
+      %h1 
+        Tests for #{@account_data["name"]}
+        %small
+          %a(href="/admin") Back to environments
 
 - if @tests.empty?
   .row
