@@ -30,7 +30,7 @@ class AdminController < ApplicationController
       }
         
       $redis.sadd "accounts", account[:id]
-      $redis.get "#{account[:id]}:data", account.to_json
+      $redis.set "#{account[:id]}:data", account.to_json
     end
 
     redirect_to "/admin"
