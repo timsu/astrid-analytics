@@ -14,5 +14,6 @@ class ApplicationController < ActionController::Base
   # <account>:<test>:variants - set of variants for this test
   # <account>:<test>:days - set of days we know about (e.g. 0, 3, 7, 14)
   # <account>:<test>:dates - set of dates for this test
+  # <account>:<test>:<variant>:<user_state>:<day>:<date> - # of events with this criteria
   
 end

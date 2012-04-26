@@ -1,6 +1,6 @@
 :css
   thead tr { background-color: black; color: white }
-  .variant { background-color: #999 }
+  .variant { background-color: #999; color: black }
 
 .row
   .span12
@@ -28,7 +28,7 @@
 
           - [["New Users", :new], ["Existing Activated", :old]].each do |user_state|
             %tr
-              %td(rowspan=4)= user_state.first
+              %td(rowspan=3)= user_state.first
               %td Total opened x days ago
               - test_data[:days].each do |day|
                 %td= variant_data[user_state.last][day][:total]
@@ -39,9 +39,13 @@
             %tr
               %td % Retained
               - test_data[:days].each do |day|
-                %td= number_to_percentage variant_data[user_state.last][day][:retained]
+                %td
+                  - if variant_data[user_state.last][day][:retained] == 0
+                    \-
+                  - else
+                    = number_to_percentage variant_data[user_state.last][day][:retained]
 
-        - result_data = @variant_data[test]
+        - result_data = @variant_data[test][:summary]
         %tr.variant
           %td(colspan=2) Results
           - test_data[:days].each do |day|
@@ -49,7 +53,7 @@
 
         - [["New Users", :new], ["Existing Activated", :old]].each do |user_state|
           %tr
-            %td(rowspan=4)= user_state.first
+            %td(rowspan=1)= user_state.first
             %td 
               %strong Change in retention (% points)
             - test_data[:days].each do |day|

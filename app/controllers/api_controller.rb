@@ -60,6 +60,7 @@ class ApiController < ApplicationController
       days.each do |day|
         $redis.sadd "#{@account}:#{test}:days", day
 
+        p "KEY " + "#{@account}:#{test}:#{variant}:#{new_activated}:#{day}:#{date}"
         $redis.incrby "#{@account}:#{test}:#{variant}:#{new_activated}:#{day}:#{date}", 1
       end
     end
