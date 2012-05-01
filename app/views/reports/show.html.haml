@@ -1,9 +1,12 @@
 :css
   thead tr { background-color: #333; color: white }
-  .variant { background-color: #ccc; color: black; font-weight: bold }
+  .variant, .variant td { background-color: #ccc !important; color: black; font-weight: bold }
   .results { background-color: #acf; color: black; font-weight: bold }
   .significance { background-color: #def; color: black; font-weight: bold }
   .empty { text-align: center; padding: 50px }
+  .plus { color: #090 }
+  .minus { color: #900 }
+  a[data-edit=null_variant] i { opacity: 0.3 }
 
 :javascript
   $(document).on("click", "[data-edit=description]", function() {
@@ -31,6 +34,14 @@
     $.post("/admin/edit_test", 
       { test: parent.data("test"), account: '#{@account}', unarchive: true },
       function() { window.location.reload(); })      
+  });
+
+  $(document).on("click", "[data-edit=null_variant]", function() {
+    var test = $(this).parents(".row");
+    var variant = $(this).parents(".variant");
+    $.post("/admin/edit_test", 
+      { test: test.data("test"), account: '#{@account}', null_variant: variant.data("variant") },
+      function() { window.location.reload(); })
   });
 
 .row
@@ -69,10 +80,15 @@
 
         - test_data[:variants].each do |variant|
           - variant_data = @variant_data[test][variant]
-          %tr.variant
+          %tr.variant(data-variant="#{variant}")
             %td(colspan=2) 
-              Variant: 
-              %strong= variant
+              Variant: #{variant}
+              - if variant == test_data[:null_variant]
+                %a(title="Null Hypothesis")
+                  %i.icon-flag
+              - else
+                %a(href="#" title="Choose this variant as Null Hypothesis" data-edit="null_variant")
+                  %i.icon-flag
             - test_data[:days].each do |day|
               %td +#{day}
 
@@ -106,7 +122,8 @@
             %td(rowspan=3)= user_state.first
             %td Delta retention (% points)
             - test_data[:days].each do |day|
-              %td= number_to_percentage result_data[user_state.last][day][:delta]
+              %td(class="#{result_data[user_state.last][day][:plusminus]}")
+                = number_to_percentage result_data[user_state.last][day][:delta]
           %tr
             %td P-Value
             - test_data[:days].each do |day|

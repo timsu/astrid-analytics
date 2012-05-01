@@ -59,6 +59,7 @@ class AdminController < ApplicationController
     $redis.set "#{account}:#{test}:description", params[:description] if params[:description]
     $redis.sadd "#{account}:archived", test if params[:archive]
     $redis.srem "#{account}:archived", test if params[:unarchive]
+    $redis.set "#{account}:#{test}:null_variant", params[:null_variant] if params[:null_variant]
 
     render :json => {}
   end

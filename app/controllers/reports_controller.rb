@@ -20,12 +20,16 @@ class ReportsController < ApplicationController
       dates = $redis.smembers("#{@account}:#{test}:dates")
       dates = dates.map { |date| Date.parse(date) }.sort
       description = $redis.get("#{@account}:#{test}:description")
+      null_variant = $redis.get("#{@account}:#{test}:null_variant")
+
+      variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
       
       result[test] = {
         :variants => variants,
         :days => days,
         :dates => dates,
-        :description => description
+        :description => description,
+        :null_variant => null_variant,
       }
       result
     end
@@ -33,11 +37,12 @@ class ReportsController < ApplicationController
     @tests = @tests - @archived
 
     @variant_data = {}
-    @test_data.each do |test, hash|
+    @test_data.each do |test, data|
       next if @archived.include? test
-      variants = hash[:variants]
-      dates = hash[:dates]
-      days = hash[:days]
+      variants = data[:variants]
+      dates = data[:dates]
+      days = data[:days]
+      null_variant = data[:null_variant]
 
       test_results = {}
 
@@ -85,15 +90,22 @@ class ReportsController < ApplicationController
         
         days.each do |day|
           day_results = {}
-          
+
           retained = variants.map { |variant| test_results[variant][user_status][day][:retained] }
           error = variants.map { |variant| test_results[variant][user_status][day][:error] }
-
+          
           day_results[:delta] = retained.max - retained.min
           day_results[:zscore] = "-"
           day_results[:pvalue] = "-"
           day_results[:significant] = "-"
 
+          if null_variant
+            null_retained = test_results[null_variant][user_status][day][:retained]
+            day_results[:delta] = variants.reject { |v| v == null_variant }.map { |v|
+              test_results[v][user_status][day][:retained] - null_retained }.max
+            day_results[:plusminus] = day_results[:delta] > 0 ? "plus" : (day_results[:delta] < 0 ? "minus" : "")
+          end
+          
           if day > 0 and retained.sum > 0
             day_results[:zscore] = day_results[:delta]/100/Math.sqrt(error.map { |e| e ** 2 }.sum)
             day_results[:pvalue] = Normdist::normdist(day_results[:zscore], 0, 1, false)
