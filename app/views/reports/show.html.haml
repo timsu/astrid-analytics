@@ -7,6 +7,8 @@
   .plus { color: #090 }
   .minus { color: #900 }
   a[data-edit=null_variant] i { opacity: 0.3 }
+  td[data-day] { text-align: center }
+  td[data-day="0"] { border-left: 1px solid black }
 
 :javascript
   $(document).on("click", "[data-edit=description]", function() {
@@ -75,13 +77,14 @@
       %table.table
         %thead
           %tr
-            %th(colspan=2) Launched: #{test_data[:dates].first}
-            %th(colspan="#{test_data[:days].length}") Days since first experience
+            %th(colspan=1) Launched: #{test_data[:dates].first}
+            %th(colspan="#{test_data[:days].length}") New Users
+            %th(colspan="#{test_data[:days].length}") Existing Activated
 
         - test_data[:variants].each do |variant|
           - variant_data = @variant_data[test][variant]
           %tr.variant(data-variant="#{variant}")
-            %td(colspan=2) 
+            %td
               Variant: #{variant}
               - if variant == test_data[:null_variant]
                 %a(title="Null Hypothesis")
@@ -90,48 +93,54 @@
                 %a(href="#" title="Choose this variant as Null Hypothesis" data-edit="null_variant")
                   %i.icon-flag
             - test_data[:days].each do |day|
-              %td +#{day}
+              %td(data-day="#{day}") +#{day}
+            - test_data[:days].each do |day|
+              %td(data-day="#{day}") +#{day}
 
-          - [["New Users", :new], ["Existing Activated", :old]].each do |user_state|
-            %tr
-              %td(rowspan=3)= user_state.first
-              %td Total opened x days ago
+          %tr
+            %td Total opened x days ago
+            - [:new, :old].each do |user_state|
               - test_data[:days].each do |day|
-                %td= variant_data[user_state.last][day][:total]
-            %tr
-              %td Opened x days after first open
+                %td(data-day="#{day}")= variant_data[user_state][day][:total]
+          %tr
+            %td Opened x days after first open
+            - [:new, :old].each do |user_state|
               - test_data[:days].each do |day|
-                %td= variant_data[user_state.last][day][:opened]
-            %tr
-              %td % Retained
+                %td(data-day="#{day}")= variant_data[user_state][day][:opened]
+          %tr
+            %td % Retained
+            - [:new, :old].each do |user_state|
               - test_data[:days].each do |day|
-                %td
-                  - if variant_data[user_state.last][day][:total] == 0
+                %td(data-day="#{day}")
+                  - if variant_data[user_state][day][:total] == 0
                     \-
-                  - else
-                    = number_to_percentage variant_data[user_state.last][day][:retained]
+                  - else 
+                    = number_to_percentage variant_data[user_state][day][:retained]
 
         - result_data = @variant_data[test][:summary]
         %tr.results
-          %td(colspan=2) Results
+          %td Results
           - test_data[:days].each do |day|
-            %td +#{day}
+            %td(data-day="#{day}") +#{day}
+          - test_data[:days].each do |day|
+            %td(data-day="#{day}") +#{day}
 
-        - [["New Users", :new], ["Existing Activated", :old]].each do |user_state|
           %tr
-            %td(rowspan=3)= user_state.first
             %td Delta retention (% points)
-            - test_data[:days].each do |day|
-              %td(class="#{result_data[user_state.last][day][:plusminus]}")
-                = number_to_percentage result_data[user_state.last][day][:delta]
+            - [:new, :old].each do |user_state|
+              - test_data[:days].each do |day|
+                %td(data-day="#{day}" class="#{result_data[user_state][day][:plusminus]}")
+                  = number_to_percentage result_data[user_state][day][:delta]
           %tr
             %td P-Value
-            - test_data[:days].each do |day|
-              %td= number_with_precision result_data[user_state.last][day][:pvalue]
+            - [:new, :old].each do |user_state|
+              - test_data[:days].each do |day|
+                %td(data-day="#{day}")= number_with_precision result_data[user_state][day][:pvalue]
           %tr.significance
             %td Significant to 95%?
-            - test_data[:days].each do |day|
-              %td= result_data[user_state.last][day][:significant]
+            - [:new, :old].each do |user_state|
+              - test_data[:days].each do |day|
+                %td(data-day="#{day}")= result_data[user_state][day][:significant]
 
       %hr
 
