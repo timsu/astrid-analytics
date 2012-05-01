@@ -1,6 +1,8 @@
 :css
   thead tr { background-color: #333; color: white }
-  .variant { background-color: #ccc; color: black }
+  .variant { background-color: #ccc; color: black; font-weight: bold }
+  .results { background-color: #acf; color: black; font-weight: bold }
+  .significance { background-color: #def; color: black; font-weight: bold }
   .empty { text-align: center; padding: 50px }
 
 :javascript
@@ -94,18 +96,25 @@
                     = number_to_percentage variant_data[user_state.last][day][:retained]
 
         - result_data = @variant_data[test][:summary]
-        %tr.variant
+        %tr.results
           %td(colspan=2) Results
           - test_data[:days].each do |day|
             %td +#{day}
 
         - [["New Users", :new], ["Existing Activated", :old]].each do |user_state|
           %tr
-            %td(rowspan=1)= user_state.first
-            %td 
-              %strong Delta retention (% points)
+            %td(rowspan=3)= user_state.first
+            %td Delta retention (% points)
             - test_data[:days].each do |day|
               %td= number_to_percentage result_data[user_state.last][day][:delta]
+          %tr
+            %td P-Value
+            - test_data[:days].each do |day|
+              %td= number_with_precision result_data[user_state.last][day][:pvalue]
+          %tr.significance
+            %td Significant to 95%?
+            - test_data[:days].each do |day|
+              %td= result_data[user_state.last][day][:significant]
 
       %hr
 

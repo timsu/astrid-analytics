@@ -16,7 +16,7 @@ class ReportsController < ApplicationController
     @test_data = @tests.reduce({}) do |result, test|
       variants = $redis.smembers("#{@account}:#{test}:variants")
       days = $redis.smembers("#{@account}:#{test}:days").map(&:to_i)
-      days = (days + [0, 3, 7, 14]).uniq.sort
+      days = (days + [0, 1, 3, 7, 14]).uniq.sort
       dates = $redis.smembers("#{@account}:#{test}:dates")
       dates = dates.map { |date| Date.parse(date) }.sort
       description = $redis.get("#{@account}:#{test}:description")
@@ -62,8 +62,11 @@ class ReportsController < ApplicationController
 
             if day_results[:total] == 0
               day_results[:retained] = 0
+              day_results[:error] = 0
             else
               day_results[:retained] = day_results[:opened] * 100.0 / day_results[:total]
+              day_results[:error] = Math.sqrt((day_results[:retained]/100 * (1 - day_results[:retained]/100)) /
+                                              day_results[:total])
             end
 
             user_results[day] = day_results
@@ -83,11 +86,19 @@ class ReportsController < ApplicationController
         days.each do |day|
           day_results = {}
           
-          retained = variants.map do |variant|
-            test_results[variant][user_status][day][:retained]
-          end
+          retained = variants.map { |variant| test_results[variant][user_status][day][:retained] }
+          error = variants.map { |variant| test_results[variant][user_status][day][:error] }
 
           day_results[:delta] = retained.max - retained.min
+          day_results[:zscore] = "-"
+          day_results[:pvalue] = "-"
+          day_results[:significant] = "-"
+
+          if day > 0 and retained.sum > 0
+            day_results[:zscore] = day_results[:delta]/100/Math.sqrt(error.map { |e| e ** 2 }.sum)
+            day_results[:pvalue] = Normdist::normdist(day_results[:zscore], 0, 1, false)
+            day_results[:significant] = (day_results[:pvalue] < 0.05 || day_results[:pvalue] > 0.95) ? "YES" : "NO"            
+          end
 
           user_results[day] = day_results
         end
