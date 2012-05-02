@@ -126,11 +126,13 @@
             %td(data-day="#{day}") +#{day}
 
           %tr
-            %td Delta retention (% points)
+            %td Delta retention (%)
             - [:new, :old].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}" class="#{result_data[user_state][day][:plusminus]}")
-                  = number_to_percentage result_data[user_state][day][:delta]
+                  = number_with_precision result_data[user_state][day][:delta]
+                  - if result_data[user_state][day][:percent]
+                    (#{number_to_percentage result_data[user_state][day][:percent], :precision => 0})
           %tr
             %td P-Value
             - [:new, :old].each do |user_state|

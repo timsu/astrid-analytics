@@ -65,13 +65,16 @@ class ReportsController < ApplicationController
             sum = $redis.mget(*keys, nil).compact.map(&:to_i).sum
             day_results[:opened] = sum
 
-            if day_results[:total] == 0
               day_results[:retained] = 0
               day_results[:error] = 0
-            else
+            if day_results[:total] > 0
               day_results[:retained] = day_results[:opened] * 100.0 / day_results[:total]
-              day_results[:error] = Math.sqrt((day_results[:retained]/100 * (1 - day_results[:retained]/100)) /
-                                              day_results[:total])
+              err_sqr = (day_results[:retained]/100 * (1 - day_results[:retained]/100)) / day_results[:total]
+              if err_sqr >= 0
+                day_results[:error] = Math.sqrt(err_sqr)
+              else
+                print "ERRSQR was < 0: #{err_sqr}, #{day_results[:retained]}, #{day_results[:total]}"
+              end
             end
 
             user_results[day] = day_results
@@ -103,6 +106,7 @@ class ReportsController < ApplicationController
             null_retained = test_results[null_variant][user_status][day][:retained]
             day_results[:delta] = variants.reject { |v| v == null_variant }.map { |v|
               test_results[v][user_status][day][:retained] - null_retained }.max
+            day_results[:percent] = day_results[:delta] * 100 / null_retained if null_retained > 0
             day_results[:plusminus] = day_results[:delta] > 0 ? "plus" : (day_results[:delta] < 0 ? "minus" : "")
           end
           
