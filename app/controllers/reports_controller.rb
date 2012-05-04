@@ -61,7 +61,7 @@ class ReportsController < ApplicationController
             sum = $redis.mget(*keys, nil).compact.map(&:to_i).sum
             day_results[:total] = sum
 
-            keys = generate_keys test, variant, user_status, day, dates
+            keys = generate_keys test, variant, user_status, day, valid_dates
             sum = $redis.mget(*keys, nil).compact.map(&:to_i).sum
             day_results[:opened] = sum
 
