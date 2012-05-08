@@ -43,7 +43,8 @@ class ApiController < ApplicationController
       $redis.sadd "#{@account}:#{test}:variants", variant
 
       date = Date.today
-      date = Time.at(event["date"]).to_date if event["date"]
+      # clients send untrustworthy dates
+      # date = Time.at(event["date"]).to_date if event["date"]
       $redis.sadd "#{@account}:#{test}:dates", date
 
       new = event["new"]
