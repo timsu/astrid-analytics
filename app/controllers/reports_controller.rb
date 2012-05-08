@@ -61,12 +61,13 @@ class ReportsController < ApplicationController
             sum = $redis.mget(*keys, nil).compact.map(&:to_i).sum
             day_results[:total] = sum
 
+            valid_dates = dates.select { |date| date <= Date.today }
             keys = generate_keys test, variant, user_status, day, valid_dates
             sum = $redis.mget(*keys, nil).compact.map(&:to_i).sum
             day_results[:opened] = sum
 
-              day_results[:retained] = 0
-              day_results[:error] = 0
+            day_results[:retained] = 0
+            day_results[:error] = 0
             if day_results[:total] > 0
               day_results[:retained] = day_results[:opened] * 100.0 / day_results[:total]
               err_sqr = (day_results[:retained]/100 * (1 - day_results[:retained]/100)) / day_results[:total]
