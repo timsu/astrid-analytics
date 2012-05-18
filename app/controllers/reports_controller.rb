@@ -113,7 +113,7 @@ class ReportsController < ApplicationController
           
           if day > 0 and retained.sum > 0
             day_results[:zscore] = day_results[:delta]/100/Math.sqrt(error.map { |e| e ** 2 }.sum)
-            day_results[:pvalue] = Normdist::normdist(day_results[:zscore], 0, 1, false)
+            day_results[:pvalue] = Normdist::normdist(day_results[:zscore], 0, 1, true)
             day_results[:significant] = (day_results[:pvalue] < 0.05 || day_results[:pvalue] > 0.95) ? "YES" : "NO"            
           end
 
