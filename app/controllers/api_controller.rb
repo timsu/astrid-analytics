@@ -129,7 +129,7 @@ class ApiController < ApplicationController
     signature = params.sort do |a,b|
       a.to_s <=> b.to_s
     end.reduce("") do |result, pair|
-      if pair[0] == "sig" or pair[0] == "action" or pair[0] == "controller"
+      if pair[0] == "sig" or pair[0] == "action" or pair[0] == "controller" or pair[0] == "version"
         result
       elsif pair[1].class == Array
         "#{result}#{pair[0]}[]" + pair[1].join("#{pair[0]}[]")
