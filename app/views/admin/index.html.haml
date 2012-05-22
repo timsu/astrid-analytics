@@ -49,3 +49,17 @@
 
       %hr
 
+- if @has_deprecated
+  .row
+    .span12
+      .page-header
+        %h3 Deprecated API Access (internal)
+      %table.table
+        %thead
+          %tr
+            %td API Version
+            %td # hits in past week
+        - @deprecated.each do |version, count|
+          %tr
+            %td #{version}
+            %td= count

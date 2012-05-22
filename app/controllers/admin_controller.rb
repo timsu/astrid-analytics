@@ -16,6 +16,18 @@ class AdminController < ApplicationController
       data[account] = $redis.smembers "#{account}:apikeys"
       data
     end
+
+    # for analytics internal use
+    deprecated_api = 1..ApiController::API_VERSION - 1
+    @deprecated = deprecated_api.reduce({}) do |r, version|
+      count = 0
+      ((Date.today-7)..Date.today).each do |day|
+        count += $redis.get("deprecated:#{version}:#{day}").to_i
+      end
+      r[version] = count if count > 0
+      r
+    end
+    @has_deprecated = @deprecated.length > 0
   end
 
   def add_account
