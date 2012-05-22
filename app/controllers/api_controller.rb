@@ -27,7 +27,7 @@ class ApiController < ApplicationController
   
   ################################################################# DASHBOARD API
 
-  def aquisition
+  def acquisition
     render :json => { :status => "Not Implemented" }
   end
 
