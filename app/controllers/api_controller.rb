@@ -28,19 +28,24 @@ class ApiController < ApplicationController
   ################################################################# DASHBOARD API
 
   def aquisition
+    render :json => { :status => "Not Implemented" }
   end
 
   def activation
+    render :json => { :status => "Not Implemented" }
   end
 
   def retention
-    return ab_retention if params[:version] == 1
+    return ab_retention if @api == 1
+    render :json => { :status => "Not Implemented" }
   end
 
   def referral
+    render :json => { :status => "Not Implemented" }
   end
 
   def revenue
+    render :json => { :status => "Not Implemented" }
   end
 
   ################################################################# AB TEST API
@@ -78,7 +83,6 @@ class ApiController < ApplicationController
 
       days.each do |day|
         $redis.sadd "#{@account}:#{test}:days", day
-
         $redis.incrby "#{@account}:#{test}:#{variant}:#{new_activated}:#{day}:#{date}", 1
       end
     end
@@ -114,9 +118,9 @@ class ApiController < ApplicationController
       end
     end
 
-    version = params[:version].to_i
-    if version > 0 and version != API_VERSION
-      $redis.incrby "deprecated:#{version}", 1
+    @api = params[:version].to_i
+    if @api > 0 and @api != API_VERSION
+      $redis.incrby "deprecated:#{@api}:#{Date.today}", 1
     end
   end
 
