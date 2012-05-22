@@ -143,6 +143,21 @@
             - [:new, :old].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= result_data[user_state][day][:significant]
+          %tr
+            %td X^2 Value
+            - [:new, :old].each do |user_state|
+              - test_data[:days].each do |day|
+                %td(data-day="#{day}")= number_with_precision result_data[user_state][day][:chisq]
+          %tr
+            %td X^2 P-Value
+            - [:new, :old].each do |user_state|
+              - test_data[:days].each do |day|
+                %td(data-day="#{day}")= number_with_precision result_data[user_state][day][:chisqp]
+          %tr.significance
+            %td X^2 Significant to 95%?
+            - [:new, :old].each do |user_state|
+              - test_data[:days].each do |day|
+                %td(data-day="#{day}")= result_data[user_state][day][:chisqsig]
 
       %hr
 

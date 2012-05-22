@@ -19,6 +19,9 @@ group :assets do
   gem 'therubyracer'
 end
 
+# for statistics
+gem 'distribution'
+
 gem 'jquery-rails'
 
 gem "hirb"

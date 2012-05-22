@@ -96,6 +96,7 @@ class ReportsController < ApplicationController
           day_results = {}
 
           retained = variants.map { |variant| test_results[variant][user_status][day][:retained] }
+          
           error = variants.map { |variant| test_results[variant][user_status][day][:error] }
           
           day_results[:delta] = retained.max - retained.min
@@ -114,9 +115,37 @@ class ReportsController < ApplicationController
           if day > 0 and retained.sum > 0
             day_results[:zscore] = day_results[:delta]/100/Math.sqrt(error.map { |e| e ** 2 }.sum)
             day_results[:pvalue] = Normdist::normdist(day_results[:zscore], 0, 1, true)
-            day_results[:significant] = (day_results[:pvalue] < 0.05 || day_results[:pvalue] > 0.95) ? "YES" : "NO"            
+            day_results[:significant] = (day_results[:pvalue] < 0.05 || day_results[:pvalue] > 0.95) ? "YES" : "NO"     
+            
+            overall_total = variants.reduce(0) do |result, variant|
+              result += test_results[variant][user_status][day][:total]
+            end
+          
+            overall_total_retained = variants.reduce(0) do |result, variant|
+              result += test_results[variant][user_status][day][:opened]
+            end
+            
+            chi_sq = variants.reduce(0) do |result, variant|
+              exp_retained = test_results[variant][user_status][day][:total] * overall_total_retained / overall_total.to_f
+              exp_not_retained = (test_results[variant][user_status][day][:total] * (overall_total - overall_total_retained)) / overall_total.to_f
+              
+              obs_retained = test_results[variant][user_status][day][:opened].to_f
+              obs_not_retained = test_results[variant][user_status][day][:total] - test_results[variant][user_status][day][:opened].to_f
+              
+              ret_point = 0
+              ret_point = ((obs_retained - exp_retained)**2) / exp_retained.to_f if exp_retained > 0
+              
+              not_ret_point = 0
+              not_ret_point = ((obs_not_retained - exp_not_retained)**2) / exp_not_retained.to_f if exp_not_retained > 0
+              
+              result += (ret_point + not_ret_point)
+            end
+            
+            day_results[:chisq] = chi_sq
+            day_results[:chisqp] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
+            day_results[:chisqsig] = day_results[:chisqp] < 0.05 ? "YES" : "NO"
+         
           end
-
           user_results[day] = day_results
         end
 
