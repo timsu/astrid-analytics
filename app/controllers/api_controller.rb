@@ -19,15 +19,33 @@
 #
 class ApiController < ApplicationController
 
-  API_VERSION = 1
+  API_VERSION = 2
   
   before_filter :validate_request
   
   rescue_from Exception, :with => :render_error
   
-  ################################################################# API METHODS
+  ################################################################# DASHBOARD API
+
+  def aquisition
+  end
+
+  def activation
+  end
 
   def retention
+    return ab_retention if params[:version] == 1
+  end
+
+  def referral
+  end
+
+  def revenue
+  end
+
+  ################################################################# AB TEST API
+
+  def ab_retention      
     raise ApiError, "Parameter required: 'payload'" if params[:payload].blank?
     
     @payload = JSON.parse(params[:payload])
@@ -94,6 +112,11 @@ class ApiController < ApplicationController
       else
         raise ApiError, "signature was invalid, expected it to start with " + sig[0,3]
       end
+    end
+
+    version = params[:version].to_i
+    if version > 0 and version != API_VERSION
+      $redis.incrby "deprecated:#{version}", 1
     end
   end
 
