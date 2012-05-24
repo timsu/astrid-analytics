@@ -96,12 +96,12 @@ class ReportsController < ApplicationController
             
             valid_dates = dates.select { |date| date <= Date.today - day }
             keys = generate_ab_keys test, variant, user_status, 0, valid_dates
-            sum = $redis.mget(*keys).compact.map(&:to_i).sum
+            sum = $redis.mget(*keys + [nil]).compact.map(&:to_i).sum
             day_results[:total] = sum
 
             valid_dates = dates.select { |date| date <= Date.today }
             keys = generate_ab_keys test, variant, user_status, day, valid_dates
-            sum = $redis.mget(*keys).compact.map(&:to_i).sum
+            sum = $redis.mget(*keys + [nil]).compact.map(&:to_i).sum
             day_results[:opened] = sum
 
             day_results[:retained] = 0
