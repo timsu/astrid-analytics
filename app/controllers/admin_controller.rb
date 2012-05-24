@@ -4,6 +4,14 @@ class AdminController < ApplicationController
   
   ################################################################# ACTIONS
 
+  def root
+    @accounts = $redis.smembers "accounts"
+    @data = @accounts.reduce({}) do |data, account|      
+      data[account] = JSON.parse($redis.get "#{account}:data")
+      data
+    end
+  end
+  
   def index
     @accounts = $redis.smembers "accounts"
 

@@ -1,0 +1,45 @@
+:css
+  body { color: white; background: black; text-align: center; }
+  .main .title { font-size: 250px;  line-height: 260px }
+  .main .subtitle { font-size: 30px; line-height: 40px }
+  .minor { padding: 10px 5px }
+  .minor .title { font-size: 64px; line-height: 74px; }
+  .minor .subtitle { font-size: 22px; }
+  .yesterday { color: #ccc }
+  .oneweekago { color: #aaa }
+  .fourweeksago { color: #888 }
+  .chart { width: 600px; height: 320px; margin: 15px 30px; background: #333 }
+  .legend { float: left; width:20%; padding-right: 1em; overflow: hidden }
+  .marking.label { position: absolute; bottom: 2em; color: #c66; font-size: 80% }
+  .ticklabel { font-size: 16px; color: #333; position: absolute; margin-right: 50px }
+
+.row
+  .span10.offset1.main
+    .title
+      72.6 K
+    .subtitle
+      \# of activated users of Astrid in the past 168 hours
+
+.row
+  .span8.offset1
+    .chart
+      = # javascript_tag("$(function(){Vanity.metric('#{stats.first}',#{min},#{max}).plot(#{data_sets})})")
+
+  .span3
+    .minor.yesterday
+      .title
+        68.3 K
+      .subtitle
+        Yesterday
+
+    .minor.oneweekago
+      .title
+        31.8 K
+      .subtitle
+        One week ago
+
+    .minor.fourweeksago
+      .title
+        27.1 K
+      .subtitle
+        Four weeks ago

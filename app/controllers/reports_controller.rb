@@ -4,7 +4,10 @@ class ReportsController < ApplicationController
   
   ################################################################# ACTIONS
 
-  def show
+  def retention
+  end
+  
+  def ab
     @account = params[:account]
     @account_data = JSON.parse($redis.get "#{@account}:data")
 

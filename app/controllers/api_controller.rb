@@ -37,7 +37,13 @@ class ApiController < ApplicationController
 
   def retention
     return ab_retention if @api == 1
-    render :json => { :status => "Not Implemented" }
+
+    date = Date.today
+    hour = Time.now
+    $redis.sadd "#{@account}:dash:retention:days", date
+    $redis.incrby "#{@account}:dash:retention:#{date}", 1
+
+    render :json => { :status => "Success" }
   end
 
   def referral

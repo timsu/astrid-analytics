@@ -1,0 +1,29 @@
+.row
+  .span12
+    = image_tag "cat.jpg", :style => "float: right"
+
+    %h1(style="padding-top: 20px")
+      = image_tag "logo.png", :style => "height: 26px; vertical-align: -2px"
+      Astrid Analytics
+    %p
+      A website where anything is possible.
+      
+    %br
+
+    %h3
+      Environments
+
+    %table.table(style="width: 400px")
+      - @accounts.each do |account|
+        - account_data = @data[account]
+        %tr
+          %td= account_data["name"]
+          %td
+            %a(href="/reports/#{account}/retention") Retention
+          %td
+            %a(href="/reports/#{account}/ab") A/B Tests
+
+
+    %small
+      %a(href="/admin")
+        Edit Environments
