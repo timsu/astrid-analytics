@@ -1,5 +1,6 @@
 :css
-  body { color: white; background: black; text-align: center; }
+  body { color: white; background: black; text-align: center; font-family: "Eurostile", "Futura", "Courier New", monospace }
+  .env { color: #bef }
   .main .title { font-size: 250px;  line-height: 260px }
   .main .subtitle { font-size: 30px; line-height: 40px }
   .minor { padding: 10px 5px }
@@ -8,38 +9,43 @@
   .yesterday { color: #ccc }
   .oneweekago { color: #aaa }
   .fourweeksago { color: #888 }
-  .chart { width: 600px; height: 320px; margin: 15px 30px; background: #333 }
-  .legend { float: left; width:20%; padding-right: 1em; overflow: hidden }
+  #retention_chart { width: 510px; height: 320px; margin: 15px 30px; }
+  #tooltip { color: black }
   .marking.label { position: absolute; bottom: 2em; color: #c66; font-size: 80% }
   .ticklabel { font-size: 16px; color: #333; position: absolute; margin-right: 50px }
 
 .row
-  .span10.offset1.main
+  .span12.main
     .title
-      72.6 K
+      = number_to_human @today, :units => {:unit => "", :thousand => "K", :million => "M"}
     .subtitle
-      \# of activated users of Astrid in the past 168 hours
+      \# of activated users on
+      %span.env= @account_data["name"]
+      in the past 168 hours
 
 .row
-  .span8.offset1
-    .chart
-      = # javascript_tag("$(function(){Vanity.metric('#{stats.first}',#{min},#{max}).plot(#{data_sets})})")
+  .span7.offset1
+    #retention_chart
+    :javascript
+      $(function() { 
+        Vanity.retention_graph('#retention_chart',#{@min},#{@max}).plot(#{@chart}); 
+      })
 
   .span3
     .minor.yesterday
       .title
-        68.3 K
+        = number_to_human @yesterday, :units => {:unit => "", :thousand => "K", :million => "M"}
       .subtitle
         Yesterday
 
     .minor.oneweekago
       .title
-        31.8 K
+        = number_to_human @last_week, :units => {:unit => "", :thousand => "K", :million => "M"}
       .subtitle
         One week ago
 
     .minor.fourweeksago
       .title
-        27.1 K
+        = number_to_human @four_weeks_ago, :units => {:unit => "", :thousand => "K", :million => "M"}
       .subtitle
         Four weeks ago

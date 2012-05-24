@@ -5,8 +5,43 @@ class ReportsController < ApplicationController
   ################################################################# ACTIONS
 
   def retention
+    @account = params[:account]
+    @account_data = JSON.parse($redis.get "#{@account}:data")
+
+    now = Time.now
+
+    # build up user id union from hours today & 7 days ago + middle 5 days
+    sets =
+      (0..now.hour - 1).map { |i| Date.today.to_s + "T#{i}" } +
+      (now.hour..23).map { |i| (Date.today - 7).to_s + "T#{i}" } +
+      (1..6).map { |i| (Date.today - i).to_s }
+    keys = sets.map { |date| "ret:#{@account}:#{date}" }
+    @today = $redis.sunionstore(*["#{@account}:retention:result"] + keys)
+
+    # build up user id union for minor graphs
+    @yesterday = week_retention now - 1.day
+    @last_week = week_retention now - 7.day
+    @four_weeks_ago = week_retention now - 28.day
+
+    # build chart
+    chart_dates = (-30..-1).map { |i| Date.today + i }
+    chart_result_keys = chart_dates.map { |date| "ret:#{@account}:dayret:#{date}" }
+    chart_result_values = $redis.mget *chart_result_keys
+    chart_dates.each_with_index do |date, i|
+      if chart_result_values[i].nil?
+        count = $redis.scard "ret:#{@account}:#{date}"
+        $redis.set "ret:#{@account}:dayret:#{date}", count
+        chart_result_values[i] = count
+      end
+    end
+
+    @min = 0
+    @max = chart_result_values.max.to_i + 1
+    @chart = [{ :label => "# of users",
+                :data => chart_dates.map { |date| date.to_time.httpdate }.zip(chart_result_values)
+              }].to_json
   end
-  
+
   def ab
     @account = params[:account]
     @account_data = JSON.parse($redis.get "#{@account}:data")
@@ -60,13 +95,13 @@ class ReportsController < ApplicationController
             day_results = {}
             
             valid_dates = dates.select { |date| date <= Date.today - day }
-            keys = generate_keys test, variant, user_status, 0, valid_dates
-            sum = $redis.mget(*keys, nil).compact.map(&:to_i).sum
+            keys = generate_ab_keys test, variant, user_status, 0, valid_dates
+            sum = $redis.mget(*keys).compact.map(&:to_i).sum
             day_results[:total] = sum
 
             valid_dates = dates.select { |date| date <= Date.today }
-            keys = generate_keys test, variant, user_status, day, valid_dates
-            sum = $redis.mget(*keys, nil).compact.map(&:to_i).sum
+            keys = generate_ab_keys test, variant, user_status, day, valid_dates
+            sum = $redis.mget(*keys).compact.map(&:to_i).sum
             day_results[:opened] = sum
 
             day_results[:retained] = 0
@@ -129,17 +164,21 @@ class ReportsController < ApplicationController
             end
             
             chi_sq = variants.reduce(0) do |result, variant|
-              exp_retained = test_results[variant][user_status][day][:total] * overall_total_retained / overall_total.to_f
-              exp_not_retained = (test_results[variant][user_status][day][:total] * (overall_total - overall_total_retained)) / overall_total.to_f
+              exp_retained = test_results[variant][user_status][day][:total] *
+                overall_total_retained / overall_total.to_f
+              exp_not_retained = (test_results[variant][user_status][day][:total] *
+                                  (overall_total - overall_total_retained)) / overall_total.to_f
               
               obs_retained = test_results[variant][user_status][day][:opened].to_f
-              obs_not_retained = test_results[variant][user_status][day][:total] - test_results[variant][user_status][day][:opened].to_f
+              obs_not_retained = test_results[variant][user_status][day][:total] -
+                test_results[variant][user_status][day][:opened].to_f
               
               ret_point = 0
               ret_point = ((obs_retained - exp_retained)**2) / exp_retained.to_f if exp_retained > 0
               
               not_ret_point = 0
-              not_ret_point = ((obs_not_retained - exp_not_retained)**2) / exp_not_retained.to_f if exp_not_retained > 0
+              not_ret_point = ((obs_not_retained - exp_not_retained)**2) / exp_not_retained.to_f if
+                exp_not_retained > 0
               
               result += (ret_point + not_ret_point)
             end
@@ -163,7 +202,22 @@ class ReportsController < ApplicationController
   ################################################################# HELPERS
 
   protected
-  def generate_keys(test, variant, user_status, day, valid_dates)
+  def week_retention(time)
+    date = time.to_date
+    key = "ret:#{@account}:weekret:#{date}"
+    if $redis.exists key
+      $redis.get key
+    else
+      sets = (0..6).map { |i| (date - i).to_s }
+      keys = sets.map { |date| "ret:#{@account}:#{date}" }
+      count = $redis.sunionstore(*["#{@account}:retention:result"] + keys)
+      $redis.set key, count
+      count
+    end
+  end
+  
+  protected
+  def generate_ab_keys(test, variant, user_status, day, valid_dates)
     valid_dates.reduce([]) do |r, date|
       if user_status == :new
         r += ["#{@account}:#{test}:#{variant}:nu:#{day}:#{date}",

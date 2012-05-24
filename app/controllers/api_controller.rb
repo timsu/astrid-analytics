@@ -2,16 +2,15 @@
 #
 # Aside from parameters required for each method, the following parameters
 # are required for every method:
-# * app_id: API application id
-# * time: seconds since epoch (UTC) timestamp
+# * apkikey: API application id
 # * sig: signature, generated via the following:
 #   - sort every parameter alphabetically by key first, then value
 #   - concatenate keys and values (skip arrays and uploaded files)
 #   - append your API secret
 #   - take the MD5 digest
 #
-# For example, for params "app_id=1&title=baz&tag[]=foo&tag[]=bar&time=1297216408"
-# your signature string will be: "app_id1tag[]bartag[]footime=1297216408titlebaz<APP_SECRET>",
+# For example, for params "apikey=1&title=baz&tag[]=foo&tag[]=bar&time=1297216408"
+# your signature string will be: "apikey1tag[]bartag[]footime=1297216408titlebaz<APP_SECRET>",
 # so your final param might look like:
 #   app_id=1&title=baz&tag[]=foo&tag[]=bar&time=1297216408&sig=c7e14a38df42...
 #
@@ -37,11 +36,14 @@ class ApiController < ApplicationController
 
   def retention
     return ab_retention if @api == 1
+    raise ApiError, "Parameter required: 'user_id'" if params[:user_id].blank?
 
-    date = Date.today
-    hour = Time.now
-    $redis.sadd "#{@account}:dash:retention:days", date
-    $redis.incrby "#{@account}:dash:retention:#{date}", 1
+    date_key = Date.today.to_s
+    time_key = Time.now.strftime "%Y-%m-%dT%H"
+    $redis.sadd "ret:#{@account}:days", Date.today
+    $redis.sadd "ret:#{@account}:#{date_key}", params[:user_id]
+    $redis.sadd "ret:#{@account}:#{time_key}", params[:user_id]
+    $redis.expire "ret:#{@account}:#{time_key}", 3.weeks.to_i
 
     render :json => { :status => "Success" }
   end

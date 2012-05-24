@@ -1,4 +1,5 @@
 var Vanity = {}
+
 Vanity.tooltip = function(event, pos, item) {
   if (item) {
     if (this.previousPoint != item.datapoint) {
@@ -19,13 +20,14 @@ Vanity.tooltip = function(event, pos, item) {
   }
 }
 
-Vanity.metric = function(id, min, max) {
+Vanity.retention_graph = function(id, min, max) {
   var metric = {};
-  metric.chart = $("#metric_" + id + " .chart");
-  metric.chart.height(75);
+  metric.chart = $(id);
   metric.markings = [];
+
   var date = new Date();
   var date_ticks = [
+    new Date(date - 4 * 7 * 24 * 3600 * 1000).getTime(),
     new Date(date - 3 * 7 * 24 * 3600 * 1000).getTime(),
     new Date(date - 2 * 7 * 24 * 3600 * 1000).getTime(),
     new Date(date - 1 * 7 * 24 * 3600 * 1000).getTime(),
@@ -37,9 +39,10 @@ Vanity.metric = function(id, min, max) {
     yaxis:  { ticks: [min, max] },
     series: { lines: { show: true, lineWidth: 2, fill: false, fillColor: { colors: ["#000", "#555"] } },
               points: { show: false, radius: 1 }, shadowSize: 0 },
-    colors: ["#f8b144","#0ba5d9","#49cd7c"],
-    legend: { position: 'sw', container: "#metric_" + id +" .legend", backgroundOpacity: 0.5 },
-    grid:   { markings: metric.markings, borderWidth: 0, hoverable: true, aboveData: true } };
+    colors: ["#f8b144"],
+    grid:   { markings: metric.markings, borderWidth: 0, hoverable: true, aboveData: true },
+    legend: { show: false }
+  };
 
   metric.plot = function(lines) {
     $.each(lines, function(i, line) {
