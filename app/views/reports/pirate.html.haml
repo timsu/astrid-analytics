@@ -4,7 +4,7 @@
   body { background: black; color: white; }
   .container { width: auto }
   div { line-height: normal }
-  table { width: 100%; text-align: center; margin-top: 20px }
+  table { width: 90%; text-align: center; margin: 20px auto }
   td { padding: 35px 15px; vertical-align:top;}
   tr.header td { font-size: 24px; font-weight: bold; color: white } 
   td { text-align: center; font-size: 76px }
@@ -22,10 +22,17 @@
   tr.first td { border-top: 1px solid white }
   td.chart_cell { padding: 0 }
   .tooltip { color: black }
-  .chart { width:400px; height: 75px; margin-left: 100px; font-size: 26px }
+  .chart { width: 400px; height: 175px; font-size: 26px }
   .legend { float: left; width:20%; padding-right: 1em; overflow: hidden }
   .marking.label { position: absolute; bottom: 2em; color: #c66; font-size: 80% }
   .ticklabel { font-size: 16px; color: #333; position: absolute; margin-right: 50px }
+
+  @media all and (max-width: 1440px) {
+    tr.header td { font-size: 14px }
+    td { font-size: 48px }
+    .sub_title, .small_num { font-size: 20px }
+    .chart { font-size: 18px; width: 250px; height: 125px }
+  }
 
 %table{:cellspacing => "0"}
   %colgroup
@@ -44,12 +51,12 @@
         .title Acquisition
         .sub_title First time on app/site
       %td
-        .big_num= number @acquisition[:total]
+        .big_num= format_number @acquisition[:total]
         .small_num
           - @clients.each do |client|
-            %span #{client.capitalize}: #{number @acquisition[:by_client][client]}
+            %span #{format_client client}: #{format_number @acquisition[:by_client][client]}
       %td(class="#{@acquisition[:delta].to_f < 0 ? 'down' : 'up'}")
-        = percent @acquisition[:delta]
+        = format_percent @acquisition[:delta]
       %td.chart_cell
         .chart
         :javascript
@@ -65,9 +72,9 @@
           %br
           ((signed in, created 3 tasks, completed 1, used 1 week)
       %td
-        .big_num= number @activation[:total]
+        .big_num= format_number @activation[:total]
       %td(class="#{@activation[:delta].to_f < 0 ? 'down' : 'up'}")
-        = percent @activation[:delta]
+        = format_percent @activation[:delta]
       %td.chart_cell
         .chart
         :javascript
@@ -80,9 +87,9 @@
         .title Retention
         .sub_title Active & activated users
       %td
-        .big_num= number @retention[:total]
+        .big_num= format_number @retention[:total]
       %td(class="#{@retention[:delta].to_f < 0 ? 'down' : 'up'}")
-        = percent @retention[:delta]
+        = format_percent @retention[:delta]
       %td.chart_cell
         .chart
         :javascript
@@ -95,12 +102,12 @@
         .title Referral
         .sub_title # NM shared to
       %td
-        .big_num= number @referral[:total]
+        .big_num= format_number @referral[:total]
         .small_num
           - @clients.each do |client|
-            %span #{client.capitalize}: #{number @referral[:by_client][client]}
+            %span #{format_client client}: #{format_number @referral[:by_client][client]}
       %td(class="#{@referral[:delta].to_f < 0 ? 'down' : 'up'}")
-        = percent @referral[:delta]
+        = format_percent @referral[:delta]
       %td.chart_cell
         .chart
         :javascript

@@ -19,7 +19,7 @@
 .row
   .span12.main
     .title
-      = number @retention[:total]
+      = format_number @retention[:total]
     .subtitle
       \# of activated users on
       %span.env= @account_data["name"]
@@ -36,18 +36,18 @@
   .span3
     .minor.yesterday
       .title
-        = number @retention[:yesterday]
+        = format_number @retention[:yesterday]
       .subtitle
         Yesterday
 
     .minor.oneweekago
       .title
-        = number @retention[:last_week]
+        = format_number @retention[:last_week]
       .subtitle
         One week ago
 
     .minor.fourweeksago
       .title
-        = number @retention[:four_weeks]
+        = format_number @retention[:four_weeks]
       .subtitle
         Four weeks ago
