@@ -57,8 +57,7 @@
             Vanity.retention_graph('.acquisition .chart').plot(#{@acquisition[:chart]}); 
           })
           
-
-    %tr#metric_web_landing.activation
+    %tr.activation
       %td.category
         .title Activation
         .sub_title
@@ -66,39 +65,55 @@
           %br
           ((signed in, created 3 tasks, completed 1, used 1 week)
       %td
-        .big_num 2.44 K
-      %td.down -1.2%
+        .big_num= number @activation[:total]
+      %td(class="#{@activation[:delta].to_f < 0 ? 'down' : 'up'}")
+        = percent @activation[:delta]
       %td.chart_cell
-        .chart show 3 month trend on big numbers
-
-    %tr.retention{:id => ""}
+        .chart
+        :javascript
+          $(function() { 
+            Vanity.retention_graph('.activation .chart').plot(#{@activation[:chart]}); 
+          })
+          
+    %tr.retention
       %td.category
         .title Retention
-        .sub_title # of Activated users who used Astrid
+        .sub_title Active & activated users
       %td
-        .big_num 2.44 K
-      %td.up 2.4%
+        .big_num= number @retention[:total]
+      %td(class="#{@retention[:delta].to_f < 0 ? 'down' : 'up'}")
+        = percent @retention[:delta]
       %td.chart_cell
-        .chart show 3 month trend on big numbers
-    %tr.referral{:id => ""}
+        .chart
+        :javascript
+          $(function() { 
+            Vanity.retention_graph('.retention .chart').plot(#{@retention[:chart]}); 
+          })
+
+    %tr.referral
       %td.category
         .title Referral
         .sub_title # NM shared to
       %td
-        .big_num 943
+        .big_num= number @referral[:total]
         .small_num
-          %span Web: 233
-          %span iOS: 2422
-          %span Android: 135
-      %td.up 2.4%
+          - @clients.each do |client|
+            %span #{client.capitalize}: #{number @referral[:by_client][client]}
+      %td(class="#{@referral[:delta].to_f < 0 ? 'down' : 'up'}")
+        = percent @referral[:delta]
       %td.chart_cell
-        .chart show 3 month trend on big numbers
-    %tr.revenue{:id => ""}
+        .chart
+        :javascript
+          $(function() { 
+            Vanity.retention_graph('.referral .chart').plot(#{@referral[:chart]}); 
+          })
+
+    %tr.revenue
       %td.category
         .title Revenue
         .sub_title # of Premium Subscribers
       %td
-        .big_num 600
-      %td.up 2.4%
+        .big_num -
+      %td.up -
       %td.chart_cell
-        .chart show 3 month trend on big numbers
+        .chart 
