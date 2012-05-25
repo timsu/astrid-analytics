@@ -27,21 +27,32 @@ class ApiController < ApplicationController
   ################################################################# DASHBOARD API
 
   def acquisition
-    render :json => { :status => "Not Implemented" }
+    time_key = Time.now.strftime "%Y-%m-%dT%H"
+    $redis.sadd "acq:#{@account}:days", Date.today
+    $redis.incrby "acq:#{@account}:#{@client}:#{Date.today}", 1
+    $redis.incrby "acq:#{@account}:#{@client}:#{time_key}", 1
+    $redis.expire "acq:#{@account}:#{time_key}", 3.weeks.to_i
+
+    render :json => { :status => "Success" }
   end
 
   def activation
-    render :json => { :status => "Not Implemented" }
+    time_key = Time.now.strftime "%Y-%m-%dT%H"
+    $redis.sadd "atv:#{@account}:days", Date.today
+    $redis.incrby "atv:#{@account}:#{Date.today}", 1
+    $redis.incrby "atv:#{@account}:#{time_key}", 1
+    $redis.expire "atv:#{@account}:#{time_key}", 3.weeks.to_i
+
+    render :json => { :status => "Success" }
   end
 
   def retention
     return ab_retention if @api == 1
     raise ApiError, "Parameter required: 'user_id'" if params[:user_id].blank?
 
-    date_key = Date.today.to_s
     time_key = Time.now.strftime "%Y-%m-%dT%H"
     $redis.sadd "ret:#{@account}:days", Date.today
-    $redis.sadd "ret:#{@account}:#{date_key}", params[:user_id]
+    $redis.sadd "ret:#{@account}:#{Date.today}", params[:user_id]
     $redis.sadd "ret:#{@account}:#{time_key}", params[:user_id]
     $redis.expire "ret:#{@account}:#{time_key}", 3.weeks.to_i
 
@@ -49,7 +60,13 @@ class ApiController < ApplicationController
   end
 
   def referral
-    render :json => { :status => "Not Implemented" }
+    time_key = Time.now.strftime "%Y-%m-%dT%H"
+    $redis.sadd "rfr:#{@account}:days", Date.today
+    $redis.incrby "rfr:#{@account}:#{@client}:#{Date.today}", 1
+    $redis.incrby "rfr:#{@account}:#{@client}:#{time_key}", 1
+    $redis.expire "rfr:#{@account}:#{time_key}", 3.weeks.to_i
+
+    render :json => { :status => "Success" }
   end
 
   def revenue
