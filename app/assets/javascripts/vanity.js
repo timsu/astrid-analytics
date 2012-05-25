@@ -4,10 +4,10 @@ Vanity.tooltip = function(event, pos, item) {
   if (item) {
     if (this.previousPoint != item.datapoint) {
       this.previousPoint = item.datapoint;
-      $("#tooltip").remove();
+      $(".tooltip").remove();
       var y = item.datapoint[1].toFixed(2);
       var dt = new Date(parseInt(item.datapoint[0], 10));
-      $('<div id="tooltip">' + dt.getUTCFullYear() + '-' + (dt.getUTCMonth() + 1) + '-' + dt.getUTCDate() + "<br>" + 
+      $('<div class="tooltip">' + dt.getUTCFullYear() + '-' + (dt.getUTCMonth() + 1) + '-' + dt.getUTCDate() + "<br>" + 
         "<b>" + item.series.label + "</b>: " + y + '</div>').css( {
         position: 'absolute', display: 'none',
         top: item.pageY + 5, left: item.pageX + 5 - 100,
@@ -15,12 +15,12 @@ Vanity.tooltip = function(event, pos, item) {
       }).appendTo("body").fadeIn(200);
     }
   } else {
-    $("#tooltip").remove();
+    $(".tooltip").remove();
     this.previousPoint = null;            
   }
 }
 
-Vanity.retention_graph = function(id, min, max) {
+Vanity.retention_graph = function(id) {
   var metric = {};
   metric.chart = $(id);
   metric.markings = [];
@@ -36,7 +36,6 @@ Vanity.retention_graph = function(id, min, max) {
 
   metric.options = {
     xaxis:  { mode: "time", ticks: date_ticks },
-    yaxis:  { ticks: [min, max] },
     series: { lines: { show: true, lineWidth: 2, fill: false, fillColor: { colors: ["#000", "#555"] } },
               points: { show: false, radius: 1 }, shadowSize: 0 },
     colors: ["#f8b144"],
@@ -45,9 +44,15 @@ Vanity.retention_graph = function(id, min, max) {
   };
 
   metric.plot = function(lines) {
+    var min = 0, max = 0;
     $.each(lines, function(i, line) {
-      $.each(line.data, function(i, pair) { pair[0] = Date.parse(pair[0]) })
+      $.each(line.data, function(i, pair) { 
+        pair[0] = Date.parse(pair[0]) 
+        max = Math.max(max, pair[1]);
+        min = Math.min(min, pair[1]);
+      });
     });
+    metric.options.yaxis = { ticks: [min, max] };
     var plot = $.plot(metric.chart, lines, metric.options);
     metric.chart.bind("plothover", Vanity.tooltip);
     metric.chart.data('plot', plot);

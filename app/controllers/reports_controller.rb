@@ -8,38 +8,24 @@ class ReportsController < ApplicationController
     @account = params[:account]
     @account_data = JSON.parse($redis.get "#{@account}:data")
 
-    now = Time.now
-
-    # build up user id union from hours today & 7 days ago + middle 5 days
-    sets =
-      (0..now.hour - 1).map { |i| Date.today.to_s + "T#{i}" } +
-      (now.hour..23).map { |i| (Date.today - 7).to_s + "T#{i}" } +
-      (1..6).map { |i| (Date.today - i).to_s }
-    keys = sets.map { |date| "ret:#{@account}:#{date}" }
-    @today = $redis.sunionstore(*["#{@account}:retention:result"] + keys)
+    @retention = retention_read
 
     # build up user id union for minor graphs
-    @yesterday = week_retention now - 1.day
-    @last_week = week_retention now - 7.day
-    @four_weeks_ago = week_retention now - 28.day
+    @retention[:last_week] = week_retention Time.now - 7.day
+    @retention[:four_weeks] = week_retention Time.now - 28.day
+  end
 
-    # build chart
-    chart_dates = (-30..-1).map { |i| Date.today + i }
-    chart_result_keys = chart_dates.map { |date| "ret:#{@account}:dayret:#{date}" }
-    chart_result_values = $redis.mget *chart_result_keys
-    chart_dates.each_with_index do |date, i|
-      if chart_result_values[i].nil?
-        count = $redis.scard "ret:#{@account}:#{date}"
-        $redis.set "ret:#{@account}:dayret:#{date}", count
-        chart_result_values[i] = count
-      end
-    end
+  def pirate
+    @account = params[:account]
+    @account_data = JSON.parse($redis.get "#{@account}:data")
+    
+    apikeys = $redis.smembers "#{@account}:apikeys"
+    @clients = apikeys.map { |apikey| JSON.parse($redis.get("apikeys:" + apikey))[1] }
 
-    @min = 0
-    @max = chart_result_values.max.to_i + 1
-    @chart = [{ :label => "# of users",
-                :data => chart_dates.map { |date| date.to_time.httpdate }.zip(chart_result_values)
-              }].to_json
+    @acquisition = pirate_read "acq", true
+    @activation = pirate_read "atv"
+    @retention = retention_read
+    @referral = pirate_read "rfr", true
   end
 
   def ab
@@ -204,7 +190,7 @@ class ReportsController < ApplicationController
   protected
   def week_retention(time)
     date = time.to_date
-    key = "ret:#{@account}:weekret:#{date}"
+    key = "ret:#{@account}:weekval:#{date}"
     if $redis.exists key
       $redis.get key
     else
@@ -213,7 +199,84 @@ class ReportsController < ApplicationController
       count = $redis.sunionstore(*["#{@account}:retention:result"] + keys)
       $redis.set key, count
       count
+    end.to_i
+  end
+
+  # read dashboard stats for retention, where keys are sets
+  protected
+  def retention_read
+    now = Time.now
+
+    # build up user id union from hours today & 7 days ago + middle 5 days
+    sets =
+      (0..now.hour - 1).map { |i| Date.today.to_s + "T%02d" % i } +
+      (now.hour..23).map { |i| (Date.today - 7).to_s + "T%02d" % i } +
+      (1..6).map { |i| (Date.today - i).to_s }
+    keys = sets.map { |date| "ret:#{@account}:#{date}" }
+    total = $redis.sunionstore(*["#{@account}:retention:result"] + keys).to_i
+
+    # build up user id union for minor graphs
+    yesterday = week_retention now - 1.day
+    p "#{yesterday.class} and #{total.class}"
+    delta = yesterday == 0 ? "-" : (100.to_f * total / yesterday - 100)
+
+    # build chart
+    chart_dates = (-30..-1).map { |i| Date.today + i }
+    chart_result_keys = chart_dates.map { |date| "ret:#{@account}:dayval:#{date}" }
+    chart_result_values = $redis.mget *chart_result_keys
+    chart_dates.each_with_index do |date, i|
+      if chart_result_values[i].nil?
+        count = $redis.scard "ret:#{@account}:#{date}"
+        $redis.set "ret:#{@account}:dayval:#{date}", count
+        chart_result_values[i] = count
+      elsif chart_result_values[i].class != Fixnum
+        chart_result_values[i] = chart_result_values[i].to_i
+      end
     end
+
+    chart = [{ :label => "# of users",
+               :data => chart_dates.map { |date| date.to_time.httpdate }.zip(chart_result_values)
+             }].to_json
+    
+    { :yesterday => yesterday, :total => total, :delta => delta, :chart => chart }
+  end
+  
+  # read dashboard stats where keys are just numbers
+  protected
+  def pirate_read(stat, split_client = false)
+    now = Time.now
+    
+    sets = (0..now.hour - 1).map { |i| Date.today.to_s + "T%02d" % i } +
+      (now.hour..23).map { |i| (Date.today - 7).to_s + "T%02d" % i } +
+      (1..6).map { |i| (Date.today - i).to_s }
+
+    if split_client
+      by_client = @clients.reduce({}) do |data, client|
+        keys = sets.map { |date| "#{stat}:#{@account}:#{client}:#{date}" }
+        data[client] = $redis.mget(*keys).compact.map(&:to_i).sum
+        data
+      end
+      total = by_client.values.sum
+    else
+      keys = sets.map { |date| "#{stat}:#{@account}:#{date}" }
+      total = $redis.mget(*keys).compact.map(&:to_i).sum
+    end
+
+    sets = (1..7).map { |i| (Date.today - i).to_s }
+    keys = sets.map { |date| "#{stat}:#{@account}:#{date}" }
+    yesterday = $redis.mget(*keys).compact.map(&:to_i).sum
+
+    delta = yesterday == 0 ? "-" : 100.to_f * total / yesterday - 100
+
+    chart_dates = (-30..-1).map { |i| Date.today + i }
+    keys = chart_dates.map { |date| "#{stat}:#{@account}:#{date}" }
+    chart_result_values = $redis.mget(*keys).map { |value| value || 0 }
+    chart = [{ :label => "# of users",
+               :data => chart_dates.map { |date| date.to_time.httpdate }.zip(chart_result_values)
+             }].to_json
+
+    { :by_client => by_client, :yesterday => yesterday, :total => total,
+      :delta => delta, :chart => chart }
   end
   
   protected

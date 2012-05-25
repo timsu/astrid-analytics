@@ -1,3 +1,5 @@
+- content_for(:title, "Retention Dashboard - #{Time.now}")
+
 :css
   body { color: white; background: black; text-align: center; font-family: "Eurostile", "Futura", "Courier New", monospace }
   .env { color: #bef }
@@ -10,14 +12,14 @@
   .oneweekago { color: #aaa }
   .fourweeksago { color: #888 }
   #retention_chart { width: 510px; height: 320px; margin: 15px 30px; }
-  #tooltip { color: black }
+  .tooltip { color: black }
   .marking.label { position: absolute; bottom: 2em; color: #c66; font-size: 80% }
   .ticklabel { font-size: 16px; color: #333; position: absolute; margin-right: 50px }
 
 .row
   .span12.main
     .title
-      = number_to_human @today, :units => {:unit => "", :thousand => "K", :million => "M"}
+      = number @retention[:total]
     .subtitle
       \# of activated users on
       %span.env= @account_data["name"]
@@ -28,24 +30,24 @@
     #retention_chart
     :javascript
       $(function() { 
-        Vanity.retention_graph('#retention_chart',#{@min},#{@max}).plot(#{@chart}); 
+        Vanity.retention_graph('#retention_chart').plot(#{@retention[:chart]}); 
       })
 
   .span3
     .minor.yesterday
       .title
-        = number_to_human @yesterday, :units => {:unit => "", :thousand => "K", :million => "M"}
+        = number @retention[:yesterday]
       .subtitle
         Yesterday
 
     .minor.oneweekago
       .title
-        = number_to_human @last_week, :units => {:unit => "", :thousand => "K", :million => "M"}
+        = number @retention[:last_week]
       .subtitle
         One week ago
 
     .minor.fourweeksago
       .title
-        = number_to_human @four_weeks_ago, :units => {:unit => "", :thousand => "K", :million => "M"}
+        = number @retention[:four_weeks]
       .subtitle
         Four weeks ago

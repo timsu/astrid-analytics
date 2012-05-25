@@ -1,0 +1,104 @@
+- content_for(:title, "Pirate Dashboard - #{Time.now}")
+
+:css
+  body { background: black; color: white; }
+  .container { width: auto }
+  div { line-height: normal }
+  table { width: 100%; text-align: center; margin-top: 20px }
+  td { padding: 35px 15px; vertical-align:top;}
+  tr.header td { font-size: 24px; font-weight: bold; color: white } 
+  td { text-align: center; font-size: 76px }
+  tr.header td { padding: 0 0 10px 0 }
+  tr.acquisition { color:#ffff44; }
+  tr.activation { color:#88eeff; }
+  tr.retention { color:#ee88ff; }
+  tr.referral { color:#ff8888; }
+  tr.revenue { color:#88ff88; }
+  span {padding: 0; margin:0px 5px}
+  .title, .big_num { text-align: center; margin: 0px }
+  .sub_title, .small_num {font-size: 26px; text-align: center }
+  .up { color: green }
+  .down { color: red }
+  tr.first td { border-top: 1px solid white }
+  td.chart_cell { padding: 0 }
+  .tooltip { color: black }
+  .chart { width:400px; height: 75px; margin-left: 100px; font-size: 26px }
+  .legend { float: left; width:20%; padding-right: 1em; overflow: hidden }
+  .marking.label { position: absolute; bottom: 2em; color: #c66; font-size: 80% }
+  .ticklabel { font-size: 16px; color: #333; position: absolute; margin-right: 50px }
+
+%table{:cellspacing => "0"}
+  %colgroup
+    %col
+    %col
+    %col
+  %tbody
+    %tr.header
+      %td Category
+      %td # in last 168 hrs
+      %td % change in last 24 hrs
+      %td Trend
+
+    %tr.acquisition
+      %td.category
+        .title Acquisition
+        .sub_title First time on app/site
+      %td
+        .big_num= number @acquisition[:total]
+        .small_num
+          - @clients.each do |client|
+            %span #{client.capitalize}: #{number @acquisition[:by_client][client]}
+      %td(class="#{@acquisition[:delta].to_f < 0 ? 'down' : 'up'}")
+        = percent @acquisition[:delta]
+      %td.chart_cell
+        .chart
+        :javascript
+          $(function() { 
+            Vanity.retention_graph('.acquisition .chart').plot(#{@acquisition[:chart]}); 
+          })
+          
+
+    %tr#metric_web_landing.activation
+      %td.category
+        .title Activation
+        .sub_title
+          Users who activated
+          %br
+          ((signed in, created 3 tasks, completed 1, used 1 week)
+      %td
+        .big_num 2.44 K
+      %td.down -1.2%
+      %td.chart_cell
+        .chart show 3 month trend on big numbers
+
+    %tr.retention{:id => ""}
+      %td.category
+        .title Retention
+        .sub_title # of Activated users who used Astrid
+      %td
+        .big_num 2.44 K
+      %td.up 2.4%
+      %td.chart_cell
+        .chart show 3 month trend on big numbers
+    %tr.referral{:id => ""}
+      %td.category
+        .title Referral
+        .sub_title # NM shared to
+      %td
+        .big_num 943
+        .small_num
+          %span Web: 233
+          %span iOS: 2422
+          %span Android: 135
+      %td.up 2.4%
+      %td.chart_cell
+        .chart show 3 month trend on big numbers
+    %tr.revenue{:id => ""}
+      %td.category
+        .title Revenue
+        .sub_title # of Premium Subscribers
+      %td
+        .big_num 600
+      %td.up 2.4%
+      %td.chart_cell
+        .chart show 3 month trend on big numbers

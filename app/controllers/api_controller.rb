@@ -29,8 +29,9 @@ class ApiController < ApplicationController
   def acquisition
     time_key = Time.now.strftime "%Y-%m-%dT%H"
     $redis.sadd "acq:#{@account}:days", Date.today
-    $redis.incrby "acq:#{@account}:#{@client}:#{Date.today}", 1
-    $redis.incrby "acq:#{@account}:#{@client}:#{time_key}", 1
+    $redis.incr "acq:#{@account}:#{@client}:#{Date.today}"
+    $redis.incr "acq:#{@account}:#{Date.today}"
+    $redis.incr "acq:#{@account}:#{@client}:#{time_key}"
     $redis.expire "acq:#{@account}:#{time_key}", 3.weeks.to_i
 
     render :json => { :status => "Success" }
@@ -39,8 +40,8 @@ class ApiController < ApplicationController
   def activation
     time_key = Time.now.strftime "%Y-%m-%dT%H"
     $redis.sadd "atv:#{@account}:days", Date.today
-    $redis.incrby "atv:#{@account}:#{Date.today}", 1
-    $redis.incrby "atv:#{@account}:#{time_key}", 1
+    $redis.incr "atv:#{@account}:#{Date.today}"
+    $redis.incr "atv:#{@account}:#{time_key}"
     $redis.expire "atv:#{@account}:#{time_key}", 3.weeks.to_i
 
     render :json => { :status => "Success" }
@@ -62,8 +63,9 @@ class ApiController < ApplicationController
   def referral
     time_key = Time.now.strftime "%Y-%m-%dT%H"
     $redis.sadd "rfr:#{@account}:days", Date.today
-    $redis.incrby "rfr:#{@account}:#{@client}:#{Date.today}", 1
-    $redis.incrby "rfr:#{@account}:#{@client}:#{time_key}", 1
+    $redis.incr "rfr:#{@account}:#{@client}:#{Date.today}"
+    $redis.incr "rfr:#{@account}:#{Date.today}"
+    $redis.incr "rfr:#{@account}:#{@client}:#{time_key}"
     $redis.expire "rfr:#{@account}:#{time_key}", 3.weeks.to_i
 
     render :json => { :status => "Success" }
@@ -108,7 +110,7 @@ class ApiController < ApplicationController
 
       days.each do |day|
         $redis.sadd "#{@account}:#{test}:days", day
-        $redis.incrby "#{@account}:#{test}:#{variant}:#{new_activated}:#{day}:#{date}", 1
+        $redis.incr "#{@account}:#{test}:#{variant}:#{new_activated}:#{day}:#{date}"
       end
     end
 
@@ -145,7 +147,7 @@ class ApiController < ApplicationController
 
     @api = params[:version].to_i
     if @api > 0 and @api != API_VERSION
-      $redis.incrby "deprecated:#{@api}:#{Date.today}", 1
+      $redis.incr "deprecated:#{@api}:#{Date.today}"
     end
   end
 
