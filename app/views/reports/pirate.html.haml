@@ -5,6 +5,7 @@
   .container { width: auto }
   div { line-height: normal }
   table { width: 90%; text-align: center; margin: 20px auto }
+  .env { color: #bef }
   td { padding: 35px 15px; vertical-align:top;}
   tr.header td { font-size: 24px; font-weight: bold; color: white } 
   td { text-align: center; font-size: 76px }
@@ -30,7 +31,7 @@
   @media all and (max-width: 1440px) {
     tr.header td { font-size: 14px }
     td { font-size: 48px }
-    .sub_title, .small_num { font-size: 20px }
+    .sub_title, .small_num { font-size: 14px }
     .chart { font-size: 18px; width: 250px; height: 125px }
   }
 
@@ -41,7 +42,9 @@
     %col
   %tbody
     %tr.header
-      %td Category
+      %td 
+        Environment:
+        %span.env= @account_data["name"]
       %td # in last 168 hrs
       %td % change in last 24 hrs
       %td Trend
@@ -70,7 +73,7 @@
         .sub_title
           Users who activated
           %br
-          ((signed in, created 3 tasks, completed 1, used 1 week)
+          (signed up, age > 1 week, made 3 tasks, completed 1)
       %td
         .big_num= format_number @activation[:total]
       %td(class="#{@activation[:delta].to_f < 0 ? 'down' : 'up'}")
