@@ -14,8 +14,6 @@
 # so your final param might look like:
 #   app_id=1&title=baz&tag[]=foo&tag[]=bar&time=1297216408&sig=c7e14a38df42...
 #
-# SSEUTC <= seconds since epoch, UTC
-#
 class ApiController < ApplicationController
 
   API_VERSION = 2
@@ -26,6 +24,10 @@ class ApiController < ApplicationController
   
   ################################################################# DASHBOARD API
 
+  # api/acquisition - record aquisition event
+  #
+  # No parameters are required for this call. Please make sure to
+  # send this only once for each new user
   def acquisition
     time_key = Time.now.strftime "%Y-%m-%dT%H"
     $redis.sadd "acq:#{@account}:days", Date.today
@@ -37,6 +39,10 @@ class ApiController < ApplicationController
     render :json => { :status => "Success" }
   end
 
+  # api/activation - record activation event
+  #
+  # No parameters are requried for this call. Please make sure to
+  # send this only once for each activated user
   def activation
     time_key = Time.now.strftime "%Y-%m-%dT%H"
     $redis.sadd "atv:#{@account}:days", Date.today
@@ -47,6 +53,12 @@ class ApiController < ApplicationController
     render :json => { :status => "Success" }
   end
 
+  # api/retention - record retention event
+  #
+  # Parameters:
+  #   user_id - unique user identifier for calculating unique retention
+  #
+  # The minimum reporting threshold for this API is once per hour per user.
   def retention
     return ab_retention if @api == 1
     raise ApiError, "Parameter required: 'user_id'" if params[:user_id].blank?
@@ -60,6 +72,11 @@ class ApiController < ApplicationController
     render :json => { :status => "Success" }
   end
 
+  # api/referral - record referral event
+  #
+  # No parameters are requried for this call. Please make sure to
+  # send this only once for each unique non-user who receives an
+  # invitation from the system.
   def referral
     time_key = Time.now.strftime "%Y-%m-%dT%H"
     $redis.sadd "rfr:#{@account}:days", Date.today
@@ -71,8 +88,32 @@ class ApiController < ApplicationController
     render :json => { :status => "Success" }
   end
 
+  # api/revenue - record revenue event
+  #
+  # Parameters
+  #   delta - record a change in the # of paid users
+  #   total - record the total # of paid users
+  #   (one of delta or total is required)
+  #
+  # If new subscriptions occur often, you can use the delta parameter
+  # to send the number of new or removed subscriptions. To initialize
+  # the count, or if subscription events are not visible to your system,
+  # you can send the total.
   def revenue
-    render :json => { :status => "Not Implemented" }
+    time_key = Time.now.strftime "%Y-%m-%dT%H"
+    raise ApiError, "Parameter required: 'delta' or 'total" unless params[:delta] or params[:total]
+    raise ApiError, "Please send only one of: 'delta' or 'total" if params[:delta] and params[:total]
+
+    $redis.sadd "rvn:#{@account}:days", Date.today
+    if params[:total]    
+      $redis.set "rvn:#{@account}:#{Date.today}", params[:total].to_i
+    elsif params[:delta]
+      keys = (0..30).map { |i| "rvn:#{@account}:#{Date.today - i}" }
+      current = $redis.mget(*keys).compact.first || 0
+      $redis.set "rvn:#{@account}:#{Date.today}", current + params[:delta].to_i
+    end
+
+    render :json => { :status => "Success" }
   end
 
   ################################################################# AB TEST API

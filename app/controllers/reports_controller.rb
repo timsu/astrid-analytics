@@ -26,6 +26,7 @@ class ReportsController < ApplicationController
     @activation = pirate_read "atv"
     @retention = retention_read
     @referral = pirate_read "rfr", true
+    @revenue = revenue_read
   end
 
   def ab
@@ -241,6 +242,38 @@ class ReportsController < ApplicationController
     { :yesterday => yesterday, :total => total, :delta => delta, :chart => chart }
   end
   
+  # read dashboard stats where keys are current totals
+  protected
+  def revenue_read
+    now = Time.now
+
+    dates = (-30..0).map { |i| Date.today + i }
+    keys = dates.map { |date| "rvn:#{@account}:#{date}" }
+
+    last = 0
+    data = keys.zip($redis.mget(*keys)).map do |data|
+      if data.last
+        last = data.last.to_i
+      else
+        $redis.set data.first, last
+        last
+      end
+    end
+    p data
+
+    total = last
+    yesterday = data[-2]
+    delta = yesterday == 0 ? "-" : 100.to_f * total / yesterday - 100
+
+    chart_dates = dates[0..-2]
+    chart_result_values = data[0..-2]
+    chart = [{ :label => "# of users",
+               :data => chart_dates.map { |date| date.to_time.httpdate }.zip(chart_result_values)
+             }].to_json
+
+    { :yesterday => yesterday, :total => total, :delta => delta, :chart => chart }
+  end
+    
   # read dashboard stats where keys are just numbers
   protected
   def pirate_read(stat, split_client = false)
