@@ -124,6 +124,9 @@
         .sub_title # of Premium Subscribers
       %td
         .big_num= format_number @revenue[:total]
+        .small_num
+          = number_to_currency Admin::REV_PRICE * @revenue[:total]
+          per annum
       %td(class="#{@revenue[:delta].to_f < 0 ? 'down' : 'up'}")
         = format_percent @revenue[:delta]
       %td.chart_cell
