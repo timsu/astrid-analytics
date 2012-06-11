@@ -127,6 +127,7 @@ class ApiController < ApplicationController
     @payload.each do |event|
       test = event["test"]
       raise ApiError, "Valid parameter required: 'test'" unless test.class == String
+      test = test.gsub(/\s/, "_")
       $redis.sadd "#{@account}:tests", test
 
       variant = event["variant"]

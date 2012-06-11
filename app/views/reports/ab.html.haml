@@ -46,6 +46,12 @@
       function() { window.location.reload(); })
   });
 
+  $(document).on("click", "[data-edit=filter]", function() {
+    var test = $(this).parents(".row");
+    $(".form-filter", test).toggle();
+    return false;
+  });
+
 .row
   .span12
     .page-header
@@ -63,10 +69,13 @@
   - test_data = @test_data[test]
   .row(data-test="#{test}")
     .span12.well
+      %a(name="#{test}")
 
       .pull-right
         %a(href="#" title="Edit Description" data-edit="description")
           %i.icon-pencil
+        %a(href="#" title="Select Displayed Columns" data-edit="filter")
+          %i.icon-th-list
         %a(href="#" title="Archive This Test" data-edit="archive")
           %i.icon-trash
 
@@ -74,12 +83,35 @@
         = test
         %small.description= test_data[:description]
 
+      = form_tag "/admin/edit_test", :method => :post, :class => "alert alert-info form-filter form-inline hide" do
+        %div(style="float: right")
+          = submit_tag "Save", :class => "btn btn-mini btn-success"
+          %button.btn.btn-mini.btn-cancel(data-edit="filter") Cancel
+        %strong Show Columns:
+        = hidden_field_tag :test, test
+        = hidden_field_tag :account, @account
+        %label.checkbox
+          = check_box_tag "filter[new]", "yes", test_data[:user_groups].include?(:new)
+          New Users
+        %label.checkbox
+          = check_box_tag "filter[ea]", "yes", test_data[:user_groups].include?(:ea)
+          Existing Activated
+        %label.checkbox
+          = check_box_tag "filter[eu]", "yes", test_data[:user_groups].include?(:eu)
+          Existing Unactivated
+
       %table.table
         %thead
           %tr
             %th(colspan=1) Launched: #{test_data[:dates].first}
-            %th(colspan="#{test_data[:days].length}") New Users
-            %th(colspan="#{test_data[:days].length}") Existing Activated
+            - test_data[:user_groups].each do |user_state|
+              %th(colspan="#{test_data[:days].length}") 
+                - if user_state == :new
+                  New Users
+                - elsif user_state == :ea
+                  Existing Activated
+                - elsif user_state == :eu
+                  Existing Unactivated
 
         - test_data[:variants].each do |variant|
           - variant_data = @variant_data[test][variant]
@@ -92,24 +124,22 @@
               - else
                 %a(href="#" title="Choose this variant as Null Hypothesis" data-edit="null_variant")
                   %i.icon-flag
-            - test_data[:days].each do |day|
-              %td(data-day="#{day}") +#{day}
-            - test_data[:days].each do |day|
-              %td(data-day="#{day}") +#{day}
-
+            - test_data[:user_groups].each do |user_state|
+              - test_data[:days].each do |day|
+                %td(data-day="#{day}") +#{day}
           %tr
             %td Total opened x days ago
-            - [:new, :old].each do |user_state|
+            - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:total]
           %tr
             %td Opened x days after first open
-            - [:new, :old].each do |user_state|
+            - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:opened]
           %tr
             %td % Retained
-            - [:new, :old].each do |user_state|
+            - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")
                   - if variant_data[user_state][day][:total] == 0
@@ -120,14 +150,13 @@
         - result_data = @variant_data[test][:summary]
         %tr.results
           %td Results
-          - test_data[:days].each do |day|
-            %td(data-day="#{day}") +#{day}
-          - test_data[:days].each do |day|
-            %td(data-day="#{day}") +#{day}
+          - test_data[:user_groups].each do |user_state|
+            - test_data[:days].each do |day|
+              %td(data-day="#{day}") +#{day}
 
           %tr
             %td Delta retention (%)
-            - [:new, :old].each do |user_state|
+            - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}" class="#{result_data[user_state][day][:plusminus]}")
                   = number_with_precision result_data[user_state][day][:delta]
@@ -135,17 +164,17 @@
                     (#{number_to_percentage result_data[user_state][day][:percent], :precision => 0})
           %tr
             %td &Chi;&sup2; Value
-            - [:new, :old].each do |user_state|
+            - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= number_with_precision result_data[user_state][day][:chisq]
           %tr
             %td P-Value
-            - [:new, :old].each do |user_state|
+            - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= number_with_precision result_data[user_state][day][:chisqp]
           %tr.significance
             %td Significant to 95%?
-            - [:new, :old].each do |user_state|
+            - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= result_data[user_state][day][:chisqsig]
 

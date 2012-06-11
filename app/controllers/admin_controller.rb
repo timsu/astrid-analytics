@@ -81,7 +81,15 @@ class AdminController < ApplicationController
     $redis.srem "#{account}:archived", test if params[:unarchive]
     $redis.set "#{account}:#{test}:null_variant", params[:null_variant] if params[:null_variant]
 
-    render :json => {}
+    if params[:filter]
+      $redis.set "#{account}:#{test}:user_groups", params[:filter].keys.compact
+    end
+
+    respond_to do |format|
+      format.js   { render :json => {} }
+      format.json { render :json => {} }
+      format.html { redirect_to "/reports/#{account}/ab" }
+    end
   end
   
 end

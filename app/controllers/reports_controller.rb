@@ -46,8 +46,10 @@ class ReportsController < ApplicationController
       dates = dates.map { |date| Date.parse(date) }.sort
       description = $redis.get("#{@account}:#{test}:description")
       null_variant = $redis.get("#{@account}:#{test}:null_variant")
+      user_groups = $redis.get("#{@account}:#{test}:user_groups")
 
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
+      user_groups = user_groups ? JSON.parse(user_groups).map(&:to_sym) : [:new, :ea]
       
       result[test] = {
         :variants => variants,
@@ -55,6 +57,7 @@ class ReportsController < ApplicationController
         :dates => dates,
         :description => description,
         :null_variant => null_variant,
+        :user_groups => user_groups
       }
       result
     end
@@ -68,6 +71,7 @@ class ReportsController < ApplicationController
       dates = data[:dates]
       days = data[:days]
       null_variant = data[:null_variant]
+      user_groups = data[:user_groups]
 
       test_results = {}
 
@@ -75,7 +79,7 @@ class ReportsController < ApplicationController
       variants.each do |variant|
         variant_results = {}
 
-        [:new, :old].each do |user_status|
+        user_groups.each do |user_status|
           user_results = {}
           
           days.each do |day|
@@ -114,7 +118,7 @@ class ReportsController < ApplicationController
 
       # compute summary
       test_results[:summary] = {}
-      [:new, :old].each do |user_status|
+      user_groups.each do |user_status|
         user_results = {}
         
         days.each do |day|
@@ -318,8 +322,10 @@ class ReportsController < ApplicationController
       if user_status == :new
         r += ["#{@account}:#{test}:#{variant}:nu:#{day}:#{date}",
               "#{@account}:#{test}:#{variant}:na:#{day}:#{date}"]
-      else
+      elsif user_status == :ea
         r += ["#{@account}:#{test}:#{variant}:oa:#{day}:#{date}"]
+      elsif user_status == :eu
+        r += ["#{@account}:#{test}:#{variant}:ou:#{day}:#{date}"]
       end
       r
     end
