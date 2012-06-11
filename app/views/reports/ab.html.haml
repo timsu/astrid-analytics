@@ -35,20 +35,20 @@
     var parent = $(this).parents(".row");
     $.post("/admin/edit_test", 
       { test: parent.data("test"), account: '#{@account}', unarchive: true },
-      function() { window.location.reload(); })      
+      function() { window.location.hash = "#" + parent.data("test"); window.location.reload(); });
   });
 
   $(document).on("click", "[data-edit=null_variant]", function() {
-    var test = $(this).parents(".row");
+    var parent = $(this).parents(".row");
     var variant = $(this).parents(".variant");
     $.post("/admin/edit_test", 
-      { test: test.data("test"), account: '#{@account}', null_variant: variant.data("variant") },
-      function() { window.location.reload(); })
+      { test: parent.data("test"), account: '#{@account}', null_variant: variant.data("variant") },
+      function() { window.location.hash = "#" + parent.data("test"); window.location.reload(); });
   });
 
   $(document).on("click", "[data-edit=filter]", function() {
-    var test = $(this).parents(".row");
-    $(".form-filter", test).toggle();
+    var parent = $(this).parents(".row");
+    $(".form-filter", parent).toggle();
     return false;
   });
 

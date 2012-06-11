@@ -88,7 +88,7 @@ class AdminController < ApplicationController
     respond_to do |format|
       format.js   { render :json => {} }
       format.json { render :json => {} }
-      format.html { redirect_to "/reports/#{account}/ab" }
+      format.html { redirect_to "/reports/#{account}/ab", :anchor => test }
     end
   end
   
