@@ -35,7 +35,7 @@ class ReportsController < ApplicationController
 
     raise "Unknown account #{@account}" unless @account_data
 
-    @tests = $redis.smembers "#{@account}:tests"
+    @tests = $redis.smembers("#{@account}:tests").sort
     @archived = $redis.smembers "#{@account}:archived"
 
     @test_data = @tests.reduce({}) do |result, test|
