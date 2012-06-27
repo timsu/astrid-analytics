@@ -99,6 +99,12 @@
         %label.checkbox
           = check_box_tag "filter[eu]", "yes", test_data[:user_groups].include?(:eu)
           Existing Unactivated
+        %label.checkbox
+          = check_box_tag "filter[ref]", "yes", test_data[:user_groups].include?(:ref)
+          Referrals 
+        %label.checkbox
+          = check_box_tag "filter[rev]", "yes", test_data[:user_groups].include?(:rev)
+          Revenue and Premium Users
 
       %table.table
         %thead
@@ -162,21 +168,13 @@
                   = number_with_precision result_data[user_state][day][:delta]
                   - if result_data[user_state][day][:percent]
                     (#{number_to_percentage result_data[user_state][day][:percent], :precision => 0})
-          %tr
-            %td &Chi;&sup2; Value
-            - test_data[:user_groups].each do |user_state|
-              - test_data[:days].each do |day|
-                %td(data-day="#{day}")= number_with_precision result_data[user_state][day][:chisq]
-          %tr
-            %td P-Value
-            - test_data[:user_groups].each do |user_state|
-              - test_data[:days].each do |day|
-                %td(data-day="#{day}")= number_with_precision result_data[user_state][day][:chisqp]
           %tr.significance
             %td Significant to 95%?
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
-                %td(data-day="#{day}")= result_data[user_state][day][:chisqsig]
+                %td
+                  %span(data-day="#{day}")= result_data[user_state][day][:chisqsig]
+                  %span(data-day="#{day}") (= number_with_precision) result_data[user_state][day][:chisqp]
 
       %hr
 
