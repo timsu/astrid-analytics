@@ -172,9 +172,9 @@
             %td Significant to 95%?
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
-                %td
-                  %span(data-day="#{day}")= result_data[user_state][day][:chisqsig]
-                  %span(data-day="#{day}") (= number_with_precision) result_data[user_state][day][:chisqp]
+                %td(data-day="#{day}")
+                  %span= result_data[user_state][day][:chisqsig]
+                  %span= number_with_precision result_data[user_state][day][:chisqp]
 
       %hr
 
