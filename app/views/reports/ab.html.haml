@@ -133,16 +133,28 @@
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}") +#{day}
+              %td Ref
+              %td Ref sign up
+              %td Acq
+              %td Rev
           %tr
             %td Total opened x days ago
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:total]
+              %td= variant_data[:referral][:total]  
+              %td= variant_data[:signup][:total]
+              %td= variant_data[:acquisition][:total]
+              %td= variant_data[:revenue][:total]
           %tr
             %td Opened x days after first open
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:opened]
+              %td= variant_data[:referral][:referral]  
+              %td= variant_data[:signup][:signup]
+              %td= variant_data[:acquisition][:acquisition]
+              %td= variant_data[:revenue][:revenue]
           %tr
             %td % Retained
             - test_data[:user_groups].each do |user_state|
@@ -152,6 +164,10 @@
                     \-
                   - else 
                     = number_to_percentage variant_data[user_state][day][:retained]
+              %td= number_to_percentage variant_data[:referral][:percent]  
+              %td= number_to_percentage variant_data[:signup][:percent]
+              %td= number_to_percentage variant_data[:acquisition][:percent]
+              %td= number_to_percentage variant_data[:revenue][:percent]
 
         - result_data = @variant_data[test][:summary]
         %tr.results
