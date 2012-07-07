@@ -47,6 +47,11 @@ class ReportsController < ApplicationController
       description = $redis.get("#{@account}:#{test}:description")
       null_variant = $redis.get("#{@account}:#{test}:null_variant")
       user_groups = $redis.get("#{@account}:#{test}:user_groups")
+      
+      referral = { :referral => $redis.get("#{@account}:#{test}:rfr:referral").to_i }
+      signup = { :signup =>  $redis.get("#{@account}:#{test}:rfr:signup").to_i }
+      revenue = { :revenue => $redis.get("#{@account}:#{test}:rev:premium").to_i }
+      acquisition = { :acquisition => $redis.get("#{@account}:#{test}:acq:acquisition").to_i }
 
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
       user_groups = user_groups ? JSON.parse(user_groups).map(&:to_sym) : [:new, :ea]
@@ -57,7 +62,11 @@ class ReportsController < ApplicationController
         :dates => dates,
         :description => description,
         :null_variant => null_variant,
-        :user_groups => user_groups
+        :user_groups => user_groups,
+        :referral => referral,
+        :signup => signup,
+        :revenue => revenue,
+        :acquisition => acquisition
       }
       result
     end
@@ -72,6 +81,10 @@ class ReportsController < ApplicationController
       days = data[:days]
       null_variant = data[:null_variant]
       user_groups = data[:user_groups]
+      referral = data[:referral]
+      signup = data[:signup]
+      revenue = data[:revenue]
+      acquisition = data[:acquisition]
 
       test_results = {}
 
@@ -109,6 +122,12 @@ class ReportsController < ApplicationController
 
             user_results[day] = day_results
           end
+          total_users = user_results[0][:total]
+          
+          variant_results[:referral] =  map_percent_and_total(referral, :referral, total_users)
+          variant_results[:signup] =  map_percent_and_total(signup, :signup, referral[:referral])
+          variant_results[:revenue] =  map_percent_and_total(revenue, :revenue, total_users)
+          variant_results[:acquisition] =  map_percent_and_total(acquisition, :acquisition, total_users)
           
           variant_results[user_status] = user_results
         end
@@ -191,6 +210,12 @@ class ReportsController < ApplicationController
   end
   
   ################################################################# HELPERS
+  protected
+  def map_percent_and_total(hash, key, total_users)
+    hash[:total] = total_users
+    hash[:percent] = total_users > 0 ? hash[key]/total_users : 0
+    hash
+  end
 
   protected
   def week_retention(time)

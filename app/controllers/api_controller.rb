@@ -133,12 +133,12 @@ class ApiController < ApplicationController
       variant = event["variant"]
       raise ApiError, "Valid parameter required: 'variant'" unless variant.class == String
       $redis.sadd "#{@account}:#{test}:variants", variant
-
+      
       date = Date.today
       # clients send untrustworthy dates
       # date = Time.at(event["date"]).to_date if event["date"]
       $redis.sadd "#{@account}:#{test}:dates", date
-
+      
       new = event["new"]
       raise ApiError, "Valid parameter required: 'new'" unless new != nil
       activated = event["activated"]
@@ -159,8 +159,89 @@ class ApiController < ApplicationController
     render :json => { :status => "Success" }
   end
   
+  
+  def ab_referral      
+    raise ApiError, "Parameter required: 'payload'" if params[:payload].blank?
+    
+    @payload = JSON.parse(params[:payload])
+    @payload = [@payload] if @payload.instance_of? Hash
+
+    @payload.each do |event|
+      update_from_event(event)
+      test = event["test"]
+      if event["initial"]
+        $redis.incr "#{@account}:#{test}:rfr:total"
+      elsif event["referral"]
+        $redis.incr "#{@account}:#{test}:rfr:referral"
+      elsif event["signup"]
+        $redis.incr "#{@account}:#{test}:rfr:signup"
+      end 
+    end
+
+    render :json => { :status => "Success" }
+  end
+  
+  
+  def ab_revenue
+    raise ApiError, "Parameter required: 'payload'" if params[:payload].blank?
+    
+    @payload = JSON.parse(params[:payload])
+    @payload = [@payload] if @payload.instance_of? Hash
+
+    @payload.each do |event|
+      update_from_event(event)
+      test = event["test"]
+      if event["initial"]
+        $redis.incr "#{@account}:#{test}:rev:total"
+      elsif event["premium"]
+        $redis.incr "#{@account}:#{test}:rev:premium"
+      end
+    end
+
+    render :json => { :status => "Success" }
+  end
+  
+  def ab_acquisition
+    raise ApiError, "Parameter required: 'payload'" if params[:payload].blank?
+    
+    @payload = JSON.parse(params[:payload])
+    @payload = [@payload] if @payload.instance_of? Hash
+
+    @payload.each do |event|
+      update_from_event(event)
+      test = event["test"]
+      if event["initial"]
+        $redis.incr "#{@account}:#{test}:acq:total"
+      elsif event["signup"]
+        $redis.incr "#{@account}:#{test}:acq:signup"
+      end
+    end
+
+    render :json => { :status => "Success" }
+  end
+  
+  
   ################################################################# HELPERS
 
+  protected
+  def update_from_event(event)
+    test = event["test"]
+    raise ApiError, "Valid parameter required: 'test'" unless test.class == String
+    test = test.gsub(/\s/, "_")
+    $redis.sadd "#{@account}:tests", test
+
+    variant = event["variant"]
+    raise ApiError, "Valid parameter required: 'variant'" unless variant.class == String
+    $redis.sadd "#{@account}:#{test}:variants", variant
+
+    new = event["new"]
+    raise ApiError, "Valid parameter required: 'new'" unless new != nil
+    activated = event["activated"]
+    raise ApiError, "Valid parameter required: 'activated'" unless activated != nil
+
+    new_activated = (new ? "n" : "o") + (activated ? "a" : "u")
+  end
+  
   protected
   def render_error(e)
     raise e if e.class != ApiError 
