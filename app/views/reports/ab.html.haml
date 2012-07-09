@@ -9,6 +9,7 @@
   a[data-edit=null_variant] i { opacity: 0.3 }
   td[data-day] { text-align: center }
   td[data-day="0"] { border-left: 1px solid black }
+  .border_left { border-left: 1px solid black }
 
 :javascript
   $(document).on("click", "[data-edit=description]", function() {
@@ -100,11 +101,11 @@
           = check_box_tag "filter[eu]", "yes", test_data[:user_groups].include?(:eu)
           Existing Unactivated
         %label.checkbox
-          = check_box_tag "filter[ref]", "yes", test_data[:metrics].include?(:ref)
+          = check_box_tag "filter_metrics[ref]", "yes", test_data[:metrics].include?(:ref)
           Referrals 
         %label.checkbox
-          = check_box_tag "filter[rev]", "yes", test_data[:metrics].include?(:rev)
-          Revenue and Premium Users
+          = check_box_tag "filter_metrics[rev]", "yes", test_data[:metrics].include?(:rev)
+          Revenue
 
       %table.table
         %thead
@@ -118,12 +119,8 @@
                   Existing Activated
                 - elsif user_state == :eu
                   Existing Unactivated
-                - elsif user_state == :ref
-                  Referrals
-                - elsif user_state == :rev
-                  Revenue
             - test_data[:metrics].each do |metric|
-              %th(colspan="#{test_data[:days].length}") 
+              %th(colspan="#{2}") 
                 - if metric == :ref
                   Referrals
                 - elsif metric == :rev
@@ -143,28 +140,36 @@
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}") +#{day}
-            %td Ref
-            %td Ref sign up
-            %td Acq
-            %td Rev
+                
+            -if test_data[:metrics].include? :ref
+              %td.border_left Ref
+              %td Ref sign up
+            -if test_data[:metrics].include? :rev
+              %td.border_left Acq
+              %td Rev
           %tr
             %td Total opened x days ago
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:total]
-            %td= variant_data[:referral][:total]  
-            %td= variant_data[:signup][:total]
-            %td= variant_data[:acquisition][:total]
-            %td= variant_data[:revenue][:total]
+            -if test_data[:metrics].include? :ref
+              %td.border_left= variant_data[:referral][:total]  
+              %td= variant_data[:signup][:total]
+            -if test_data[:metrics].include? :rev
+              %td.border_left= variant_data[:acquisition][:total]
+              %td= variant_data[:revenue][:total]
           %tr
             %td Opened x days after first open
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:opened]
-            %td= variant_data[:referral][:referral]  
-            %td= variant_data[:signup][:signup]
-            %td= variant_data[:acquisition][:acquisition]
-            %td= variant_data[:revenue][:revenue]
+                
+            -if test_data[:metrics].include? :ref
+              %td.border_left= variant_data[:referral][:referral]  
+              %td= variant_data[:signup][:signup]
+            -if test_data[:metrics].include? :rev
+              %td.border_left= variant_data[:acquisition][:acquisition]
+              %td= variant_data[:revenue][:revenue]
           %tr
             %td % Retained
             - test_data[:user_groups].each do |user_state|
@@ -174,10 +179,12 @@
                     \-
                   - else 
                     = number_to_percentage variant_data[user_state][day][:retained]
-            %td= number_to_percentage variant_data[:referral][:percent]  
-            %td= number_to_percentage variant_data[:signup][:percent]
-            %td= number_to_percentage variant_data[:acquisition][:percent]
-            %td= number_to_percentage variant_data[:revenue][:percent]
+            -if test_data[:metrics].include? :ref
+              %td.border_left= number_to_percentage variant_data[:referral][:percent]  
+              %td= number_to_percentage variant_data[:signup][:percent]
+            -if test_data[:metrics].include? :rev
+              %td.border_left= number_to_percentage variant_data[:acquisition][:percent]
+              %td= number_to_percentage variant_data[:revenue][:percent]
 
         - result_data = @variant_data[test][:summary]
         %tr.results

@@ -47,6 +47,7 @@ class ReportsController < ApplicationController
       description = $redis.get("#{@account}:#{test}:description")
       null_variant = $redis.get("#{@account}:#{test}:null_variant")
       user_groups = $redis.get("#{@account}:#{test}:user_groups")
+      metrics = $redis.get("#{@account}:#{test}:metrics")
       
       referral = { :referral => $redis.get("#{@account}:#{test}:rfr:referral").to_i }
       signup = { :signup =>  $redis.get("#{@account}:#{test}:rfr:signup").to_i }
@@ -55,6 +56,7 @@ class ReportsController < ApplicationController
 
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
       user_groups = user_groups ? JSON.parse(user_groups).map(&:to_sym) : [:new, :ea]
+      metrics = metrics ? JSON.parse(metrics).map(&:to_sym) : [:ref, :rev]
       
       result[test] = {
         :variants => variants,
@@ -66,7 +68,8 @@ class ReportsController < ApplicationController
         :referral => referral,
         :signup => signup,
         :revenue => revenue,
-        :acquisition => acquisition
+        :acquisition => acquisition,
+        :metrics => metrics
       }
       result
     end
@@ -139,6 +142,12 @@ class ReportsController < ApplicationController
       test_results[:summary] = {}
       user_groups.each do |user_status|
         user_results = {}
+        
+        
+        #metrics
+        if null_variant
+        null_percent = test_results[null_variant][]
+        
         
         days.each do |day|
           day_results = {}
