@@ -182,8 +182,8 @@ class ApiController < ApplicationController
       
       if event["initial"]
         $redis.incr "#{@account}:#{@test}:#{@variant}:rev:initial"
-      elsif event["premium"]
-        $redis.incr "#{@account}:#{@test}:#{@variant}:rev:premium"
+      elsif event["revenue"]
+        $redis.incr "#{@account}:#{@test}:#{@variant}:rev:revenue"
       end
     end
 
@@ -201,7 +201,7 @@ class ApiController < ApplicationController
 
       if event["initial"]
         $redis.incr "#{@account}:#{@test}:#{@variant}:atv:initial"
-      elsif event["activate"]
+      elsif event["activation"]
         $redis.incr "#{@account}:#{@test}:#{@variant}:atv:activation"
       end
     end

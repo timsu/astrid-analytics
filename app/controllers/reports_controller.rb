@@ -212,7 +212,7 @@ class ReportsController < ApplicationController
   protected
   def map_percent_and_total(hash, total_users)
     hash[:total] = total_users
-    hash[:percent] = total_users > 0 ? hash[:users]/total_users : 0
+    hash[:percent] = total_users > 0 ? hash[:users] * 100 /total_users : 0
     hash
   end
   
@@ -220,7 +220,7 @@ class ReportsController < ApplicationController
   def map_variant(test, variant)
     referral = { :users => $redis.get("#{@account}:#{test}:#{variant}:rfr:referral").to_i }
     signup = { :users =>  $redis.get("#{@account}:#{test}:#{variant}:rfr:signup").to_i }
-    revenue = { :users => $redis.get("#{@account}:#{test}:#{variant}:rev:premium").to_i }
+    revenue = { :users => $redis.get("#{@account}:#{test}:#{variant}:rev:revenue").to_i }
     activation = { :users => $redis.get("#{@account}:#{test}:#{variant}:atv:activation").to_i }
     { :referral => referral, :signup => signup,
       :revenue => revenue, :activation => activation }
@@ -256,14 +256,6 @@ class ReportsController < ApplicationController
       
       result += (ret_point + not_ret_point)
     end
-  end
-  
-  
-  protected
-  def map_percent_and_total(hash, total_users)
-    hash[:total] = total_users
-    hash[:percent] = total_users > 0 ? hash[:users]/total_users : 0
-    hash
   end
 
   protected
