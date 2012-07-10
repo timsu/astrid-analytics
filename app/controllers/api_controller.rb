@@ -125,34 +125,25 @@ class ApiController < ApplicationController
     @payload = [@payload] if @payload.instance_of? Hash
 
     @payload.each do |event|
-      test = event["test"]
-      raise ApiError, "Valid parameter required: 'test'" unless test.class == String
-      test = test.gsub(/\s/, "_")
-      $redis.sadd "#{@account}:tests", test
-
-      variant = event["variant"]
-      raise ApiError, "Valid parameter required: 'variant'" unless variant.class == String
-      $redis.sadd "#{@account}:#{test}:variants", variant
+      update_from_event(event)
       
       date = Date.today
-      # clients send untrustworthy dates
-      # date = Time.at(event["date"]).to_date if event["date"]
-      $redis.sadd "#{@account}:#{test}:dates", date
+      $redis.sadd "#{@account}:#{@test}:dates", date    
       
-      new = event["new"]
-      raise ApiError, "Valid parameter required: 'new'" unless new != nil
-      activated = event["activated"]
-      raise ApiError, "Valid parameter required: 'activated'" unless activated != nil
+      is_new = event["new"]
+      raise ApiError, "Valid parameter required: 'new'" unless is_new != nil
+      is_activated = event["activated"]
+      raise ApiError, "Valid parameter required: 'activated'" unless is_activated != nil
 
-      new_activated = (new ? "n" : "o") + (activated ? "a" : "u")
+      new_activated = (is_new ? "n" : "o") + (is_activated ? "a" : "u")
 
       days = event["days"]
       days = [days] if days.instance_of? Fixnum
       raise ApiError, "Valid parameter required: 'days'" unless days.class == Array
 
       days.each do |day|
-        $redis.sadd "#{@account}:#{test}:days", day
-        $redis.incr "#{@account}:#{test}:#{variant}:#{new_activated}:#{day}:#{date}"
+        $redis.sadd "#{@account}:#{@test}:days", day
+        $redis.incr "#{@account}:#{@test}:#{@variant}:#{new_activated}:#{day}:#{date}"
       end
     end
 
@@ -168,13 +159,11 @@ class ApiController < ApplicationController
 
     @payload.each do |event|
       update_from_event(event)
-      test = event["test"]
-      if event["initial"]
-        $redis.incr "#{@account}:#{test}:rfr:total"
-      elsif event["referral"]
-        $redis.incr "#{@account}:#{test}:rfr:referral"
+      
+      if event["referral"]
+        $redis.incr "#{@account}:#{@test}:#{@variant}:rfr:referral"
       elsif event["signup"]
-        $redis.incr "#{@account}:#{test}:rfr:signup"
+        $redis.incr "#{@account}:#{@test}:#{@variant}:rfr:signup"
       end 
     end
 
@@ -190,18 +179,18 @@ class ApiController < ApplicationController
 
     @payload.each do |event|
       update_from_event(event)
-      test = event["test"]
+      
       if event["initial"]
-        $redis.incr "#{@account}:#{test}:rev:total"
+        $redis.incr "#{@account}:#{@test}:#{@variant}:rev:initial"
       elsif event["premium"]
-        $redis.incr "#{@account}:#{test}:rev:premium"
+        $redis.incr "#{@account}:#{@test}:#{@variant}:rev:premium"
       end
     end
 
     render :json => { :status => "Success" }
   end
   
-  def ab_acquisition
+  def ab_activation
     raise ApiError, "Parameter required: 'payload'" if params[:payload].blank?
     
     @payload = JSON.parse(params[:payload])
@@ -209,11 +198,11 @@ class ApiController < ApplicationController
 
     @payload.each do |event|
       update_from_event(event)
-      test = event["test"]
+
       if event["initial"]
-        $redis.incr "#{@account}:#{test}:acq:total"
-      elsif event["signup"]
-        $redis.incr "#{@account}:#{test}:acq:signup"
+        $redis.incr "#{@account}:#{@test}:#{@variant}:atv:initial"
+      elsif event["activate"]
+        $redis.incr "#{@account}:#{@test}:#{@variant}:atv:activation"
       end
     end
 
@@ -227,19 +216,12 @@ class ApiController < ApplicationController
   def update_from_event(event)
     test = event["test"]
     raise ApiError, "Valid parameter required: 'test'" unless test.class == String
-    test = test.gsub(/\s/, "_")
-    $redis.sadd "#{@account}:tests", test
+    @test = test.gsub(/\s/, "_")
+    $redis.sadd "#{@account}:tests", @test
 
-    variant = event["variant"]
-    raise ApiError, "Valid parameter required: 'variant'" unless variant.class == String
-    $redis.sadd "#{@account}:#{test}:variants", variant
-
-    new = event["new"]
-    raise ApiError, "Valid parameter required: 'new'" unless new != nil
-    activated = event["activated"]
-    raise ApiError, "Valid parameter required: 'activated'" unless activated != nil
-
-    new_activated = (new ? "n" : "o") + (activated ? "a" : "u")
+    @variant = event["variant"]
+    raise ApiError, "Valid parameter required: 'variant'" unless @variant.class == String
+    $redis.sadd "#{@account}:#{@test}:variants", @variant
   end
   
   protected

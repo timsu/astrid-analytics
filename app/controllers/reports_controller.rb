@@ -47,17 +47,15 @@ class ReportsController < ApplicationController
       description = $redis.get("#{@account}:#{test}:description")
       null_variant = $redis.get("#{@account}:#{test}:null_variant")
       user_groups = $redis.get("#{@account}:#{test}:user_groups")
-      metrics = $redis.get("#{@account}:#{test}:metrics")
       
-      referral = { :referral => $redis.get("#{@account}:#{test}:rfr:referral").to_i }
-      signup = { :signup =>  $redis.get("#{@account}:#{test}:rfr:signup").to_i }
-      revenue = { :revenue => $redis.get("#{@account}:#{test}:rev:premium").to_i }
-      acquisition = { :acquisition => $redis.get("#{@account}:#{test}:acq:acquisition").to_i }
-
+      
+      metric_filter = $redis.get("#{@account}:#{test}:metric_filter")
+      
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
       user_groups = user_groups ? JSON.parse(user_groups).map(&:to_sym) : [:new, :ea]
-      metrics = metrics ? JSON.parse(metrics).map(&:to_sym) : [:ref, :rev]
-      
+      metric_filter = metric_filter ? JSON.parse(metric_filter).map(&:to_sym) : [:referral, :activation, :revenue]
+      metric_filter += [:signup] if metric_filter.include? :referral"
+            
       result[test] = {
         :variants => variants,
         :days => days,
@@ -65,11 +63,7 @@ class ReportsController < ApplicationController
         :description => description,
         :null_variant => null_variant,
         :user_groups => user_groups,
-        :referral => referral,
-        :signup => signup,
-        :revenue => revenue,
-        :acquisition => acquisition,
-        :metrics => metrics
+        :metric_filter => metric_filter
       }
       result
     end
@@ -84,20 +78,16 @@ class ReportsController < ApplicationController
       days = data[:days]
       null_variant = data[:null_variant]
       user_groups = data[:user_groups]
-      referral = data[:referral]
-      signup = data[:signup]
-      revenue = data[:revenue]
-      acquisition = data[:acquisition]
+      metric_filter = data[:metric_filter]
 
       test_results = {}
 
       # compute variant data
       variants.each do |variant|
-        variant_results = {}
-
+        variant_results = { :total_users => 0 }
+        
         user_groups.each do |user_status|
-          user_results = {}
-          
+          user_results = {}          
           days.each do |day|
             day_results = {}
             
@@ -122,32 +112,60 @@ class ReportsController < ApplicationController
                 print "ERRSQR was < 0: #{err_sqr}, #{day_results[:retained]}, #{day_results[:total]}"
               end
             end
-
             user_results[day] = day_results
           end
-          total_users = user_results[0][:total]
-          
-          variant_results[:referral] =  map_percent_and_total(referral, :referral, total_users)
-          variant_results[:signup] =  map_percent_and_total(signup, :signup, referral[:referral])
-          variant_results[:revenue] =  map_percent_and_total(revenue, :revenue, total_users)
-          variant_results[:acquisition] =  map_percent_and_total(acquisition, :acquisition, total_users)
-          
+          variant_results[:total_users] += user_results[0][:total]
           variant_results[user_status] = user_results
         end
+        ([:new, :ea, :eu] - user_groups).each do |user_status|
+          valid_dates = dates.select { |date| date <= Date.today }
+          keys = generate_ab_keys test, variant, user_status, 0, valid_dates
+          sum = $redis.mget(*keys + [nil]).compact.map(&:to_i).sum
+          variant_results[:total_users] += sum
+        end
+
+        metrics = map_variant test, variant
+        metrics.each do |key, value|
+          map_percent_and_total(value, key == :signup ? metrics[:referral][:users] : variant_results[:total_users])
+        end          
+        variant_results[:metrics] = metrics          
 
         test_results[variant] = variant_results
       end
 
       # compute summary
       test_results[:summary] = {}
+      
+      test_results[:summary][:metrics] = {}
+      #metrics
+      metric_filter.each do |key|
+        percent = variants.map { |variant| test_results[variant][:metrics][key][:percent] }
+        metric_results = {}
+        metric_results[:delta] = percent.max - percent.min
+        
+        metric_results[:zscore] = "-"
+        metric_results[:pvalue] = "-"
+        metric_results[:significant] = "-"
+        
+        if null_variant
+          null_percent = test_results[null_variant][:metrics][:percent]
+          #percent = nil
+          #finish this
+        end
+        if percent.sum > 0
+          chi_sq = chi_squared(variants, test_results, :metrics, key, :users, :total)
+        
+          metric_results[:chisq] = chi_sq
+          metric_results[:chisqp] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
+          metric_results[:chisqsig] = metric_results  [:chisqp] < 0.05 ? "YES" : "NO"
+        end
+        
+        test_results[:summary][:metrics][key] = metric_results
+      end
+      
+      
       user_groups.each do |user_status|
         user_results = {}
-        
-        
-        #metrics
-        if null_variant
-        null_percent = test_results[null_variant][]
-        
         
         days.each do |day|
           day_results = {}
@@ -174,34 +192,8 @@ class ReportsController < ApplicationController
             day_results[:pvalue] = Normdist::normdist(day_results[:zscore], 0, 1, true)
             day_results[:significant] = (day_results[:pvalue] < 0.05 || day_results[:pvalue] > 0.95) ? "YES" : "NO"     
             
-            overall_total = variants.reduce(0) do |result, variant|
-              result += test_results[variant][user_status][day][:total]
-            end
-          
-            overall_total_retained = variants.reduce(0) do |result, variant|
-              result += test_results[variant][user_status][day][:opened]
-            end
-            
-            chi_sq = variants.reduce(0) do |result, variant|
-              exp_retained = test_results[variant][user_status][day][:total] *
-                overall_total_retained / overall_total.to_f
-              exp_not_retained = (test_results[variant][user_status][day][:total] *
-                                  (overall_total - overall_total_retained)) / overall_total.to_f
-              
-              obs_retained = test_results[variant][user_status][day][:opened].to_f
-              obs_not_retained = test_results[variant][user_status][day][:total] -
-                test_results[variant][user_status][day][:opened].to_f
-              
-              ret_point = 0
-              ret_point = ((obs_retained - exp_retained)**2) / exp_retained.to_f if exp_retained > 0
-              
-              not_ret_point = 0
-              not_ret_point = ((obs_not_retained - exp_not_retained)**2) / exp_not_retained.to_f if
-                exp_not_retained > 0
-              
-              result += (ret_point + not_ret_point)
-            end
-            
+            chi_sq = chi_squared(variants, test_results, user_status, day, :opened, :total)
+                      
             day_results[:chisq] = chi_sq
             day_results[:chisqp] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
             day_results[:chisqsig] = day_results[:chisqp] < 0.05 ? "YES" : "NO"
@@ -220,9 +212,59 @@ class ReportsController < ApplicationController
   
   ################################################################# HELPERS
   protected
-  def map_percent_and_total(hash, key, total_users)
+  def map_percent_and_total(hash, total_users)
     hash[:total] = total_users
-    hash[:percent] = total_users > 0 ? hash[key]/total_users : 0
+    hash[:percent] = total_users > 0 ? hash[:users]/total_users : 0
+    hash
+  end
+  
+  protected
+  def map_variant(test, variant)
+    referral = { :users => $redis.get("#{@account}:#{test}:#{variant}:rfr:referral").to_i }
+    signup = { :users =>  $redis.get("#{@account}:#{test}:#{variant}:rfr:signup").to_i }
+    revenue = { :users => $redis.get("#{@account}:#{test}:#{variant}:rev:premium").to_i }
+    activation = { :users => $redis.get("#{@account}:#{test}:#{variant}:atv:activation").to_i }
+    { :referral => referral, :signup => signup,
+      :revenue => revenue, :activation => activation }
+  end
+  
+  protected
+  def chi_squared(variants, test_results, first_hash_key, second_hash_key, stat_key, total_key)
+    overall_total = variants.reduce(0) do |result, variant|
+      result += test_results[variant][first_hash_key][second_hash_key][total_key]
+    end
+  
+    overall_total_retained = variants.reduce(0) do |result, variant|
+      result += test_results[variant][first_hash_key][second_hash_key][stat_key]
+    end
+    
+    chi_sq = variants.reduce(0) do |result, variant|
+      #expected total = row total * column total / table total
+      exp_retained = test_results[variant][first_hash_key][second_hash_key][total_key] *
+        overall_total_retained / overall_total.to_f
+      exp_not_retained = (test_results[variant][first_hash_key][second_hash_key][total_key] *
+                          (overall_total - overall_total_retained)) / overall_total.to_f
+      
+      obs_retained = test_results[variant][first_hash_key][second_hash_key][stat_key].to_f
+      obs_not_retained = test_results[variant][first_hash_key][second_hash_key][total_key] -
+        test_results[variant][first_hash_key][second_hash_key][stat_key].to_f
+      
+      ret_point = 0
+      ret_point = ((obs_retained - exp_retained)**2) / exp_retained.to_f if exp_retained > 0
+      
+      not_ret_point = 0
+      not_ret_point = ((obs_not_retained - exp_not_retained)**2) / exp_not_retained.to_f if
+        exp_not_retained > 0
+      
+      result += (ret_point + not_ret_point)
+    end
+  end
+  
+  
+  protected
+  def map_percent_and_total(hash, total_users)
+    hash[:total] = total_users
+    hash[:percent] = total_users > 0 ? hash[:users]/total_users : 0
     hash
   end
 

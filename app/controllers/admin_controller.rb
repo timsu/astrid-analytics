@@ -84,8 +84,9 @@ class AdminController < ApplicationController
     if params[:filter]
       $redis.set "#{account}:#{test}:user_groups", params[:filter].keys.compact
     end
-    if params[:filter_metrics]
-      $redis.set "#{account}:#{test}:metrics", params[:filter_metrics].keys.compact
+    if params[:metric_filter]
+      keys = params[:metric_filter].keys.compact
+      $redis.set "#{account}:#{test}:metric_filter", keys
     end
 
     respond_to do |format|
