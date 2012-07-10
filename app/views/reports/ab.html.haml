@@ -7,11 +7,9 @@
   .plus { color: #090 }
   .minus { color: #900 }
   a[data-edit=null_variant] i { opacity: 0.3 }
-  td[data-day] { text-align: center }
+  td[data-day], td[data-metric] { text-align: center }
   td[data-day="0"] { border-left: 1px solid black }
-  td[data-metric] { border-left: 1px solid black }
-  td[data-metric="signup"] { border-left: 0 }
-  .border_left { border-left: 1px solid black }
+  td[data-metric="referral"] { border-left: 1px solid black }
 
 :javascript
   $(document).on("click", "[data-edit=description]", function() {
@@ -102,15 +100,10 @@
         %label.checkbox
           = check_box_tag "filter[eu]", "yes", test_data[:user_groups].include?(:eu)
           Existing Unactivated
-        %label.checkbox
-          = check_box_tag "metric_filter[referral]", "yes", test_data[:metric_filter].include?(:referral)
-          Referrals 
-        %label.checkbox
-          = check_box_tag "metric_filter[acquisition]", "yes", test_data[:metric_filter].include?(:acquisition)
-          Acquisition
-        %label.checkbox
-          = check_box_tag "metric_filter[revenue]", "yes", test_data[:metric_filter].include?(:revenue)
-          Revenue 
+        - [:referral, :signup, :activation, :revenue].each do |metric|
+          %label.checkbox
+            = check_box_tag "metric_filter[#{metric}]", "yes", test_data[:metric_filter].include?(metric)
+            = metric.to_s.capitalize
 
       %table.table
         %thead
@@ -125,7 +118,7 @@
                 - elsif user_state == :eu
                   Existing Unactivated
             - test_data[:metric_filter].each do |metric|
-              %th= [:referral, :acquisition, :revenue].include?(metric) ? metric.to_s.capitalize : ""
+              %th=  metric.to_s.capitalize
 
         - test_data[:variants].each do |variant|
           - variant_data = @variant_data[test][variant]
@@ -142,41 +135,30 @@
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}") +#{day}
-              
-            - test_data[:metric_filter].each do |metric|
-              - if metric == :referral
-                Referrals
-              - if metric == :acquisition
-                Acquisition
-              - elsif metric == :revenue
-                Revenue
                   
             - test_data[:metric_filter].each do |metric|
-              -if metric == :referral
-                %td.border_left Ref
-                %td Ref sign up
-              -elsif metric == :acquisition
-                %td.border_left Acq
-              -elsif metric == :revenue
-                %td.border_left Rev
+              %td(data-metric="#{metric}") %
+                
           %tr
-            %td Total opened x days ago
+            %td Total
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:total]
                 
             - test_data[:metric_filter].each do |metric|
               %td(data-metric="#{metric}")= metric_data[metric][:total]
+
           %tr
-            %td Opened x days after first open
+            %td Converted
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:opened]
                 
             - test_data[:metric_filter].each do |metric|
               %td(data-metric="#{metric}")= metric_data[metric][:users]
+
           %tr
-            %td % Retained
+            %td %
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")
@@ -195,16 +177,10 @@
             - test_data[:days].each do |day|
               %td(data-day="#{day}") +#{day}
           - test_data[:metric_filter].each do |metric|
-            -if metric == :referral
-              %td.border_left Ref
-              %td Ref sign up
-            -elsif metric == :acquisition
-              %td.border_left Acq
-            -elsif metric == :revenue
-              %td.border_left Rev
+            %td(data-metric="#{metric}")= metric.to_s.capitalize
 
           %tr
-            %td Delta retention (%)
+            %td Delta (%)
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}" class="#{result_data[user_state][day][:plusminus]}")

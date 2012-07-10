@@ -47,15 +47,12 @@ class ReportsController < ApplicationController
       description = $redis.get("#{@account}:#{test}:description")
       null_variant = $redis.get("#{@account}:#{test}:null_variant")
       user_groups = $redis.get("#{@account}:#{test}:user_groups")
-      
-      
       metric_filter = $redis.get("#{@account}:#{test}:metric_filter")
       
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
       user_groups = user_groups ? JSON.parse(user_groups).map(&:to_sym) : [:new, :ea]
-      metric_filter = metric_filter ? JSON.parse(metric_filter).map(&:to_sym) : [:referral, :activation, :revenue]
-      metric_filter += [:signup] if metric_filter.include? :referral"
-            
+      metric_filter = metric_filter ? JSON.parse(metric_filter).map(&:to_sym) : [:referral, :signup, :activation, :revenue]
+      
       result[test] = {
         :variants => variants,
         :days => days,
@@ -137,6 +134,7 @@ class ReportsController < ApplicationController
       test_results[:summary] = {}
       
       test_results[:summary][:metrics] = {}
+      
       #metrics
       metric_filter.each do |key|
         percent = variants.map { |variant| test_results[variant][:metrics][key][:percent] }
