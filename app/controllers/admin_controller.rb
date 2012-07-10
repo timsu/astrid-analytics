@@ -56,7 +56,7 @@ class AdminController < ApplicationController
     if request.post?
       account = params[:account]
 
-      render :text => "Error: unknown account" unless $redis.sismember "accounts", account
+      render :text => "Error: unknown account" and return unless $redis.sismember "accounts", account
 
       begin
         apikey = rand(36**6).to_s(36)
@@ -66,6 +66,20 @@ class AdminController < ApplicationController
         
       $redis.sadd "#{account}:apikeys", apikey
       $redis.set "apikeys:#{apikey}", [account, client, secret]
+    end
+
+    redirect_to "/admin"
+  end
+
+  def remove_client
+    if request.post?
+      account = params[:account]
+      apikey = params[:apikey]
+
+      render :text => "Error: unknown account" and return unless $redis.sismember "accounts", account
+
+      $redis.srem "#{account}:apikeys", apikey
+      $redis.del "apikeys:#{apikey}"
     end
 
     redirect_to "/admin"
