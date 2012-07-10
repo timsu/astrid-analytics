@@ -212,7 +212,7 @@ class ReportsController < ApplicationController
   protected
   def map_percent_and_total(hash, total_users)
     hash[:total] = total_users
-    hash[:percent] = total_users > 0 ? hash[:users] * 100 /total_users : 0
+    hash[:percent] = total_users > 0 ? hash[:users] * 100.0 /total_users : 0
     hash
   end
   
