@@ -72,15 +72,13 @@ class AdminController < ApplicationController
   end
 
   def remove_client
-    if request.post?
-      account = params[:account]
-      apikey = params[:apikey]
+    account = params[:account]
+    apikey = params[:apikey]
 
-      render :text => "Error: unknown account" and return unless $redis.sismember "accounts", account
+    render :text => "Error: unknown account" and return unless $redis.sismember "accounts", account
 
-      $redis.srem "#{account}:apikeys", apikey
-      $redis.del "apikeys:#{apikey}"
-    end
+    $redis.srem "#{account}:apikeys", apikey
+    $redis.del "apikeys:#{apikey}"
 
     redirect_to "/admin"
   end

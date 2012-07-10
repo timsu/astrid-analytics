@@ -33,7 +33,7 @@
             %td= apikey_data[1]
             %td= apikey
             %td= apikey_data[2]
-            %td= link_to "Remove", "/admin/remove_client?account=#{account}&apikey=#{apikey}", :method => :post
+            %td= link_to "Remove", "/admin/remove_client?account=#{account}&apikey=#{apikey}", :onclick => "return confirm('Bye bye #{apikey_data[1]}?')"
 
       %a(href="#" onclick="$(this).next().toggle(); return false") Add New Client
 
