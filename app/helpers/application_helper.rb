@@ -1,7 +1,7 @@
 module ApplicationHelper
 
   def format_number(num)
-    number_to_human num, :units => {:unit => "", :thousand => "K", :million => "M"}, :precision => 4
+    number_to_human num, :units => {:unit => "", :thousand => "K", :million => "M"}, :precision => 1, :significant => false
   end
 
   def format_percent(pct)
