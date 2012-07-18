@@ -207,6 +207,22 @@ class ReportsController < ApplicationController
       @variant_data[test] = test_results
     end
   end
+
+  def engineyard
+    @time = params[:time] || 1.hour
+    
+    @dna = JSON.load Rails.root.join "config/dna.json"
+    instances = @dna["engineyard"]["environment"]["instances"]
+    
+    @app_master = instances.find { |instance| instance["role"] == "app_master" }
+    @app_servers = instances.select { |instance| instance["role"] == "app" }
+
+    @db_master = instances.find { |instance| instance["role"] == "db_master" }
+    @db_slaves = instances.select { |instance| instance["role"] == "db_slave" }
+
+    @memcache = instances.find { |instance| instance["name"] == "memcache01" }
+    @solr = instances.find { |instance| instance["name"] == "solr01" }
+  end
   
   ################################################################# HELPERS
   protected

@@ -6,6 +6,7 @@ AstridAnalytics::Application.routes.draw do
   match "admin/:action", :controller => :admin
 
   match "reports/:account/:action", :controller => :reports
+  match "reports/engineyard" => "reports#engineyard"
 
   match "api/:version/:action", :controller => :api
 
