@@ -140,22 +140,22 @@ class ReportsController < ApplicationController
         percent = variants.map { |variant| test_results[variant][:metrics][key][:percent] }
         metric_results = {}
         metric_results[:delta] = percent.max - percent.min
-        
-        metric_results[:zscore] = "-"
-        metric_results[:pvalue] = "-"
-        metric_results[:significant] = "-"
-        
+                
         if null_variant
-          null_percent = test_results[null_variant][:metrics][:percent]
-          #percent = nil
-          #finish this
+          null_percent = test_results[null_variant][:metrics][key][:percent]
+          metric_results[:delta] = variants.reject { |v| v == null_variant }.map { |v|
+            test_results[v][:metrics][key][:percent] - null_percent }.max
+          metric_results[:percent] = metric_results[:delta] * 100 / null_percent if null_percent > 0
+          metric_results[:plusminus] = metric_results[:delta] > 0 ? "plus" : (metric_results[:delta] < 0 ? "minus" : "")
         end
+        
         if percent.sum > 0
           chi_sq = chi_squared(variants, test_results, :metrics, key, :users, :total)
         
           metric_results[:chisq] = chi_sq
           metric_results[:chisqp] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
           metric_results[:chisqsig] = metric_results  [:chisqp] < 0.05 ? "YES" : "NO"
+          metric_results[:plusminus] = "" if metric_results[:chisqsig] != "YES"
         end
         
         test_results[:summary][:metrics][key] = metric_results
@@ -173,9 +173,6 @@ class ReportsController < ApplicationController
           error = variants.map { |variant| test_results[variant][user_status][day][:error] }
           
           day_results[:delta] = retained.max - retained.min
-          day_results[:zscore] = "-"
-          day_results[:pvalue] = "-"
-          day_results[:significant] = "-"
 
           if null_variant
             null_retained = test_results[null_variant][user_status][day][:retained]
@@ -185,16 +182,13 @@ class ReportsController < ApplicationController
             day_results[:plusminus] = day_results[:delta] > 0 ? "plus" : (day_results[:delta] < 0 ? "minus" : "")
           end
           
-          if day > 0 and retained.sum > 0
-            day_results[:zscore] = day_results[:delta]/100/Math.sqrt(error.map { |e| e ** 2 }.sum)
-            day_results[:pvalue] = Normdist::normdist(day_results[:zscore], 0, 1, true)
-            day_results[:significant] = (day_results[:pvalue] < 0.05 || day_results[:pvalue] > 0.95) ? "YES" : "NO"     
-            
+          if day > 0 and retained.sum > 0            
             chi_sq = chi_squared(variants, test_results, user_status, day, :opened, :total)
                       
             day_results[:chisq] = chi_sq
             day_results[:chisqp] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
             day_results[:chisqsig] = day_results[:chisqp] < 0.05 ? "YES" : "NO"
+            day_results[:plusminus] = "" if day_results[:chisqsig] != "YES"
          
           end
           user_results[day] = day_results
