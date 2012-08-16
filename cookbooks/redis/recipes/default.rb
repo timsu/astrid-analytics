@@ -64,3 +64,18 @@ if ['db_master'].include?(node[:instance_role])
   end
 
 end
+
+node[:applications].each do |app_name,data|
+  user = node[:users].first
+
+  case node[:instance_role]
+   when "solo", "app", "app_master", "util"
+     template "/data/#{app_name}/shared/config/redis.yml" do
+       source "redis.yml.erb"
+       owner user[:username]
+       group user[:username]
+       mode 0744
+     end
+  end
+end
+
