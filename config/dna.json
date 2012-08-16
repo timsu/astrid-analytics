@@ -1,11 +1,11 @@
 {
+  "name": "solr01",
   "db_slaves": [
     "ip-10-117-30-197.ec2.internal",
     "ip-10-30-140-32.ec2.internal"
   ],
   "aws_secret_key": "9ltC6nSqYX7Br4rkIbhxFiXSAnOpwBq9f4xXOzjY",
   "ruby_version": "Ruby 1.9.3",
-  "quick": true,
   "user_ssh_key": [
     "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAwSy8FGIn0YqYPyn6PzztOVTIZzIzKQ/wLrMc98zp907E38QZzFggKgvO+MgT+njlvEYb8J/7S6sMRbWyWBXXtWuI/XZCHXsvteB8iMG/msiivLKn7XsNvq1l51EuM0qZToDyd9somZ1EXZ+1WeVGfj7a/JhP/WMtKdoKa76WK7HrPvhvoIrrrhaX/iPhqMtt96yfyrrsuF2wWNbRzO2xvQXgf/Ka0Ue+IfMnBNXFCQz0JdlsbRkVsNpf9PrBV5Kn14rxj6TS3YcomnON/vJrrpGdNeXdL2gjlrP2K4CGnMy6V0Jry6RYtF0cOqor8fvnaSeo0dlojGTLks9it4oqkQ== timsu@ayumi",
     "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAx5s/ohCYEg5HHcaV7GCoE61RHUDm5g7CQJLkVIVq4YiocTzk31cDexhwrb8b97NZQPagfQB0RKbz1xhCiBiZ9SgavjYaXt03Wa5c/sccIR9q3UF8Cjo+6klTd0vsiynRHTgwZG61J0IgqTPFZeNHPTC69lYHkaujgrDNlFFLhmw+FGEPrSLKUt5OPSSQsl+OphkzC9epL21y1++2cHFzPFtZBj+8CRPqJMDbMd7KFjvn31u8OdRXPFndmj9j64fE+6o8IuH5aBd9QhUN61uTOrOkbAWePTBgG44Z2dSziKL5zUML1fjEkLjaagAkNyQuvUnF5KTrEyigUXOnoN1PpQ== timsu@ps17623",
@@ -22,10 +22,10 @@
     "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAwp9YP8V/xj1J+hXKiHCv4IJocoYKFiyT7vth5wZ3WW5hRr8qCIMZERgELExZunhUUtIcZ/PrqwqTa5cJGWAbrmCYGHsdUxoCx3t+EIksmvm9X5+4JxJd8qLnfc3kdUbBjD1DAnU9NyAoMESS5WJ0xG3njGVhLusdLU6G48v45arRW7LoBwg+dx7VkXrOWUWkS1SuyGVunkudRsnOfrc/W2Sm5teJ3yDp7EpexW5BpN/UHLTfwskc6LcfdIWsX5ZafoqHkKs7gRf5mie9jrTbolsCdvJSZ0yJiRprxqylvHWLQH+Xxekc+xtzI1v8uF3isecRuW8pzKXIIwSEXUjKFw== sboz88@gmail.com"
   ],
   "internal_ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAl37QEYxzXJptVNQAPuABHFIlMvAu2Je6RywSanlV0Q2e40TpCsU+YAZeTLv8EZQE7+rrqZVktzr8E+PtKeT/zowePQ1km/pWVZsgYQjnDhJHGFIpSEwfr5/AFCkRmMx1Pkchql4+OREPuiiUqljJ20c9FzseVilIEnA8Yae8C3KTan34Z/j9knO+oqEPzCSbukSLlB3VMojRLzROqcmtdSyqezHZkja2TzFS0/2N3Oy9Armm+xLON3r5ZoB9s7biljzakYK8LmzJMro0v07B+RA8gdMuzXWb44V85IUBLg5p63UIxJ3EOY/T/utMNbZU6u3u623SDpJYmvDguN4M/w== \n",
-  "admin_ssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAqRwAKzXKzizrNoUx3d/bF1pBuxYigRr9YYTtq7MPQWaUGkfd7x3N5DCYtOiVFerYwncG9CFLx7fKrCK+ZRmE4wK/zUM7t2ImHrI/cwdP9IOvcpPkjhjNtTkx01GUy+tHnuISUg8Os+/XjMlAIIYmz9DAftx5bF5qfZbZr2LBI5K5rkU60eJyn20WZzK6AM/k9Z+1JRhRsOJ9d0JhHJDImR+8AXskVHe/ch/5m58hpBWOtsyr2zPm1Ua/ooi5pH4pVcllgw7jmK2hO5OGRDdHKb4x4s68ZIyM/T3dozdbYA7mIX8yI12+FcE+pIIx9yPxjq+KeHDj/H1hXs4abagkGw== \n",
+  "admin_ssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4HKytOcnc64vKOOcbLUWJWuOiMPKT7R7wI4cSsLTMhNgxoYSvcrW6My5X3jE2/3j1XI94G8nDRGN5UFJorvhBUzR4u3qPLe1u9a1UYBEtdEk/dS9NG6ZCIBJtt4Mosav8zuxXJTUsJE54JYeX+we9cyzkuPoG1kvD/nRrdzYVH6u8CpX3AfQOl9+Hk4JVnSYNK7Atqr0Fy7cotObqrsGavOJnFnjL5nyxW41EI6UxF5phHaucFSfN0uPs+5PKFIrVPiMWpZ1j4JByILK0tZW18lx0MA29nF6WtzZG6UxHmtc6edcBoRZv/X4DW4LOIS+aL5J3YGAHZBsxDMxSzRnXw== \n",
   "backup_interval": 12,
   "internal_ssh_private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAl37QEYxzXJptVNQAPuABHFIlMvAu2Je6RywSanlV0Q2e40Tp\nCsU+YAZeTLv8EZQE7+rrqZVktzr8E+PtKeT/zowePQ1km/pWVZsgYQjnDhJHGFIp\nSEwfr5/AFCkRmMx1Pkchql4+OREPuiiUqljJ20c9FzseVilIEnA8Yae8C3KTan34\nZ/j9knO+oqEPzCSbukSLlB3VMojRLzROqcmtdSyqezHZkja2TzFS0/2N3Oy9Armm\n+xLON3r5ZoB9s7biljzakYK8LmzJMro0v07B+RA8gdMuzXWb44V85IUBLg5p63UI\nxJ3EOY/T/utMNbZU6u3u623SDpJYmvDguN4M/wIBIwKCAQEAjtam6/l0FXuo6ZSv\nxkDrGrPZ7jLqVy/4xsMnTnJm2wzXoxUWPVrjChSiDdXQaFhcbS30I4zbTaykh8hG\nAu3bPxZlp0ckWIzyULbVYs3hKoZDCE13YWxYY8KB5x9oXN4IJMa5V31t3gjFr4VY\n+GJX7AFW22OgQpvzfxldgKV2yPWMm7U88ZPjUwsB3vK++D4b+ztccGBzMsMKMtrk\n6Rdb5WjRMey+RujMY9bx9qFCh8l8wKARWuWXd2xJvPCIvHKb/jiX8ySJ9Z26221s\n4q6SUvMMq2uwA3tOdbS+OiFcUJZOKPpzpnECyhlsfg2m7009y7PfMGShKYSclRzk\nASfqcwKBgQDIQ1ZOvbsBiocElp+XQMYVlPHkoGCPKXD4dPDO2VE/qIxvF07t6vM+\ndvhArbjkG2Ja5nDmyur96u9rhk7IWkX1qA88ibFBv2EFJp7uvx5NqDltdxUMsYBF\nYxxJqXUjvrQNF+3yknmdWR3X4Av+tqSDJaXKAL/BmGBPc1REZjxaDQKBgQDBqMxJ\n/1tQv10sbR8LF3m9zUn/F7QRrHeIF7huAApSJuN8jAbcBrkqtCaNpJHfUI3ljguW\ngiyMvl6FfKb1x+AY8BCfx+EHJLnPUe0I0bVdAJ652M/MRs+mMh3d1p7oIaOs1px8\ngZzG08tiQ9iUr89pcRzD1mJdxkhLz0eqf/N8OwKBgQC80cZnf7BR6QL1spZ4qslk\nzkMoBO1Tx/zNAItGr6Rgl5paHUprSz0do18YaUftA+BkVZ2mZ40bSzmCozRWgQAi\nIhz+kHPtiI6tFckM/VcWBQLyLnLutfyZMY+zKr7nMCYa+U4QmLvO3v7he3kGGeuR\nmIZfX8q92M/V4cR7AU7YjwKBgQC8IFFsdGdVwTXwpISObpOFLdLajA4Cikg7D7p5\nfGHMJccLRjKMmNEiK1im2mHRnrW6bLrMuPgTsZ2mPpOPrDjHxKJvVHQy0zgoe3iM\nOW5aWF+tOQRgCkYPKV7XgAgUsvbFKEA+b0fXFuLUfGv+JyFB25hJNqiy3d/UnXjR\ng5wSRwKBgQDH/j5IJKPGT+CHpOaABrc+bzqHbERYhCfe82lWfRF96R+XMyzcntPh\nvK1IT84VzUsBeEMgOlZiGfRizZ52TOV2dU5xetcM4vVatztI9H57vWD6HmfZ5y2S\n5TqReW62XM653shk/Ev754kEHy6iEeDvN60NsY7rISglUcVTEdFtAA==\n-----END RSA PRIVATE KEY-----\n",
-  "instance_role": "app_master",
+  "instance_role": "util",
   "utility_instances": [
     {
       "name": "solr01",
@@ -57,7 +57,6 @@
   "members": [
     "domU-12-31-38-01-5C-61.compute-1.internal",
     "domU-12-31-39-09-5C-AD.compute-1.internal",
-    "domU-12-31-39-0C-B4-AE.compute-1.internal",
     "ip-10-28-158-169.ec2.internal",
     "domU-12-31-38-06-B6-7D.compute-1.internal"
   ],
@@ -68,12 +67,12 @@
       },
       "newrelic": true,
       "https_bind_port": 443,
-      "migration_command": "rake db:migrate",
+      "migration_command": null,
       "type": "rails3",
       "repository_name": "git@github.com:todoroo/act.fm.git",
       "http_bind_port": 80,
       "run_deploy": false,
-      "revision": "932d1c59ae83f1d070602a3728c27aa07250ad64",
+      "revision": "dbaf13e7573811925587d546bde7cbc82c7d085e",
       "branch": "prod",
       "run_migrations": false,
       "deploy_action": "deploy",
@@ -114,20 +113,12 @@
   },
   "gems_to_install": [
     {
-      "name": "heroku",
-      "version": "1.15.1"
-    },
-    {
-      "name": "taps",
-      "version": "0.3.14"
-    },
-    {
       "name": "newrelic_rpm",
       "version": "2.13.4"
     }
   ],
   "alert_email": "rails@todoroo.com",
-  "reporting_url": "https://cloud.engineyard.com/reporting/48f646e4-08fd-4839-9fdc-30296c557045",
+  "reporting_url": "https://cloud.engineyard.com/reporting/06fdc266-6b10-43ad-9cc8-a0e07fcaa828",
   "master_app_server": {
     "private_dns_name": "domU-12-31-38-06-B6-7D.compute-1.internal",
     "public_ip": "ec2-50-16-237-95.compute-1.amazonaws.com"
@@ -164,7 +155,7 @@
   ],
   "db_host": "ec2-107-22-87-234.compute-1.amazonaws.com",
   "engineyard": {
-    "this": "i-a04d74c4",
+    "this": "i-84d616e4",
     "environment": {
       "apps": [
         {
@@ -182,27 +173,17 @@
             }
           ],
           "database_name": "actfm",
-          "migration_command": "rake db:migrate",
+          "migration_command": null,
           "type": "rails3",
           "repository_name": "git@github.com:todoroo/act.fm.git",
           "run_deploy": false,
-          "revision": "932d1c59ae83f1d070602a3728c27aa07250ad64",
+          "revision": "dbaf13e7573811925587d546bde7cbc82c7d085e",
           "bundled": null,
           "branch": "prod",
           "run_migrations": false,
           "deploy_action": "deploy",
           "deploy_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEoQIBAAKCAQEAyXaSHpIY35pUPyMTK7VRUcaRu3Fnh7tJP1lGsKiKez+Jcd36\n/8pEfeesdVJCljJ8jm8jkCqhfTG43iJiEzY1lsBfemf4JeeQ+WOMqgVXFjQw3dux\n75FBBKTujUOj9xM0UB3Fiv6NIzNpL+LIIaabig63belgK6skUPLs2r3yH9TaMFjZ\nMfzHNKKKyAjeztLXpM91LNsWxtYvmXaeos0ABi6G+0GQrJyxmyPxm5sutqSzF8Cx\nnueCWr4rIH3hosTK/JM682pu9Mcxce6JwgHNHIVfBXTeVCvbW1o/bksSK99r1sw6\nIZRO8wkrMqYyk69XnT1K57JKqc/GUvGjLzp2KwIBIwKCAQAiiVrgq1S4nh0SI0Ud\nb4pIiHDBDCBgaT/Bt4h2DkOgGYVGuFbqBWrTwVDDp7OkuDKcEw1pK+ErZ5wI0rG6\nJozYA7iYpBvpPaPS+x9tmoP1LYS4UYw3soAsro9Laq5k3riCw0ZvmVoGCNA0GD+Q\nvXm/5UQENqLFqE9eVYeweFVkipW2SqZKAKmirSP1TW6xERYJvH58pr93+zx0rfXS\nF8DpYaOzzK78CknQlFfTaUUY4+b308jr41FBJYFuVVAVbweeJMfff/r87jD+S8pT\nECVtMVtRby0oY81GOUkGSdYo5IlPEwpoHg4aPKUYNDFel1mpimhRKbc+kiXoe3TZ\ng357AoGBAOOV57p0lMLC6oz1EiujMXXiUG3S9mYWPpSx4PKhCcAIuAaMWlLDpc5x\n4iiU8gBuNs3vkmiU5bZB4cxw6w116+HiVv1f/9egtiW+/6WGwINYV1xwBMkagSIm\n23SnAkDXd5WdleBiVwFotO5dBIJ60wItyldLCCu8uaupzJknLmhPAoGBAOKdvaoN\nuXw8xgFmswLNaGE0XiWCwqkfXg+USZINjgVWvPArZ+vVZYnoix4Kwxs3PHctMDT/\nU8dyLEEBS9Zae+dVEFpRAAnl+O3nih1WuG9x423lEjh4ueEa20t373AQiAqWnJ0K\njftGnSRzG+VxFB+9IOht4XIAFugyVOBojQFlAoGATgeCplPbO3YHRkVlUMo81/XS\nbsv8tUl0isCk5XkKqD2A7E1gy+tOynAwSG2UzPKWcn4GT74FnZLuVLkAId9Jj0ZJ\ntfUHQp2AR3Sva/OvuAEIAm+MnLihTYmqU+F9HYuz+MhQpLQAksTQUbl945fTUTRF\nX8H0LEC0r+JyCJ+4I8MCgYBuEhpLSH6qDuPUy3uFBK8KpGg+GvDVzWgzc+k4T7oC\nl9gc4eIE1V00WwG+InwF56EGr4xxg1SUEuJLdah+DrE12NwOnF8awChzjbgc4Pp/\nRfIfb0NdQfPiXYB1HP9FD1gFJJU2VZVra3Dl0YKUA7lRPpr0jSRb8Wo2RFUcio2h\nlwKBgQDPlv6g4Zj9JGexleUGoxISk75zk1Z6GzR1s072nfGkB6IoRtwjjIWdlF1E\n1gaenGNdwbXXnAtWdjnMNd8A/3nOAL1KRtMiIB5NiDyeay6NcKlclirY/AeZ95S9\npygF+Ac0TaD42DRjm0ewLWNxIZEgvClt4DTLZqXfJaV7MRPmBA==\n-----END RSA PRIVATE KEY-----\n",
           "gems": [
-            {
-              "name": "heroku",
-              "version": "1.15.1",
-              "source": null
-            },
-            {
-              "name": "taps",
-              "version": "0.3.14",
-              "source": null
-            },
             {
               "name": "newrelic_rpm",
               "version": "2.13.4",
@@ -472,37 +453,6 @@
         },
         {
           "name": null,
-          "public_hostname": "ec2-107-22-61-58.compute-1.amazonaws.com",
-          "components": [
-            {
-              "token": "9b33ef4b24dcb016ee8c31c3b299649c13222975",
-              "seed": "107.22.61.58",
-              "key": "newrelic"
-            },
-            {
-              "key": "ssmtp"
-            }
-          ],
-          "stonith_config": {
-            "endpoint_uri": "https://cloud.engineyard.com/stonith",
-            "endpoint_token": "16e29b8a-3fb3-4655-a117-0473856eab2e",
-            "monitor_host": "domU-12-31-38-06-B6-7D.compute-1.internal",
-            "endpoint_id": "i-39862f5e"
-          },
-          "role": "app",
-          "enabled": true,
-          "id": "i-39862f5e",
-          "private_hostname": "domU-12-31-39-0C-B4-AE.compute-1.internal",
-          "reporting_url": "https://cloud.engineyard.com/reporting/16e29b8a-3fb3-4655-a117-0473856eab2e",
-          "instance_api_config": {
-            "token": "16e29b8a-3fb3-4655-a117-0473856eab2e",
-            "instance_id": 154441,
-            "base_url": "https://cloud.engineyard.com/instance_api"
-          },
-          "awsm_token": "16e29b8a-3fb3-4655-a117-0473856eab2e"
-        },
-        {
-          "name": null,
           "public_hostname": "ec2-107-22-13-44.compute-1.amazonaws.com",
           "components": [
             {
@@ -601,7 +551,7 @@
       "region": "us-east-1",
       "ssh_username": "deploy",
       "internal_ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAl37QEYxzXJptVNQAPuABHFIlMvAu2Je6RywSanlV0Q2e40TpCsU+YAZeTLv8EZQE7+rrqZVktzr8E+PtKeT/zowePQ1km/pWVZsgYQjnDhJHGFIpSEwfr5/AFCkRmMx1Pkchql4+OREPuiiUqljJ20c9FzseVilIEnA8Yae8C3KTan34Z/j9knO+oqEPzCSbukSLlB3VMojRLzROqcmtdSyqezHZkja2TzFS0/2N3Oy9Armm+xLON3r5ZoB9s7biljzakYK8LmzJMro0v07B+RA8gdMuzXWb44V85IUBLg5p63UIxJ3EOY/T/utMNbZU6u3u623SDpJYmvDguN4M/w== \n",
-      "admin_ssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAqRwAKzXKzizrNoUx3d/bF1pBuxYigRr9YYTtq7MPQWaUGkfd7x3N5DCYtOiVFerYwncG9CFLx7fKrCK+ZRmE4wK/zUM7t2ImHrI/cwdP9IOvcpPkjhjNtTkx01GUy+tHnuISUg8Os+/XjMlAIIYmz9DAftx5bF5qfZbZr2LBI5K5rkU60eJyn20WZzK6AM/k9Z+1JRhRsOJ9d0JhHJDImR+8AXskVHe/ch/5m58hpBWOtsyr2zPm1Ua/ooi5pH4pVcllgw7jmK2hO5OGRDdHKb4x4s68ZIyM/T3dozdbYA7mIX8yI12+FcE+pIIx9yPxjq+KeHDj/H1hXs4abagkGw== \n",
+      "admin_ssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4HKytOcnc64vKOOcbLUWJWuOiMPKT7R7wI4cSsLTMhNgxoYSvcrW6My5X3jE2/3j1XI94G8nDRGN5UFJorvhBUzR4u3qPLe1u9a1UYBEtdEk/dS9NG6ZCIBJtt4Mosav8zuxXJTUsJE54JYeX+we9cyzkuPoG1kvD/nRrdzYVH6u8CpX3AfQOl9+Hk4JVnSYNK7Atqr0Fy7cotObqrsGavOJnFnjL5nyxW41EI6UxF5phHaucFSfN0uPs+5PKFIrVPiMWpZ1j4JByILK0tZW18lx0MA29nF6WtzZG6UxHmtc6edcBoRZv/X4DW4LOIS+aL5J3YGAHZBsxDMxSzRnXw== \n",
       "backup_interval": 12,
       "internal_ssh_private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAl37QEYxzXJptVNQAPuABHFIlMvAu2Je6RywSanlV0Q2e40Tp\nCsU+YAZeTLv8EZQE7+rrqZVktzr8E+PtKeT/zowePQ1km/pWVZsgYQjnDhJHGFIp\nSEwfr5/AFCkRmMx1Pkchql4+OREPuiiUqljJ20c9FzseVilIEnA8Yae8C3KTan34\nZ/j9knO+oqEPzCSbukSLlB3VMojRLzROqcmtdSyqezHZkja2TzFS0/2N3Oy9Armm\n+xLON3r5ZoB9s7biljzakYK8LmzJMro0v07B+RA8gdMuzXWb44V85IUBLg5p63UI\nxJ3EOY/T/utMNbZU6u3u623SDpJYmvDguN4M/wIBIwKCAQEAjtam6/l0FXuo6ZSv\nxkDrGrPZ7jLqVy/4xsMnTnJm2wzXoxUWPVrjChSiDdXQaFhcbS30I4zbTaykh8hG\nAu3bPxZlp0ckWIzyULbVYs3hKoZDCE13YWxYY8KB5x9oXN4IJMa5V31t3gjFr4VY\n+GJX7AFW22OgQpvzfxldgKV2yPWMm7U88ZPjUwsB3vK++D4b+ztccGBzMsMKMtrk\n6Rdb5WjRMey+RujMY9bx9qFCh8l8wKARWuWXd2xJvPCIvHKb/jiX8ySJ9Z26221s\n4q6SUvMMq2uwA3tOdbS+OiFcUJZOKPpzpnECyhlsfg2m7009y7PfMGShKYSclRzk\nASfqcwKBgQDIQ1ZOvbsBiocElp+XQMYVlPHkoGCPKXD4dPDO2VE/qIxvF07t6vM+\ndvhArbjkG2Ja5nDmyur96u9rhk7IWkX1qA88ibFBv2EFJp7uvx5NqDltdxUMsYBF\nYxxJqXUjvrQNF+3yknmdWR3X4Av+tqSDJaXKAL/BmGBPc1REZjxaDQKBgQDBqMxJ\n/1tQv10sbR8LF3m9zUn/F7QRrHeIF7huAApSJuN8jAbcBrkqtCaNpJHfUI3ljguW\ngiyMvl6FfKb1x+AY8BCfx+EHJLnPUe0I0bVdAJ652M/MRs+mMh3d1p7oIaOs1px8\ngZzG08tiQ9iUr89pcRzD1mJdxkhLz0eqf/N8OwKBgQC80cZnf7BR6QL1spZ4qslk\nzkMoBO1Tx/zNAItGr6Rgl5paHUprSz0do18YaUftA+BkVZ2mZ40bSzmCozRWgQAi\nIhz+kHPtiI6tFckM/VcWBQLyLnLutfyZMY+zKr7nMCYa+U4QmLvO3v7he3kGGeuR\nmIZfX8q92M/V4cR7AU7YjwKBgQC8IFFsdGdVwTXwpISObpOFLdLajA4Cikg7D7p5\nfGHMJccLRjKMmNEiK1im2mHRnrW6bLrMuPgTsZ2mPpOPrDjHxKJvVHQy0zgoe3iM\nOW5aWF+tOQRgCkYPKV7XgAgUsvbFKEA+b0fXFuLUfGv+JyFB25hJNqiy3d/UnXjR\ng5wSRwKBgQDH/j5IJKPGT+CHpOaABrc+bzqHbERYhCfe82lWfRF96R+XMyzcntPh\nvK1IT84VzUsBeEMgOlZiGfRizZ52TOV2dU5xetcM4vVatztI9H57vWD6HmfZ5y2S\n5TqReW62XM653shk/Ev754kEHy6iEeDvN60NsY7rISglUcVTEdFtAA==\n-----END RSA PRIVATE KEY-----\n",
       "components": [
@@ -614,6 +564,12 @@
         },
         {
           "key": "environment_metadata"
+        },
+        {
+          "clusters": [
+
+          ],
+          "key": "metadata"
         }
       ],
       "mailserver": "smtp.engineyard.com",
