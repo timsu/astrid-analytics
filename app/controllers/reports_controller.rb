@@ -1,7 +1,7 @@
 class ReportsController < ApplicationController
 
   before_filter :validate_request
-  
+
   ################################################################# ACTIONS
 
   def retention
@@ -18,7 +18,7 @@ class ReportsController < ApplicationController
   def pirate
     @account = params[:account]
     @account_data = JSON.parse($redis.get "#{@account}:data")
-    
+
     apikeys = $redis.smembers "#{@account}:apikeys"
     @clients = apikeys.map { |apikey| JSON.parse($redis.get("apikeys:" + apikey))[1] }
 
@@ -48,11 +48,11 @@ class ReportsController < ApplicationController
       null_variant = $redis.get("#{@account}:#{test}:null_variant")
       user_groups = $redis.get("#{@account}:#{test}:user_groups")
       metric_filter = $redis.get("#{@account}:#{test}:metric_filter")
-      
+
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
       user_groups = user_groups ? JSON.parse(user_groups).map(&:to_sym) : [:new, :ea]
       metric_filter = metric_filter ? JSON.parse(metric_filter).map(&:to_sym) : [:referral, :signup, :activation, :revenue]
-      
+
       result[test] = {
         :variants => variants,
         :days => days,
@@ -82,12 +82,12 @@ class ReportsController < ApplicationController
       # compute variant data
       variants.each do |variant|
         variant_results = { :total_users => 0 }
-        
+
         user_groups.each do |user_status|
-          user_results = {}          
+          user_results = {}
           days.each do |day|
             day_results = {}
-            
+
             valid_dates = dates.select { |date| date <= Date.today - day }
             keys = generate_ab_keys test, variant, user_status, 0, valid_dates
             sum = $redis.mget(*keys + [nil]).compact.map(&:to_i).sum
@@ -124,17 +124,17 @@ class ReportsController < ApplicationController
         metrics = map_variant test, variant
         metrics.each do |key, value|
           map_percent_and_total(value, key == :signup ? metrics[:referral][:users] : variant_results[:total_users])
-        end          
-        variant_results[:metrics] = metrics          
+        end
+        variant_results[:metrics] = metrics
 
         test_results[variant] = variant_results
       end
 
       # compute summary
       test_results[:summary] = {}
-      
+
       test_results[:summary][:metrics] = {}
-      
+
       #metrics
       metric_filter.each do |key|
         percent = variants.map { |variant| test_results[variant][:metrics][key][:percent] }
@@ -160,8 +160,8 @@ class ReportsController < ApplicationController
         
         test_results[:summary][:metrics][key] = metric_results
       end
-      
-      
+
+
       user_groups.each do |user_status|
         user_results = {}
         
@@ -195,19 +195,19 @@ class ReportsController < ApplicationController
         end
 
         test_results[:summary][user_status] = user_results
-      end 
-      
+      end
+
 
       @variant_data[test] = test_results
     end
   end
 
   def engineyard
-    @time = params[:time] || 1.hour
-    
+    @time = params[:time] || 4.hours
+
     @dna = JSON.load Rails.root.join "config/dna.json"
     instances = @dna["engineyard"]["environment"]["instances"]
-    
+
     @app_master = instances.find { |instance| instance["role"] == "app_master" }
     @app_servers = instances.select { |instance| instance["role"] == "app" }
 
@@ -217,7 +217,7 @@ class ReportsController < ApplicationController
     @memcache = instances.find { |instance| instance["name"] == "memcache01" }
     @solr = instances.find { |instance| instance["name"] == "solr01" }
   end
-  
+
   ################################################################# HELPERS
   protected
   def map_percent_and_total(hash, total_users)
@@ -225,7 +225,7 @@ class ReportsController < ApplicationController
     hash[:percent] = total_users > 0 ? hash[:users] * 100.0 /total_users : 0
     hash
   end
-  
+
   protected
   def map_variant(test, variant)
     referral = { :users => $redis.get("#{@account}:#{test}:#{variant}:rfr:referral").to_i }
@@ -235,35 +235,35 @@ class ReportsController < ApplicationController
     { :referral => referral, :signup => signup,
       :revenue => revenue, :activation => activation }
   end
-  
+
   protected
   def chi_squared(variants, test_results, first_hash_key, second_hash_key, stat_key, total_key)
     overall_total = variants.reduce(0) do |result, variant|
       result += test_results[variant][first_hash_key][second_hash_key][total_key]
     end
-  
+
     overall_total_retained = variants.reduce(0) do |result, variant|
       result += test_results[variant][first_hash_key][second_hash_key][stat_key]
     end
-    
+
     chi_sq = variants.reduce(0) do |result, variant|
       #expected total = row total * column total / table total
       exp_retained = test_results[variant][first_hash_key][second_hash_key][total_key] *
         overall_total_retained / overall_total.to_f
       exp_not_retained = (test_results[variant][first_hash_key][second_hash_key][total_key] *
                           (overall_total - overall_total_retained)) / overall_total.to_f
-      
+
       obs_retained = test_results[variant][first_hash_key][second_hash_key][stat_key].to_f
       obs_not_retained = test_results[variant][first_hash_key][second_hash_key][total_key] -
         test_results[variant][first_hash_key][second_hash_key][stat_key].to_f
-      
+
       ret_point = 0
       ret_point = ((obs_retained - exp_retained)**2) / exp_retained.to_f if exp_retained > 0
-      
+
       not_ret_point = 0
       not_ret_point = ((obs_not_retained - exp_not_retained)**2) / exp_not_retained.to_f if
         exp_not_retained > 0
-      
+
       result += (ret_point + not_ret_point)
     end
   end
@@ -318,10 +318,10 @@ class ReportsController < ApplicationController
     chart = [{ :label => "# of users",
                :data => chart_dates.map { |date| date.to_time.httpdate }.zip(chart_result_values)
              }].to_json
-    
+
     { :yesterday => yesterday, :total => total, :delta => delta, :chart => chart }
   end
-  
+
   # read dashboard stats where keys are current totals
   protected
   def revenue_read
@@ -353,12 +353,12 @@ class ReportsController < ApplicationController
 
     { :yesterday => yesterday, :total => total, :delta => delta, :chart => chart }
   end
-    
+
   # read dashboard stats where keys are just numbers
   protected
   def pirate_read(stat, split_client = false)
     now = Time.now
-    
+
     sets = (0..now.hour - 1).map { |i| Date.today.to_s + "T%02d" % i } +
       (now.hour..23).map { |i| (Date.today - 7).to_s + "T%02d" % i } +
       (1..6).map { |i| (Date.today - i).to_s }
@@ -391,7 +391,7 @@ class ReportsController < ApplicationController
     { :by_client => by_client, :yesterday => yesterday, :total => total,
       :delta => delta, :chart => chart }
   end
-  
+
   protected
   def generate_ab_keys(test, variant, user_status, day, valid_dates)
     valid_dates.reduce([]) do |r, date|
@@ -406,5 +406,5 @@ class ReportsController < ApplicationController
       r
     end
   end
-    
+
 end
