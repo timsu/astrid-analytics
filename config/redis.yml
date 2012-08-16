@@ -2,6 +2,6 @@ development:
   host: localhost
 
 production:
-  host: ec2-184-73-124-104.compute-1.amazonaws.com
+  host: ec2-204-236-247-9.compute-1.amazonaws.com
 
 
