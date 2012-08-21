@@ -2,6 +2,24 @@
 # Cookbook Name:: redis
 # Recipe:: default
 #
+
+
+node[:applications].each do |app, data|
+  user = node[:users].first
+  case node[:instance_role]
+  when "solo", "app", "app_master", "util"
+    template "/data/#{app}/shared/config/redis.yml" do
+      source "redis.yml.erb"
+      owner user[:username]
+      group user[:username]
+      mode 0744
+      variables({
+                  :db_host => node[:db_host]
+                })
+    end
+  end
+end
+
 if ['db_master'].include?(node[:instance_role])
 
   sysctl "Enable Overcommit Memory" do
@@ -63,17 +81,4 @@ if ['db_master'].include?(node[:instance_role])
     action :run
   end
 
-end
-
-node[:applications].each do |app, data|
-  user = node[:users].first
-  case node[:instance_role]
-  when "solo", "app", "app_master", "util"
-    template "/data/#{app}/shared/config/redis.yml" do
-      source "redis.yml.erb"
-      owner user[:username]
-      group user[:username]
-      mode 0744
-    end
-  end
 end
