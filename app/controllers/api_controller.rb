@@ -17,11 +17,11 @@
 class ApiController < ApplicationController
 
   API_VERSION = 2
-  
+
   before_filter :validate_request
-  
+
   rescue_from Exception, :with => :render_error
-  
+
   ################################################################# DASHBOARD API
 
   # api/acquisition - record aquisition event
@@ -105,7 +105,7 @@ class ApiController < ApplicationController
     raise ApiError, "Please send only one of: 'delta' or 'total" if params[:delta] and params[:total]
 
     $redis.sadd "rvn:#{@account}:days", Date.today
-    if params[:total]    
+    if params[:total]
       $redis.set "rvn:#{@account}:#{Date.today}", params[:total].to_i
     elsif params[:delta]
       keys = (0..30).map { |i| "rvn:#{@account}:#{Date.today - i}" }
@@ -118,18 +118,18 @@ class ApiController < ApplicationController
 
   ################################################################# AB TEST API
 
-  def ab_retention      
+  def ab_retention
     raise ApiError, "Parameter required: 'payload'" if params[:payload].blank?
-    
+
     @payload = JSON.parse(params[:payload])
     @payload = [@payload] if @payload.instance_of? Hash
 
     @payload.each do |event|
       update_from_event(event)
-      
+
       date = Date.today
-      $redis.sadd "#{@account}:#{@test}:dates", date    
-      
+      $redis.sadd "#{@account}:#{@test}:dates", date
+
       is_new = event["new"]
       raise ApiError, "Valid parameter required: 'new'" unless is_new != nil
       is_activated = event["activated"]
@@ -149,37 +149,37 @@ class ApiController < ApplicationController
 
     render :json => { :status => "Success" }
   end
-  
-  
-  def ab_referral      
+
+
+  def ab_referral
     raise ApiError, "Parameter required: 'payload'" if params[:payload].blank?
-    
+
     @payload = JSON.parse(params[:payload])
     @payload = [@payload] if @payload.instance_of? Hash
 
     @payload.each do |event|
       update_from_event(event)
-      
+
       if event["referral"]
         $redis.incr "#{@account}:#{@test}:#{@variant}:rfr:referral"
       elsif event["signup"]
         $redis.incr "#{@account}:#{@test}:#{@variant}:rfr:signup"
-      end 
+      end
     end
 
     render :json => { :status => "Success" }
   end
-  
-  
+
+
   def ab_revenue
     raise ApiError, "Parameter required: 'payload'" if params[:payload].blank?
-    
+
     @payload = JSON.parse(params[:payload])
     @payload = [@payload] if @payload.instance_of? Hash
 
     @payload.each do |event|
       update_from_event(event)
-      
+
       if event["initial"]
         $redis.incr "#{@account}:#{@test}:#{@variant}:rev:initial"
       elsif event["revenue"]
@@ -189,10 +189,10 @@ class ApiController < ApplicationController
 
     render :json => { :status => "Success" }
   end
-  
+
   def ab_activation
     raise ApiError, "Parameter required: 'payload'" if params[:payload].blank?
-    
+
     @payload = JSON.parse(params[:payload])
     @payload = [@payload] if @payload.instance_of? Hash
 
@@ -208,8 +208,8 @@ class ApiController < ApplicationController
 
     render :json => { :status => "Success" }
   end
-  
-  
+
+
   ################################################################# HELPERS
 
   protected
@@ -223,25 +223,27 @@ class ApiController < ApplicationController
     raise ApiError, "Valid parameter required: 'variant'" unless @variant.class == String
     $redis.sadd "#{@account}:#{@test}:variants", @variant
   end
-  
+
   protected
   def render_error(e)
-    raise e if e.class != ApiError 
+    raise e if e.class != ApiError
     render :format => :json, :text => { :status => :error,
       :message => e.to_s }.to_json
   end
-  
+
   protected
   def validate_request
     @apikey = params[:apikey]
     raise ApiError, "Need to specify API key" unless @apikey
-    
-    value = JSON.parse $redis.get "apikeys:#{@apikey}"
+    key_data = $redis.get "apikeys:#{@apikey}"
+    raise ApiError, "Invalid API key" unless key_data
+
+    value = JSON.parse
     raise ApiError, "Unknown API key" unless value
 
     @account, @client, @secret = value
 
-    sig = ApiController.generate_signature params, @secret    
+    sig = ApiController.generate_signature params, @secret
     if sig != params[:sig]
       unless Rails.env.production?
         puts "Expected Signature: #{sig}"
