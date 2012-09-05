@@ -1,8 +1,8 @@
 {
-  "name": "solr01",
   "db_slaves": [
     "ip-10-117-30-197.ec2.internal",
-    "ip-10-30-140-32.ec2.internal"
+    "ip-10-30-140-32.ec2.internal",
+    "domU-12-31-39-17-39-C6.compute-1.internal"
   ],
   "aws_secret_key": "9ltC6nSqYX7Br4rkIbhxFiXSAnOpwBq9f4xXOzjY",
   "ruby_version": "Ruby 1.9.3",
@@ -19,13 +19,14 @@
     "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzyZUuncMx95VBRb8coXuPIiQuJ4gQL327IJ6Zt5F43P+z1JcbLaA8w+7ZoniIEeZ5HDYasSQhVQNTx85xctvsWNqwg7J4mgq5rNTSGRZIxpsiMZ7WqGeBsMaSH8Q9bxC1fifDg9KuagvMsA6NpDOUuIf9CAfQkozJh9MDRXM81nY2KUxECJNDgYl5rgj3Sz1sMEJyA3uqN1gaO2Sdl4tRvd8yGfvpePGKGLPX+ZBsMevzcRnLN7dxFG8yPZ/VXiaq05HeidnuLMfHG5jTgkFw/y4J/PiGOqaQtbJEdAiikNEkS8ZmFZ8OEo3Hf/w0NkSG77R6DqO218CUS4BCvAaAQ== Sam@Sam-Bosleys-MacBook-Pro.local",
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDiHHP+F8s1dptdm4YWCnnLDXeBlHtnd7alU2//TZgsSQ3//cQolOnQZpsY/t8Dkq2+LDY32l5ZJCan7GSwhz6aayZ+lmDZPNJpXow0JaDOI/eygimn98hyVCeyiBDwrWiA7tBIGEdvgKVPxI3Oa8xwNBqex8DT8bGmLut3+HIN6NFcCvEKGczVj9xPdxf6gJRroWrUkHiWOZx+wBL/GYDrjP+MoBGUnfiuO3DO8n7niRoFkqp+OU2+7aQ77/4SgoIH/ld17sojxVxAAiLh+qR55Pw7knbbIBBB63C578S5ajOADKijaJ0lI6RakQrZeTxvBnGwT75/VEXJQy1SomP7 jball@localhost",
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNIaHOKENBFzL6zr8qX7CR9Ow0C93Q2G6S6C9q/+KVhHtGznJUJsKJaRr/fdX3RKieSSWJaFCnUEnl7oaaaHwVfXaGfspJsEsxIWQMtWAYCmfnjPLGzIrcc3zsIfJR3/4IH9e9LXDaDe5scP6eJSUrgsvxZhPRPNx4YwM4xTPTr1q4RB1oinicCkN2ZSW/xxEHu24ywJLuA6p/B+67ZDU4TDPgJCG8jxbqcqWGmDLl0ntqXlPrxtXbLohWblbcXkmP/pamggQpBDA0uMWwkEp0/C3PUwBQ0FJrnLJ5ViL0wjy8G/hSQgQLAivsK3bDAVkskRiKVOoOAU+TiRZaIXvp",
-    "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAwp9YP8V/xj1J+hXKiHCv4IJocoYKFiyT7vth5wZ3WW5hRr8qCIMZERgELExZunhUUtIcZ/PrqwqTa5cJGWAbrmCYGHsdUxoCx3t+EIksmvm9X5+4JxJd8qLnfc3kdUbBjD1DAnU9NyAoMESS5WJ0xG3njGVhLusdLU6G48v45arRW7LoBwg+dx7VkXrOWUWkS1SuyGVunkudRsnOfrc/W2Sm5teJ3yDp7EpexW5BpN/UHLTfwskc6LcfdIWsX5ZafoqHkKs7gRf5mie9jrTbolsCdvJSZ0yJiRprxqylvHWLQH+Xxekc+xtzI1v8uF3isecRuW8pzKXIIwSEXUjKFw== sboz88@gmail.com"
+    "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAwp9YP8V/xj1J+hXKiHCv4IJocoYKFiyT7vth5wZ3WW5hRr8qCIMZERgELExZunhUUtIcZ/PrqwqTa5cJGWAbrmCYGHsdUxoCx3t+EIksmvm9X5+4JxJd8qLnfc3kdUbBjD1DAnU9NyAoMESS5WJ0xG3njGVhLusdLU6G48v45arRW7LoBwg+dx7VkXrOWUWkS1SuyGVunkudRsnOfrc/W2Sm5teJ3yDp7EpexW5BpN/UHLTfwskc6LcfdIWsX5ZafoqHkKs7gRf5mie9jrTbolsCdvJSZ0yJiRprxqylvHWLQH+Xxekc+xtzI1v8uF3isecRuW8pzKXIIwSEXUjKFw== sboz88@gmail.com",
+    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDjKyei0h6IZkFqZH42E4h6yqBQAuSj3Ej7hrdTdYQqr/w4IwYp2D0FEiho6R9PfH7R+rQjFMaobkL0aLamERQu7CwSp5iqQh1WEZIjR1d5GTG1pAPP8gtFxyvtGU2spEVYxLARGZCcPI7NCZuIPYlFRxqOWVhd6SuLuxqkf8HUse34Gb0c6kzIDKColP5epTga2aj/e6kXzGSpdMNVla+T5R+Gr49B3Oi3DriXpnotcqSZU/YzAGwm2XYcIdsHT9kSGAwh3q7c1UhYYv0rUFA9rm/FFJKhPCavhaCEPflHv99u9inOfhQKtpKhc9nZqKh58f1axGM8UGu2PiR3iZrp jball@jball-XPS-8500"
   ],
   "internal_ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAl37QEYxzXJptVNQAPuABHFIlMvAu2Je6RywSanlV0Q2e40TpCsU+YAZeTLv8EZQE7+rrqZVktzr8E+PtKeT/zowePQ1km/pWVZsgYQjnDhJHGFIpSEwfr5/AFCkRmMx1Pkchql4+OREPuiiUqljJ20c9FzseVilIEnA8Yae8C3KTan34Z/j9knO+oqEPzCSbukSLlB3VMojRLzROqcmtdSyqezHZkja2TzFS0/2N3Oy9Armm+xLON3r5ZoB9s7biljzakYK8LmzJMro0v07B+RA8gdMuzXWb44V85IUBLg5p63UIxJ3EOY/T/utMNbZU6u3u623SDpJYmvDguN4M/w== \n",
-  "admin_ssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4HKytOcnc64vKOOcbLUWJWuOiMPKT7R7wI4cSsLTMhNgxoYSvcrW6My5X3jE2/3j1XI94G8nDRGN5UFJorvhBUzR4u3qPLe1u9a1UYBEtdEk/dS9NG6ZCIBJtt4Mosav8zuxXJTUsJE54JYeX+we9cyzkuPoG1kvD/nRrdzYVH6u8CpX3AfQOl9+Hk4JVnSYNK7Atqr0Fy7cotObqrsGavOJnFnjL5nyxW41EI6UxF5phHaucFSfN0uPs+5PKFIrVPiMWpZ1j4JByILK0tZW18lx0MA29nF6WtzZG6UxHmtc6edcBoRZv/X4DW4LOIS+aL5J3YGAHZBsxDMxSzRnXw== \n",
+  "admin_ssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAqRwAKzXKzizrNoUx3d/bF1pBuxYigRr9YYTtq7MPQWaUGkfd7x3N5DCYtOiVFerYwncG9CFLx7fKrCK+ZRmE4wK/zUM7t2ImHrI/cwdP9IOvcpPkjhjNtTkx01GUy+tHnuISUg8Os+/XjMlAIIYmz9DAftx5bF5qfZbZr2LBI5K5rkU60eJyn20WZzK6AM/k9Z+1JRhRsOJ9d0JhHJDImR+8AXskVHe/ch/5m58hpBWOtsyr2zPm1Ua/ooi5pH4pVcllgw7jmK2hO5OGRDdHKb4x4s68ZIyM/T3dozdbYA7mIX8yI12+FcE+pIIx9yPxjq+KeHDj/H1hXs4abagkGw== \n",
   "backup_interval": 12,
   "internal_ssh_private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAl37QEYxzXJptVNQAPuABHFIlMvAu2Je6RywSanlV0Q2e40Tp\nCsU+YAZeTLv8EZQE7+rrqZVktzr8E+PtKeT/zowePQ1km/pWVZsgYQjnDhJHGFIp\nSEwfr5/AFCkRmMx1Pkchql4+OREPuiiUqljJ20c9FzseVilIEnA8Yae8C3KTan34\nZ/j9knO+oqEPzCSbukSLlB3VMojRLzROqcmtdSyqezHZkja2TzFS0/2N3Oy9Armm\n+xLON3r5ZoB9s7biljzakYK8LmzJMro0v07B+RA8gdMuzXWb44V85IUBLg5p63UI\nxJ3EOY/T/utMNbZU6u3u623SDpJYmvDguN4M/wIBIwKCAQEAjtam6/l0FXuo6ZSv\nxkDrGrPZ7jLqVy/4xsMnTnJm2wzXoxUWPVrjChSiDdXQaFhcbS30I4zbTaykh8hG\nAu3bPxZlp0ckWIzyULbVYs3hKoZDCE13YWxYY8KB5x9oXN4IJMa5V31t3gjFr4VY\n+GJX7AFW22OgQpvzfxldgKV2yPWMm7U88ZPjUwsB3vK++D4b+ztccGBzMsMKMtrk\n6Rdb5WjRMey+RujMY9bx9qFCh8l8wKARWuWXd2xJvPCIvHKb/jiX8ySJ9Z26221s\n4q6SUvMMq2uwA3tOdbS+OiFcUJZOKPpzpnECyhlsfg2m7009y7PfMGShKYSclRzk\nASfqcwKBgQDIQ1ZOvbsBiocElp+XQMYVlPHkoGCPKXD4dPDO2VE/qIxvF07t6vM+\ndvhArbjkG2Ja5nDmyur96u9rhk7IWkX1qA88ibFBv2EFJp7uvx5NqDltdxUMsYBF\nYxxJqXUjvrQNF+3yknmdWR3X4Av+tqSDJaXKAL/BmGBPc1REZjxaDQKBgQDBqMxJ\n/1tQv10sbR8LF3m9zUn/F7QRrHeIF7huAApSJuN8jAbcBrkqtCaNpJHfUI3ljguW\ngiyMvl6FfKb1x+AY8BCfx+EHJLnPUe0I0bVdAJ652M/MRs+mMh3d1p7oIaOs1px8\ngZzG08tiQ9iUr89pcRzD1mJdxkhLz0eqf/N8OwKBgQC80cZnf7BR6QL1spZ4qslk\nzkMoBO1Tx/zNAItGr6Rgl5paHUprSz0do18YaUftA+BkVZ2mZ40bSzmCozRWgQAi\nIhz+kHPtiI6tFckM/VcWBQLyLnLutfyZMY+zKr7nMCYa+U4QmLvO3v7he3kGGeuR\nmIZfX8q92M/V4cR7AU7YjwKBgQC8IFFsdGdVwTXwpISObpOFLdLajA4Cikg7D7p5\nfGHMJccLRjKMmNEiK1im2mHRnrW6bLrMuPgTsZ2mPpOPrDjHxKJvVHQy0zgoe3iM\nOW5aWF+tOQRgCkYPKV7XgAgUsvbFKEA+b0fXFuLUfGv+JyFB25hJNqiy3d/UnXjR\ng5wSRwKBgQDH/j5IJKPGT+CHpOaABrc+bzqHbERYhCfe82lWfRF96R+XMyzcntPh\nvK1IT84VzUsBeEMgOlZiGfRizZ52TOV2dU5xetcM4vVatztI9H57vWD6HmfZ5y2S\n5TqReW62XM653shk/Ev754kEHy6iEeDvN60NsY7rISglUcVTEdFtAA==\n-----END RSA PRIVATE KEY-----\n",
-  "instance_role": "util",
+  "instance_role": "app_master",
   "utility_instances": [
     {
       "name": "solr01",
@@ -38,6 +39,10 @@
     {
       "name": "memcache01",
       "hostname": "domU-12-31-39-18-15-5B.compute-1.internal"
+    },
+    {
+      "name": "memcache02",
+      "hostname": "ip-10-28-52-165.ec2.internal"
     }
   ],
   "mailserver": "smtp.engineyard.com",
@@ -58,6 +63,7 @@
     "domU-12-31-38-01-5C-61.compute-1.internal",
     "domU-12-31-39-09-5C-AD.compute-1.internal",
     "ip-10-28-158-169.ec2.internal",
+    "ip-10-76-169-28.ec2.internal",
     "domU-12-31-38-06-B6-7D.compute-1.internal"
   ],
   "applications": {
@@ -72,7 +78,7 @@
       "repository_name": "git@github.com:todoroo/act.fm.git",
       "http_bind_port": 80,
       "run_deploy": false,
-      "revision": "dbaf13e7573811925587d546bde7cbc82c7d085e",
+      "revision": "fb87dcf3ea4f6b54f0e73cf451866441d830ee7a",
       "branch": "prod",
       "run_migrations": false,
       "deploy_action": "deploy",
@@ -118,7 +124,7 @@
     }
   ],
   "alert_email": "rails@todoroo.com",
-  "reporting_url": "https://cloud.engineyard.com/reporting/06fdc266-6b10-43ad-9cc8-a0e07fcaa828",
+  "reporting_url": "https://cloud.engineyard.com/reporting/48f646e4-08fd-4839-9fdc-30296c557045",
   "master_app_server": {
     "private_dns_name": "domU-12-31-38-06-B6-7D.compute-1.internal",
     "public_ip": "ec2-50-16-237-95.compute-1.amazonaws.com"
@@ -155,7 +161,7 @@
   ],
   "db_host": "ec2-107-22-87-234.compute-1.amazonaws.com",
   "engineyard": {
-    "this": "i-84d616e4",
+    "this": "i-a04d74c4",
     "environment": {
       "apps": [
         {
@@ -177,7 +183,7 @@
           "type": "rails3",
           "repository_name": "git@github.com:todoroo/act.fm.git",
           "run_deploy": false,
-          "revision": "dbaf13e7573811925587d546bde7cbc82c7d085e",
+          "revision": "fb87dcf3ea4f6b54f0e73cf451866441d830ee7a",
           "bundled": null,
           "branch": "prod",
           "run_migrations": false,
@@ -229,7 +235,8 @@
         "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzyZUuncMx95VBRb8coXuPIiQuJ4gQL327IJ6Zt5F43P+z1JcbLaA8w+7ZoniIEeZ5HDYasSQhVQNTx85xctvsWNqwg7J4mgq5rNTSGRZIxpsiMZ7WqGeBsMaSH8Q9bxC1fifDg9KuagvMsA6NpDOUuIf9CAfQkozJh9MDRXM81nY2KUxECJNDgYl5rgj3Sz1sMEJyA3uqN1gaO2Sdl4tRvd8yGfvpePGKGLPX+ZBsMevzcRnLN7dxFG8yPZ/VXiaq05HeidnuLMfHG5jTgkFw/y4J/PiGOqaQtbJEdAiikNEkS8ZmFZ8OEo3Hf/w0NkSG77R6DqO218CUS4BCvAaAQ== Sam@Sam-Bosleys-MacBook-Pro.local",
         "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDiHHP+F8s1dptdm4YWCnnLDXeBlHtnd7alU2//TZgsSQ3//cQolOnQZpsY/t8Dkq2+LDY32l5ZJCan7GSwhz6aayZ+lmDZPNJpXow0JaDOI/eygimn98hyVCeyiBDwrWiA7tBIGEdvgKVPxI3Oa8xwNBqex8DT8bGmLut3+HIN6NFcCvEKGczVj9xPdxf6gJRroWrUkHiWOZx+wBL/GYDrjP+MoBGUnfiuO3DO8n7niRoFkqp+OU2+7aQ77/4SgoIH/ld17sojxVxAAiLh+qR55Pw7knbbIBBB63C578S5ajOADKijaJ0lI6RakQrZeTxvBnGwT75/VEXJQy1SomP7 jball@localhost",
         "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNIaHOKENBFzL6zr8qX7CR9Ow0C93Q2G6S6C9q/+KVhHtGznJUJsKJaRr/fdX3RKieSSWJaFCnUEnl7oaaaHwVfXaGfspJsEsxIWQMtWAYCmfnjPLGzIrcc3zsIfJR3/4IH9e9LXDaDe5scP6eJSUrgsvxZhPRPNx4YwM4xTPTr1q4RB1oinicCkN2ZSW/xxEHu24ywJLuA6p/B+67ZDU4TDPgJCG8jxbqcqWGmDLl0ntqXlPrxtXbLohWblbcXkmP/pamggQpBDA0uMWwkEp0/C3PUwBQ0FJrnLJ5ViL0wjy8G/hSQgQLAivsK3bDAVkskRiKVOoOAU+TiRZaIXvp",
-        "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAwp9YP8V/xj1J+hXKiHCv4IJocoYKFiyT7vth5wZ3WW5hRr8qCIMZERgELExZunhUUtIcZ/PrqwqTa5cJGWAbrmCYGHsdUxoCx3t+EIksmvm9X5+4JxJd8qLnfc3kdUbBjD1DAnU9NyAoMESS5WJ0xG3njGVhLusdLU6G48v45arRW7LoBwg+dx7VkXrOWUWkS1SuyGVunkudRsnOfrc/W2Sm5teJ3yDp7EpexW5BpN/UHLTfwskc6LcfdIWsX5ZafoqHkKs7gRf5mie9jrTbolsCdvJSZ0yJiRprxqylvHWLQH+Xxekc+xtzI1v8uF3isecRuW8pzKXIIwSEXUjKFw== sboz88@gmail.com"
+        "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAwp9YP8V/xj1J+hXKiHCv4IJocoYKFiyT7vth5wZ3WW5hRr8qCIMZERgELExZunhUUtIcZ/PrqwqTa5cJGWAbrmCYGHsdUxoCx3t+EIksmvm9X5+4JxJd8qLnfc3kdUbBjD1DAnU9NyAoMESS5WJ0xG3njGVhLusdLU6G48v45arRW7LoBwg+dx7VkXrOWUWkS1SuyGVunkudRsnOfrc/W2Sm5teJ3yDp7EpexW5BpN/UHLTfwskc6LcfdIWsX5ZafoqHkKs7gRf5mie9jrTbolsCdvJSZ0yJiRprxqylvHWLQH+Xxekc+xtzI1v8uF3isecRuW8pzKXIIwSEXUjKFw== sboz88@gmail.com",
+        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDjKyei0h6IZkFqZH42E4h6yqBQAuSj3Ej7hrdTdYQqr/w4IwYp2D0FEiho6R9PfH7R+rQjFMaobkL0aLamERQu7CwSp5iqQh1WEZIjR1d5GTG1pAPP8gtFxyvtGU2spEVYxLARGZCcPI7NCZuIPYlFRxqOWVhd6SuLuxqkf8HUse34Gb0c6kzIDKColP5epTga2aj/e6kXzGSpdMNVla+T5R+Gr49B3Oi3DriXpnotcqSZU/YzAGwm2XYcIdsHT9kSGAwh3q7c1UhYYv0rUFA9rm/FFJKhPCavhaCEPflHv99u9inOfhQKtpKhc9nZqKh58f1axGM8UGu2PiR3iZrp jball@jball-XPS-8500"
       ],
       "name": "actfm_production",
       "aws_secret_key": "9ltC6nSqYX7Br4rkIbhxFiXSAnOpwBq9f4xXOzjY",
@@ -543,6 +550,99 @@
             "base_url": "https://cloud.engineyard.com/instance_api"
           },
           "awsm_token": "177d3622-6a66-4672-8172-ebcb98781811"
+        },
+        {
+          "name": null,
+          "public_hostname": "ec2-184-72-203-154.compute-1.amazonaws.com",
+          "components": [
+            {
+              "token": "e4e7c6ddb1dfe9a02e96d4a94cc72b1e1437e5a9",
+              "seed": "184.72.203.154",
+              "key": "newrelic"
+            },
+            {
+              "key": "ssmtp"
+            }
+          ],
+          "stonith_config": {
+            "endpoint_uri": "https://cloud.engineyard.com/stonith",
+            "endpoint_token": "cde50459-4c1b-46cb-916f-e2ed685b2e4d",
+            "monitor_host": "domU-12-31-38-06-B6-7D.compute-1.internal",
+            "endpoint_id": "i-45022f3e"
+          },
+          "role": "app",
+          "enabled": true,
+          "id": "i-45022f3e",
+          "private_hostname": "ip-10-76-169-28.ec2.internal",
+          "reporting_url": "https://cloud.engineyard.com/reporting/cde50459-4c1b-46cb-916f-e2ed685b2e4d",
+          "instance_api_config": {
+            "token": "cde50459-4c1b-46cb-916f-e2ed685b2e4d",
+            "instance_id": 178906,
+            "base_url": "https://cloud.engineyard.com/instance_api"
+          },
+          "awsm_token": "cde50459-4c1b-46cb-916f-e2ed685b2e4d"
+        },
+        {
+          "name": "memcache02",
+          "public_hostname": "ec2-23-22-56-231.compute-1.amazonaws.com",
+          "components": [
+            {
+              "token": "1b0b568459e446a6346cd231f803dc9b8cc97cb6",
+              "seed": "23.22.56.231",
+              "key": "newrelic"
+            },
+            {
+              "key": "ssmtp"
+            }
+          ],
+          "stonith_config": {
+            "endpoint_uri": "https://cloud.engineyard.com/stonith",
+            "endpoint_token": "3c7f56fb-5e41-4b64-ae39-23a08302deee",
+            "monitor_host": "domU-12-31-38-06-B6-7D.compute-1.internal",
+            "endpoint_id": "i-36df224c"
+          },
+          "role": "util",
+          "enabled": true,
+          "id": "i-36df224c",
+          "private_hostname": "ip-10-28-52-165.ec2.internal",
+          "reporting_url": "https://cloud.engineyard.com/reporting/3c7f56fb-5e41-4b64-ae39-23a08302deee",
+          "instance_api_config": {
+            "token": "3c7f56fb-5e41-4b64-ae39-23a08302deee",
+            "instance_id": 180620,
+            "base_url": "https://cloud.engineyard.com/instance_api"
+          },
+          "awsm_token": "3c7f56fb-5e41-4b64-ae39-23a08302deee"
+        },
+        {
+          "name": null,
+          "public_hostname": "ec2-23-20-184-117.compute-1.amazonaws.com",
+          "components": [
+            {
+              "token": "910632b62f4dbb952d5a97b5fd9521963433feed",
+              "seed": "23.20.184.117",
+              "key": "newrelic"
+            },
+            {
+              "key": "ssmtp"
+            }
+          ],
+          "stonith_config": {
+            "endpoint_uri": "https://cloud.engineyard.com/stonith",
+            "endpoint_token": "ea92c431-9f09-458c-9383-330c35382b11",
+            "monitor_host": "domU-12-31-38-06-B6-7D.compute-1.internal",
+            "endpoint_id": "i-eab70290"
+          },
+          "role": "db_slave",
+          "enabled": false,
+          "id": "i-eab70290",
+          "private_hostname": "domU-12-31-39-17-39-C6.compute-1.internal",
+          "reporting_url": "https://cloud.engineyard.com/reporting/ea92c431-9f09-458c-9383-330c35382b11",
+          "instance_api_config": {
+            "token": "ea92c431-9f09-458c-9383-330c35382b11",
+            "instance_id": 181585,
+            "base_url": "https://cloud.engineyard.com/instance_api"
+          },
+          "awsm_token": "ea92c431-9f09-458c-9383-330c35382b11"
         }
       ],
       "framework_env": "production",
@@ -551,7 +651,7 @@
       "region": "us-east-1",
       "ssh_username": "deploy",
       "internal_ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAl37QEYxzXJptVNQAPuABHFIlMvAu2Je6RywSanlV0Q2e40TpCsU+YAZeTLv8EZQE7+rrqZVktzr8E+PtKeT/zowePQ1km/pWVZsgYQjnDhJHGFIpSEwfr5/AFCkRmMx1Pkchql4+OREPuiiUqljJ20c9FzseVilIEnA8Yae8C3KTan34Z/j9knO+oqEPzCSbukSLlB3VMojRLzROqcmtdSyqezHZkja2TzFS0/2N3Oy9Armm+xLON3r5ZoB9s7biljzakYK8LmzJMro0v07B+RA8gdMuzXWb44V85IUBLg5p63UIxJ3EOY/T/utMNbZU6u3u623SDpJYmvDguN4M/w== \n",
-      "admin_ssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4HKytOcnc64vKOOcbLUWJWuOiMPKT7R7wI4cSsLTMhNgxoYSvcrW6My5X3jE2/3j1XI94G8nDRGN5UFJorvhBUzR4u3qPLe1u9a1UYBEtdEk/dS9NG6ZCIBJtt4Mosav8zuxXJTUsJE54JYeX+we9cyzkuPoG1kvD/nRrdzYVH6u8CpX3AfQOl9+Hk4JVnSYNK7Atqr0Fy7cotObqrsGavOJnFnjL5nyxW41EI6UxF5phHaucFSfN0uPs+5PKFIrVPiMWpZ1j4JByILK0tZW18lx0MA29nF6WtzZG6UxHmtc6edcBoRZv/X4DW4LOIS+aL5J3YGAHZBsxDMxSzRnXw== \n",
+      "admin_ssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAqRwAKzXKzizrNoUx3d/bF1pBuxYigRr9YYTtq7MPQWaUGkfd7x3N5DCYtOiVFerYwncG9CFLx7fKrCK+ZRmE4wK/zUM7t2ImHrI/cwdP9IOvcpPkjhjNtTkx01GUy+tHnuISUg8Os+/XjMlAIIYmz9DAftx5bF5qfZbZr2LBI5K5rkU60eJyn20WZzK6AM/k9Z+1JRhRsOJ9d0JhHJDImR+8AXskVHe/ch/5m58hpBWOtsyr2zPm1Ua/ooi5pH4pVcllgw7jmK2hO5OGRDdHKb4x4s68ZIyM/T3dozdbYA7mIX8yI12+FcE+pIIx9yPxjq+KeHDj/H1hXs4abagkGw== \n",
       "backup_interval": 12,
       "internal_ssh_private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAl37QEYxzXJptVNQAPuABHFIlMvAu2Je6RywSanlV0Q2e40Tp\nCsU+YAZeTLv8EZQE7+rrqZVktzr8E+PtKeT/zowePQ1km/pWVZsgYQjnDhJHGFIp\nSEwfr5/AFCkRmMx1Pkchql4+OREPuiiUqljJ20c9FzseVilIEnA8Yae8C3KTan34\nZ/j9knO+oqEPzCSbukSLlB3VMojRLzROqcmtdSyqezHZkja2TzFS0/2N3Oy9Armm\n+xLON3r5ZoB9s7biljzakYK8LmzJMro0v07B+RA8gdMuzXWb44V85IUBLg5p63UI\nxJ3EOY/T/utMNbZU6u3u623SDpJYmvDguN4M/wIBIwKCAQEAjtam6/l0FXuo6ZSv\nxkDrGrPZ7jLqVy/4xsMnTnJm2wzXoxUWPVrjChSiDdXQaFhcbS30I4zbTaykh8hG\nAu3bPxZlp0ckWIzyULbVYs3hKoZDCE13YWxYY8KB5x9oXN4IJMa5V31t3gjFr4VY\n+GJX7AFW22OgQpvzfxldgKV2yPWMm7U88ZPjUwsB3vK++D4b+ztccGBzMsMKMtrk\n6Rdb5WjRMey+RujMY9bx9qFCh8l8wKARWuWXd2xJvPCIvHKb/jiX8ySJ9Z26221s\n4q6SUvMMq2uwA3tOdbS+OiFcUJZOKPpzpnECyhlsfg2m7009y7PfMGShKYSclRzk\nASfqcwKBgQDIQ1ZOvbsBiocElp+XQMYVlPHkoGCPKXD4dPDO2VE/qIxvF07t6vM+\ndvhArbjkG2Ja5nDmyur96u9rhk7IWkX1qA88ibFBv2EFJp7uvx5NqDltdxUMsYBF\nYxxJqXUjvrQNF+3yknmdWR3X4Av+tqSDJaXKAL/BmGBPc1REZjxaDQKBgQDBqMxJ\n/1tQv10sbR8LF3m9zUn/F7QRrHeIF7huAApSJuN8jAbcBrkqtCaNpJHfUI3ljguW\ngiyMvl6FfKb1x+AY8BCfx+EHJLnPUe0I0bVdAJ652M/MRs+mMh3d1p7oIaOs1px8\ngZzG08tiQ9iUr89pcRzD1mJdxkhLz0eqf/N8OwKBgQC80cZnf7BR6QL1spZ4qslk\nzkMoBO1Tx/zNAItGr6Rgl5paHUprSz0do18YaUftA+BkVZ2mZ40bSzmCozRWgQAi\nIhz+kHPtiI6tFckM/VcWBQLyLnLutfyZMY+zKr7nMCYa+U4QmLvO3v7he3kGGeuR\nmIZfX8q92M/V4cR7AU7YjwKBgQC8IFFsdGdVwTXwpISObpOFLdLajA4Cikg7D7p5\nfGHMJccLRjKMmNEiK1im2mHRnrW6bLrMuPgTsZ2mPpOPrDjHxKJvVHQy0zgoe3iM\nOW5aWF+tOQRgCkYPKV7XgAgUsvbFKEA+b0fXFuLUfGv+JyFB25hJNqiy3d/UnXjR\ng5wSRwKBgQDH/j5IJKPGT+CHpOaABrc+bzqHbERYhCfe82lWfRF96R+XMyzcntPh\nvK1IT84VzUsBeEMgOlZiGfRizZ52TOV2dU5xetcM4vVatztI9H57vWD6HmfZ5y2S\n5TqReW62XM653shk/Ev754kEHy6iEeDvN60NsY7rISglUcVTEdFtAA==\n-----END RSA PRIVATE KEY-----\n",
       "components": [
