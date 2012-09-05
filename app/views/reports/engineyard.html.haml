@@ -14,8 +14,8 @@
 
 = form_tag "", :method => :get, :class => "pull-right" do
   %select(name="time" onchange="submit()")
-    - [1.hour, 2.hours, 4.hours, 8.hours, 12.hours, 1.day, 3.days].each do |time|
-      %option{ :value => time.to_i, :selected => time.to_s == @time && 'selected'}= distance_of_time_in_words(0, time).gsub "about ", ""
+    - [1.hour, 2.hours, 4.hours, 8.hours, 12.hours, 1.day, 3.days, 7.days, 14.days, 1.month].each do |time|
+      %option{ :value => time.to_i, :selected => time.to_s == @time.to_s && 'selected'}= distance_of_time_in_words(0, time).gsub "about ", ""
 
 %table
   %thead
@@ -23,7 +23,7 @@
       %th
         App
       %th
-        DB 
+        DB
       %th
         Util
 
@@ -48,18 +48,18 @@
           = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dmysql%3Bplugin_instance%3Dactfm%3Btype%3Dmysql_commands%3Bbegin%3D-#{@time}", :alt => "ps_pagefaults"
 
       %td
-        - instance = @memcache
-        - instance_id = instance["instance_api_config"]["instance_id"]
-        = link_to "#{instance["name"]} (#{instance["id"]})", "ssh://deploy@#{instance["public_hostname"]}"
-        = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dload%3Btype%3Dmemory%3Bbegin%3D-#{@time}", :alt => "Memory"
-        = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dload%3Btype%3Dmemcached_connections%3Bbegin%3D-#{@time}", :alt => "Memcached Connections"
-        - [ :hits, :misses, :evictions ].each do |type|
-          = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dload%3Btype%3Dmemcached_ops%3Btype_instance%3D#{type}%3Bbegin%3D-#{@time}", :alt => "Memcached Ops"
+        - @memcache.each do |instance|
+          - instance_id = instance["instance_api_config"]["instance_id"]
+          = link_to "#{instance["name"]} (#{instance["id"]})", "ssh://deploy@#{instance["public_hostname"]}"
+          = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dload%3Btype%3Dmemory%3Bbegin%3D-#{@time}", :alt => "Memory"
+          = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dload%3Btype%3Dmemcached_connections%3Bbegin%3D-#{@time}", :alt => "Memcached Connections"
+          - [ :hits, :misses, :evictions ].each do |type|
+            = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dload%3Btype%3Dmemcached_ops%3Btype_instance%3D#{type}%3Bbegin%3D-#{@time}", :alt => "Memcached Ops"
 
-        - instance = @solr
-        - instance_id = instance["instance_api_config"]["instance_id"]
-        = link_to "#{instance["name"]} (#{instance["id"]})", "ssh://deploy@#{instance["public_hostname"]}"
-        = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dload%3Btype%3Dload%3Bbegin%3D-#{@time}", :alt => "load"
+        - @solr.each do |instance|
+          - instance_id = instance["instance_api_config"]["instance_id"]
+          = link_to "#{instance["name"]} (#{instance["id"]})", "ssh://deploy@#{instance["public_hostname"]}"
+          = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dload%3Btype%3Dload%3Bbegin%3D-#{@time}", :alt => "load"
 
 :javascript
   setTimeout("location.reload(true);", 3600 * 1000);
