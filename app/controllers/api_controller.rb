@@ -238,7 +238,7 @@ class ApiController < ApplicationController
     key_data = $redis.get "apikeys:#{@apikey}"
     raise ApiError, "Invalid API key" unless key_data
 
-    value = JSON.parse
+    value = JSON.parse key_data
     raise ApiError, "Unknown API key" unless value
 
     @account, @client, @secret = value
