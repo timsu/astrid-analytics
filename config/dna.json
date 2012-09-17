@@ -1,8 +1,7 @@
 {
   "db_slaves": [
     "ip-10-117-30-197.ec2.internal",
-    "ip-10-30-140-32.ec2.internal",
-    "domU-12-31-39-17-39-C6.compute-1.internal"
+    "ip-10-157-10-132.ec2.internal"
   ],
   "aws_secret_key": "9ltC6nSqYX7Br4rkIbhxFiXSAnOpwBq9f4xXOzjY",
   "ruby_version": "Ruby 1.9.3",
@@ -80,7 +79,7 @@
       "repository_name": "git@github.com:todoroo/act.fm.git",
       "http_bind_port": 80,
       "run_deploy": false,
-      "revision": "6b29e8e8b4929051e7904ff2a147841a2e4d4f2a",
+      "revision": "1f1e5e4ba3aecf759b2ee2e83816d0999edc0b2e",
       "branch": "prod",
       "run_migrations": false,
       "deploy_action": "deploy",
@@ -161,7 +160,7 @@
       "name": "net-misc/memcached"
     }
   ],
-  "db_host": "ec2-107-22-87-234.compute-1.amazonaws.com",
+  "db_host": "ec2-23-20-184-117.compute-1.amazonaws.com",
   "engineyard": {
     "this": "i-a04d74c4",
     "environment": {
@@ -185,7 +184,7 @@
           "type": "rails3",
           "repository_name": "git@github.com:todoroo/act.fm.git",
           "run_deploy": false,
-          "revision": "6b29e8e8b4929051e7904ff2a147841a2e4d4f2a",
+          "revision": "1f1e5e4ba3aecf759b2ee2e83816d0999edc0b2e",
           "bundled": null,
           "branch": "prod",
           "run_migrations": false,
@@ -400,37 +399,6 @@
         },
         {
           "name": null,
-          "public_hostname": "ec2-107-22-87-234.compute-1.amazonaws.com",
-          "components": [
-            {
-              "token": "daeb6acb82eacb4607da96a99ae63283bf8f3a4a",
-              "seed": "107.22.87.234",
-              "key": "newrelic"
-            },
-            {
-              "key": "ssmtp"
-            }
-          ],
-          "stonith_config": {
-            "endpoint_uri": "https://cloud.engineyard.com/stonith",
-            "endpoint_token": "feb23364-a277-456d-a090-fbe55ce64960",
-            "monitor_host": "domU-12-31-38-06-B6-7D.compute-1.internal",
-            "endpoint_id": "i-dd0bc8ba"
-          },
-          "role": "db_master",
-          "enabled": true,
-          "id": "i-dd0bc8ba",
-          "private_hostname": "ip-10-87-101-153.ec2.internal",
-          "reporting_url": "https://cloud.engineyard.com/reporting/feb23364-a277-456d-a090-fbe55ce64960",
-          "instance_api_config": {
-            "token": "feb23364-a277-456d-a090-fbe55ce64960",
-            "instance_id": 153792,
-            "base_url": "https://cloud.engineyard.com/instance_api"
-          },
-          "awsm_token": "feb23364-a277-456d-a090-fbe55ce64960"
-        },
-        {
-          "name": null,
           "public_hostname": "ec2-107-22-13-44.compute-1.amazonaws.com",
           "components": [
             {
@@ -490,37 +458,6 @@
             "base_url": "https://cloud.engineyard.com/instance_api"
           },
           "awsm_token": "da89e538-e5a1-414e-b947-e0b6ab113754"
-        },
-        {
-          "name": null,
-          "public_hostname": "ec2-50-17-46-39.compute-1.amazonaws.com",
-          "components": [
-            {
-              "token": "970d31f84515937a00701222bbed1fe513fe50f7",
-              "seed": "50.17.46.39",
-              "key": "newrelic"
-            },
-            {
-              "key": "ssmtp"
-            }
-          ],
-          "stonith_config": {
-            "endpoint_uri": "https://cloud.engineyard.com/stonith",
-            "endpoint_token": "177d3622-6a66-4672-8172-ebcb98781811",
-            "monitor_host": "domU-12-31-38-06-B6-7D.compute-1.internal",
-            "endpoint_id": "i-e8c34090"
-          },
-          "role": "db_slave",
-          "enabled": true,
-          "id": "i-e8c34090",
-          "private_hostname": "ip-10-30-140-32.ec2.internal",
-          "reporting_url": "https://cloud.engineyard.com/reporting/177d3622-6a66-4672-8172-ebcb98781811",
-          "instance_api_config": {
-            "token": "177d3622-6a66-4672-8172-ebcb98781811",
-            "instance_id": 170985,
-            "base_url": "https://cloud.engineyard.com/instance_api"
-          },
-          "awsm_token": "177d3622-6a66-4672-8172-ebcb98781811"
         },
         {
           "name": null,
@@ -603,7 +540,7 @@
             "monitor_host": "domU-12-31-38-06-B6-7D.compute-1.internal",
             "endpoint_id": "i-eab70290"
           },
-          "role": "db_slave",
+          "role": "db_master",
           "enabled": true,
           "id": "i-eab70290",
           "private_hostname": "domU-12-31-39-17-39-C6.compute-1.internal",
@@ -676,6 +613,37 @@
             "base_url": "https://cloud.engineyard.com/instance_api"
           },
           "awsm_token": "f335bb47-f37d-4ef0-8af7-bb51d525b05c"
+        },
+        {
+          "name": null,
+          "public_hostname": "ec2-184-73-128-40.compute-1.amazonaws.com",
+          "components": [
+            {
+              "token": "c514b5920a31d0c0021ff8b753cf02ba042b3436",
+              "seed": "184.73.128.40",
+              "key": "newrelic"
+            },
+            {
+              "key": "ssmtp"
+            }
+          ],
+          "stonith_config": {
+            "endpoint_uri": "https://cloud.engineyard.com/stonith",
+            "endpoint_token": "9d480ca1-12ca-471e-8891-327fed42a21f",
+            "monitor_host": "domU-12-31-38-06-B6-7D.compute-1.internal",
+            "endpoint_id": "i-d47959ae"
+          },
+          "role": "db_slave",
+          "enabled": true,
+          "id": "i-d47959ae",
+          "private_hostname": "ip-10-157-10-132.ec2.internal",
+          "reporting_url": "https://cloud.engineyard.com/reporting/9d480ca1-12ca-471e-8891-327fed42a21f",
+          "instance_api_config": {
+            "token": "9d480ca1-12ca-471e-8891-327fed42a21f",
+            "instance_id": 184192,
+            "base_url": "https://cloud.engineyard.com/instance_api"
+          },
+          "awsm_token": "9d480ca1-12ca-471e-8891-327fed42a21f"
         }
       ],
       "framework_env": "production",
