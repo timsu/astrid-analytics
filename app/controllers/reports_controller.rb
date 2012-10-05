@@ -4,15 +4,37 @@ class ReportsController < ApplicationController
 
   ################################################################# ACTIONS
 
+  def acquisition
+    @account = params[:account]
+    @account_data = JSON.parse($redis.get "#{@account}:data")
+
+    apikeys = $redis.smembers "#{@account}:apikeys"
+    @clients = apikeys.map { |apikey| JSON.parse($redis.get("apikeys:" + apikey))[1] }
+
+    @type = "Acquisition"
+    @tag = "# of new users on"
+    @data = pirate_read "acq", true
+
+    # build up user id union for minor graphs
+    @data[:last_week] = pirate_week "acq", Time.now - 7.days
+    @data[:four_weeks] = pirate_week "acq", Time.now - 28.days
+
+    render 'big_dashboard'
+  end
+
   def retention
     @account = params[:account]
     @account_data = JSON.parse($redis.get "#{@account}:data")
 
-    @retention = retention_read
+    @type = "Retention"
+    @tag = "# of activated users on"
+    @data = retention_read
 
     # build up user id union for minor graphs
-    @retention[:last_week] = week_retention Time.now - 7.day
-    @retention[:four_weeks] = week_retention Time.now - 28.day
+    @data[:last_week] = week_retention Time.now - 7.day
+    @data[:four_weeks] = week_retention Time.now - 28.day
+
+    render 'big_dashboard'
   end
 
   def pirate
@@ -397,6 +419,14 @@ class ReportsController < ApplicationController
 
     { :by_client => by_client, :yesterday => yesterday, :total => total,
       :delta => delta, :chart => chart }
+  end
+
+  protected
+  def pirate_week(stat, week_ending)
+    sets = (0..6).map { |i| (week_ending.to_date - i).to_s }
+
+    keys = sets.map { |date| "#{stat}:#{@account}:#{date}" }
+    $redis.mget(*keys).compact.map(&:to_i).sum
   end
 
   protected

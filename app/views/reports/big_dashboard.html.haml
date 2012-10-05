@@ -1,4 +1,4 @@
-- content_for(:title, "Retention Dashboard - #{Time.now}")
+- content_for(:title, "#{@type} Dashboard - #{Time.now}")
 
 :css
   body { color: white; background: black; text-align: center; font-family: "Eurostile", "Futura", "Courier New", monospace }
@@ -11,7 +11,7 @@
   .yesterday { color: #ccc }
   .oneweekago { color: #aaa }
   .fourweeksago { color: #888 }
-  #retention_chart { width: 510px; height: 320px; margin: 15px 30px; }
+  #data_chart { width: 510px; height: 320px; margin: 15px 30px; }
   .tooltip { color: black }
   .marking.label { position: absolute; bottom: 2em; color: #c66; font-size: 80% }
   .ticklabel { font-size: 16px; color: #333; position: absolute; margin-right: 50px }
@@ -19,35 +19,39 @@
 .row
   .span12.main
     .title
-      = format_number @retention[:total]
+      = format_number @data[:total]
+    - if @clients
+      .client_title
+        - @clients.each do |client|
+          %span #{format_client client}: #{format_number @data[:by_client][client]}
     .subtitle
-      \# of activated users on
+      = @tag
       %span.env= @account_data["name"]
       in the past 168 hours
 
 .row
   .span7.offset1
-    #retention_chart
+    #data_chart
     :javascript
-      $(function() { 
-        Vanity.retention_graph('#retention_chart').plot(#{@retention[:chart]}); 
+      $(function() {
+        Vanity.retention_graph('#data_chart').plot(#{@data[:chart]});
       })
 
   .span3
     .minor.yesterday
       .title
-        = format_number @retention[:yesterday]
+        = format_number @data[:yesterday]
       .subtitle
         Yesterday
 
     .minor.oneweekago
       .title
-        = format_number @retention[:last_week]
+        = format_number @data[:last_week]
       .subtitle
         One week ago
 
     .minor.fourweeksago
       .title
-        = format_number @retention[:four_weeks]
+        = format_number @data[:four_weeks]
       .subtitle
         Four weeks ago
