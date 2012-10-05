@@ -36,7 +36,7 @@
 
   $(document).on("click", "[data-edit=unarchive]", function() {
     var parent = $(this).parents(".row");
-    $.post("/admin/edit_test", 
+    $.post("/admin/edit_test",
       { test: parent.data("test"), account: '#{@account}', unarchive: true },
       function() { window.location.hash = "#" + parent.data("test"); window.location.reload(); });
   });
@@ -44,7 +44,7 @@
   $(document).on("click", "[data-edit=null_variant]", function() {
     var parent = $(this).parents(".row");
     var variant = $(this).parents(".variant");
-    $.post("/admin/edit_test", 
+    $.post("/admin/edit_test",
       { test: parent.data("test"), account: '#{@account}', null_variant: variant.data("variant") },
       function() { window.location.hash = "#" + parent.data("test"); window.location.reload(); });
   });
@@ -58,7 +58,7 @@
 .row
   .span12
     .page-header
-      %h1 
+      %h1
         Tests for #{@account_data["name"]}
         %small
           %a(href="/") Home
@@ -112,7 +112,7 @@
           %tr
             %th(colspan=1) Launched: #{test_data[:dates].first}
             - test_data[:user_groups].each do |user_state|
-              %th(colspan="#{test_data[:days].length}") 
+              %th(colspan="#{test_data[:days].length}")
                 - if user_state == :new
                   New Users
                 - elsif user_state == :ea
@@ -137,16 +137,16 @@
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}") +#{day}
-                  
+
             - test_data[:metric_filter].each do |metric|
               %td(data-metric="#{metric}") %
-                
+
           %tr
             %td Total
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:total]
-                
+
             - test_data[:metric_filter].each do |metric|
               %td(data-metric="#{metric}")= metric_data[metric][:total]
 
@@ -155,7 +155,7 @@
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:opened]
-                
+
             - test_data[:metric_filter].each do |metric|
               %td(data-metric="#{metric}")= metric_data[metric][:users]
 
@@ -166,9 +166,9 @@
                 %td(data-day="#{day}")
                   - if variant_data[user_state][day][:total] == 0
                     \-
-                  - else 
+                  - else
                     = number_to_percentage variant_data[user_state][day][:retained]
-                    
+
             - test_data[:metric_filter].each do |metric|
               %td(data-metric="#{metric}")= number_to_percentage metric_data[metric][:percent]
 
@@ -189,7 +189,7 @@
                   = number_with_precision result_data[user_state][day][:delta]
                   - if result_data[user_state][day][:percent]
                     (#{number_to_percentage result_data[user_state][day][:percent], :precision => 0})
-                    
+
             - test_data[:metric_filter].each do |metric|
               %td(data-metric="#{metric}" class="#{result_data[:metrics][metric][:plusminus]}")
                 = number_to_percentage result_data[:metrics][metric][:delta]
@@ -202,7 +202,7 @@
                 %td(data-day="#{day}")
                   %div= result_data[user_state][day][:chisqsig]
                   %div= number_with_precision result_data[user_state][day][:chisqp]
-                  
+
             - test_data[:metric_filter].each do |metric|
               %td(data-metric="#{metric}")
                 %div= result_data[:metrics][metric][:chisqsig]
@@ -221,5 +221,8 @@
       .span12.well
 
         %h2
-          %a(href="#" title="Unarchive This Test" data-edit="unarchive")= test
+          %a(href="/reports/#{@account}/ab_test/#{test}" title="Show This Test" target="_blank")= test
+          %small
+            #{test_data[:dates].first}
+            %a(href="#" title="Unarchive This Test" data-edit="unarchive") (unarchive)
 

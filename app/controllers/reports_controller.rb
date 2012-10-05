@@ -38,6 +38,22 @@ class ReportsController < ApplicationController
     @tests = $redis.smembers("#{@account}:tests").sort
     @archived = $redis.smembers "#{@account}:archived"
 
+    show_test_data
+  end
+
+  def ab_test
+    @account = params[:account]
+    @account_data = JSON.parse($redis.get "#{@account}:data")
+
+    raise "Unknown account #{@account}" unless @account_data
+
+    @tests = [params[:test]]
+    @archived = []
+
+    show_test_data
+  end
+
+  def show_test_data
     @test_data = @tests.reduce({}) do |result, test|
       variants = $redis.smembers("#{@account}:#{test}:variants")
       days = $redis.smembers("#{@account}:#{test}:days").map(&:to_i)
@@ -152,7 +168,6 @@ class ReportsController < ApplicationController
         test_results[:summary][:metrics][key] = metric_results
       end
 
-
       user_groups.each do |user_status|
         user_results = {}
 
@@ -188,9 +203,10 @@ class ReportsController < ApplicationController
         test_results[:summary][user_status] = user_results
       end
 
-
       @variant_data[test] = test_results
     end
+
+    render 'ab'
   end
 
   def engineyard
