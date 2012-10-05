@@ -149,15 +149,6 @@ class ReportsController < ApplicationController
           metric_results[:plusminus] = metric_results[:delta] > 0 ? "plus" : (metric_results[:delta] < 0 ? "minus" : "")
         end
 
-        if percent.sum > 0
-          chi_sq = chi_squared(variants, test_results, :metrics, key, :users, :total)
-
-          metric_results[:chisq] = chi_sq
-          metric_results[:chisqp] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
-          metric_results[:chisqsig] = metric_results  [:chisqp] < 0.05 ? "YES" : "NO"
-          metric_results[:plusminus] = "" if metric_results[:chisqsig] != "YES"
-        end
-
         test_results[:summary][:metrics][key] = metric_results
       end
 
