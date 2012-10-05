@@ -13,6 +13,7 @@ class ReportsController < ApplicationController
 
     @type = "Acquisition"
     @tag = "# of new users on"
+    @color = "#0A1327"
     @data = pirate_read "acq", true
 
     # build up user id union for minor graphs
@@ -28,6 +29,7 @@ class ReportsController < ApplicationController
 
     @type = "Retention"
     @tag = "# of activated users on"
+    @color = "#150127"
     @data = retention_read
 
     # build up user id union for minor graphs
