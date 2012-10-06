@@ -23,11 +23,11 @@
 
     - if @type == "Acquisition"
       Created account on web:
-      = number_to_human @data[:by_client]["web"]
+      = format_number @data[:by_client]["web"]
       opened app on Android:
-      = number_to_human @data[:by_client]["android"]
+      = format_number @data[:by_client]["android"]
       iOS:
-      = number_to_human @data[:by_client]["ios"]
+      = format_number @data[:by_client]["ios"]
 
     .subtitle
       = @tag
