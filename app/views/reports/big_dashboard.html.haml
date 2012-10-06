@@ -20,8 +20,15 @@
   .span12.main
     .title
       = format_number @data[:total]
-    - if @custom_title
-      .custom_title= @custom_title
+
+    - if @type == "Acquisition"
+      Created account on web:
+      = number_to_human @data[:by_client]["web"]
+      opened app on Android:
+      = number_to_human @data[:by_client]["android"]
+      iOS:
+      = number_to_human @data[:by_client]["ios"]
+
     .subtitle
       = @tag
       %span.env= @account_data["name"]

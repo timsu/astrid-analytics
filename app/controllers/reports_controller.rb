@@ -1,5 +1,7 @@
 class ReportsController < ApplicationController
 
+
+
   before_filter :validate_request
 
   ################################################################# ACTIONS
@@ -16,12 +18,16 @@ class ReportsController < ApplicationController
     @color = "#0A1327"
     @data = pirate_read "acq", true
 
-    @custom_title =
-      "Created account on web: #{@data[:by_client]["web"]}, " +
-      "Opened app on Android: #{@data[:by_client]["android"]}, " +
-      "iOS: #{@data[:by_client]["iphone"]}"
-
-    # build up user id union for minor graphs
+    chart_dates = (-30..-1).map { |i| Date.today + i }
+    charts = []
+    @clients.each do |client|
+      keys = chart_dates.map { |date| "acq:#{@account}:#{client}:#{date}" }
+      chart_result_values = $redis.mget(*keys).map { |value| value || 0 }
+      charts << { :label => client + ": # of users",
+                  :color => { "ios" => "#B7F2FB", "web" => "#FA6900", "android" => "#9AE14D" }[client],
+                  :data => chart_dates.map { |date| date.to_time.httpdate }.zip(chart_result_values) }
+    end
+    @data[:chart] = charts.to_json
     @data[:last_week] = pirate_week "acq", Time.now - 7.days
     @data[:four_weeks] = pirate_week "acq", Time.now - 28.days
 
@@ -35,9 +41,8 @@ class ReportsController < ApplicationController
     @type = "Retention"
     @tag = "# of activated users on"
     @color = "#150127"
-    @data = retention_read
 
-    # build up user id union for minor graphs
+    @data = retention_read
     @data[:last_week] = week_retention Time.now - 7.day
     @data[:four_weeks] = week_retention Time.now - 28.day
 
