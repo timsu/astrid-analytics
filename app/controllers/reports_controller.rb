@@ -16,6 +16,11 @@ class ReportsController < ApplicationController
     @color = "#0A1327"
     @data = pirate_read "acq", true
 
+    @custom_title =
+      "Created account on web: #{@data[:by_client]["web"]}, " +
+      "Opened app on Android: #{@data[:by_client]["android"]}, " +
+      "iOS: #{@data[:by_client]["iphone"]}"
+
     # build up user id union for minor graphs
     @data[:last_week] = pirate_week "acq", Time.now - 7.days
     @data[:four_weeks] = pirate_week "acq", Time.now - 28.days

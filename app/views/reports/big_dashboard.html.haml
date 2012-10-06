@@ -20,10 +20,8 @@
   .span12.main
     .title
       = format_number @data[:total]
-    - if @clients
-      .client_title
-        - @clients.each do |client|
-          %span #{format_client client}: #{format_number @data[:by_client][client]}
+    - if @custom_title
+      .custom_title= @custom_title
     .subtitle
       = @tag
       %span.env= @account_data["name"]
