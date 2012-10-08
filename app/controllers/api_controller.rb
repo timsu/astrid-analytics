@@ -29,8 +29,6 @@ class ApiController < ApplicationController
   # No parameters are required for this call. Please make sure to
   # send this only once for each new user
   def acquisition
-    t = Date.today - 2
-
     time_key = Time.now.strftime "%Y-%m-%dT%H"
     $redis.sadd "acq:#{@account}:days", t
     $redis.incr "acq:#{@account}:#{@client}:#{t}"
