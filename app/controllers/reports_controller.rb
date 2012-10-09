@@ -187,62 +187,14 @@ class ReportsController < ApplicationController
 
       #metrics
       metric_filter.each do |key|
-        percent = variants.map { |variant| test_results[variant][:metrics][key][:percent] }
-        metric_results = {}
-        metric_results[:delta] = percent.max - percent.min
-        sig_test = (key == :activation or key == :revenue) ? :chi_squared : :normal_dist
-
-        if null_variant
-          null_percent = test_results[null_variant][:metrics][key][:percent]
-          metric_results[:delta] = variants.reject { |v| v == null_variant }.map { |v|
-            test_results[v][:metrics][key][:percent] - null_percent }.max
-          metric_results[:percent] = metric_results[:delta] * 100 / null_percent if null_percent > 0
-          if sig_test == :chi_squared
-            metric_results[:plusminus] = metric_results[:delta] > 0 ? "plus" : (metric_results[:delta] < 0 ? "minus" : "")
-          end
-        end
-
-        if percent.sum > 0 and sig_test == :chi_squared
-          chi_sq = chi_squared(variants, test_results, :metrics, key, :users, :total)
-          metric_results[:chisq] = chi_sq
-          metric_results[:pvalue] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
-          metric_results[:significance] = metric_results  [:pvalue] < 0.05 ? "YES" : "NO"
-          metric_results[:plusminus] = "" if metric_results[:significance] != "YES"
-        end
-
-        test_results[:summary][:metrics][key] = metric_results
+        test_results[:summary][:metrics][key] = populate_result(test_results, variants, :metrics, :percent, :users, :error, key, null_variant, :total)
       end
 
       user_groups.each do |user_status|
         user_results = {}
 
         days.each do |day|
-          day_results = {}
-
-          retained = variants.map { |variant| test_results[variant][user_status][day][:retained] }
-
-          error = variants.map { |variant| test_results[variant][user_status][day][:error] }
-
-          day_results[:delta] = retained.max - retained.min
-
-          if null_variant
-            null_retained = test_results[null_variant][user_status][day][:retained]
-            day_results[:delta] = variants.reject { |v| v == null_variant }.map { |v|
-              test_results[v][user_status][day][:retained] - null_retained }.max
-            day_results[:percent] = day_results[:delta] * 100 / null_retained if null_retained > 0
-            day_results[:plusminus] = day_results[:delta] > 0 ? "plus" : (day_results[:delta] < 0 ? "minus" : "")
-          end
-
-          if day > 0 and retained.sum > 0
-            chi_sq = chi_squared(variants, test_results, user_status, day, :opened, :total)
-
-            day_results[:chisq] = chi_sq
-            day_results[:pvalue] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
-            day_results[:significance] = day_results[:pvalue] < 0.05 ? "YES" : "NO"
-            day_results[:plusminus] = "" if day_results[:significance] != "YES"
-
-          end
-          user_results[day] = day_results
+          user_results[day] = populate_result(test_results, variants, user_status, :retained, :opened, :error, day, null_variant, :total)
         end
 
         test_results[:summary][user_status] = user_results
@@ -277,6 +229,51 @@ class ReportsController < ApplicationController
     hash[:percent] = total_users > 0 ? hash[:users] * 100.0 /total_users : 0
     hash
   end
+
+  protected
+  def populate_result(test_results, variants, metrics, percent_success, count, variant_error, key, null_variant,total)
+
+    # :metrics -> metrics 
+    # :percent -> percent_success
+    # :users -> count #metrics
+    # :total -> total
+    # :error -> variant_error
+
+        #### 
+    # day -> key
+    # :metrics = user_status
+    # :retained -> percent_success
+    # :opened -> count #day
+
+
+
+    results = {}
+    percent = variants.map { |variant| test_results[variant][metrics][key][percent_success] }
+    results[:delta] = percent.max - percent.min
+    sig_test = (key == :referral or key == :signup) ? :normal_dist : :chi_squared
+    error = variants.map { |variant| test_results[variant][metrics][key][variant_error] }
+
+    if null_variant
+      null_percent = test_results[null_variant][metrics][key][percent_success]
+      results[:delta] = variants.reject { |v| v == null_variant }.map { |v|
+        test_results[v][metrics][key][percent_success] - null_percent }.max
+      results[percent_success] = results[:delta] * 100 / null_percent if null_percent > 0
+      if sig_test == :chi_squared
+        results[:plusminus] = results[:delta] > 0 ? "plus" : (results[:delta] < 0 ? "minus" : "")
+      end
+    end
+
+    if percent.sum > 0 and sig_test == :chi_squared
+      chi_sq = chi_squared(variants, test_results, metrics, key, count, total)
+      results[:chisq] = chi_sq
+      results[:pvalue] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
+      results[:significance] = results  [:pvalue] < 0.05 ? "YES" : "NO"
+      results[:plusminus] = "" if results[:significance] != "YES"
+    end
+    
+    results
+  end
+
 
   protected
   def map_variant(test, variant)
