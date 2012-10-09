@@ -148,15 +148,15 @@ class ReportsController < ApplicationController
             sum = $redis.mget(*keys + [nil]).compact.map(&:to_i).sum
             day_results[:opened] = sum
 
-            day_results[:retained] = 0
+            day_results[:percent] = 0
             day_results[:error] = 0
             if day_results[:total] > 0
-              day_results[:retained] = day_results[:opened] * 100.0 / day_results[:total]
-              err_sqr = (day_results[:retained]/100 * (1 - day_results[:retained]/100)) / day_results[:total]
+              day_results[:percent] = day_results[:opened] * 100.0 / day_results[:total]
+              err_sqr = (day_results[:percent]/100 * (1 - day_results[:percent]/100)) / day_results[:total]
               if err_sqr >= 0
                 day_results[:error] = Math.sqrt(err_sqr)
               else
-                print "ERRSQR was < 0: #{err_sqr}, #{day_results[:retained]}, #{day_results[:total]}"
+                print "ERRSQR was < 0: #{err_sqr}, #{day_results[:percent]}, #{day_results[:total]}"
               end
             end
             user_results[day] = day_results
@@ -180,23 +180,24 @@ class ReportsController < ApplicationController
         test_results[variant] = variant_results
       end
 
-      # compute summary
       test_results[:summary] = {}
 
-      test_results[:summary][:metrics] = {}
-
       #metrics
+      test_results[:summary][:metrics] = {}
+      
       metric_filter.each do |key|
-        test_results[:summary][:metrics][key] = populate_result(test_results, variants, :metrics, :percent, :users, :error, key, null_variant, :total)
+        test_results[:summary][:metrics][key] = signficance(test_results, variants, :metrics, :percent, :users, :error, key, null_variant, :total)
       end
 
       user_groups.each do |user_status|
         user_results = {}
-
         days.each do |day|
-          user_results[day] = populate_result(test_results, variants, user_status, :retained, :opened, :error, day, null_variant, :total)
+          if day == 0
+            user_results[day] = {}
+          else
+            user_results[day] = signficance(test_results, variants, user_status, :percent, :opened, :error, day, null_variant, :total)    
+          end
         end
-
         test_results[:summary][user_status] = user_results
       end
 
@@ -231,7 +232,7 @@ class ReportsController < ApplicationController
   end
 
   protected
-  def populate_result(test_results, variants, metrics, percent_success, count, variant_error, key, null_variant, total)
+  def signficance(test_results, variants, metrics, percent_success, count, variant_error, key, null_variant, total)
 
     results = {}
     percent = variants.map { |variant| test_results[variant][metrics][key][percent_success] }

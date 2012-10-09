@@ -167,7 +167,7 @@
                   - if variant_data[user_state][day][:total] == 0
                     \-
                   - else
-                    = number_to_percentage variant_data[user_state][day][:retained]
+                    = number_to_percentage variant_data[user_state][day][:percent]
 
             - test_data[:metric_filter].each do |metric|
               %td(data-metric="#{metric}")= number_to_percentage metric_data[metric][:percent]
