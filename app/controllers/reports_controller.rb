@@ -101,7 +101,7 @@ class ReportsController < ApplicationController
 
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
       user_groups = user_groups ? JSON.parse(user_groups).map(&:to_sym) : [:new, :ea]
-      metric_filter = metric_filter ? JSON.parse(metric_filter).map(&:to_sym) : [:referral, :signup, :activation, :revenue]
+      metric_filter = metric_filter ? JSON.parse(metric_filter).map(&:to_sym) : [:activation, :revenue,:referral, :signup]
 
       result[test] = {
         :variants => variants,
@@ -199,6 +199,14 @@ class ReportsController < ApplicationController
           metric_results[:plusminus] = metric_results[:delta] > 0 ? "plus" : (metric_results[:delta] < 0 ? "minus" : "")
         end
 
+        if percent.sum > 0 and (key == :activation or key == :revenue)
+          chi_sq = chi_squared(variants, test_results, :metrics, key, :users, :total)
+          metric_results[:chisq] = chi_sq
+          metric_results[:pvalue] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
+          metric_results[:significance] = metric_results  [:pvalue] < 0.05 ? "YES" : "NO"
+          metric_results[:plusminus] = "" if metric_results[:significance] != "YES"
+        end
+
         test_results[:summary][:metrics][key] = metric_results
       end
 
@@ -226,9 +234,9 @@ class ReportsController < ApplicationController
             chi_sq = chi_squared(variants, test_results, user_status, day, :opened, :total)
 
             day_results[:chisq] = chi_sq
-            day_results[:chisqp] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
-            day_results[:chisqsig] = day_results[:chisqp] < 0.05 ? "YES" : "NO"
-            day_results[:plusminus] = "" if day_results[:chisqsig] != "YES"
+            day_results[:pvalue] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
+            day_results[:significance] = day_results[:pvalue] < 0.05 ? "YES" : "NO"
+            day_results[:plusminus] = "" if day_results[:significance] != "YES"
 
           end
           user_results[day] = day_results

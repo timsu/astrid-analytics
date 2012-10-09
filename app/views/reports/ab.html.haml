@@ -11,7 +11,7 @@
   a[data-edit=null_variant] i { opacity: 0.3 }
   td[data-day], td[data-metric] { text-align: center }
   td[data-day="0"] { border-left: 1px solid black }
-  td[data-metric="referral"] { border-left: 1px solid black }
+  td[data-metric="referral"],td[data-metric="activation"] { border-left: 1px solid black }
 
 :javascript
   $(document).on("click", "[data-edit=description]", function() {
@@ -200,13 +200,13 @@
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")
-                  %div= result_data[user_state][day][:chisqsig]
-                  %div= number_with_precision result_data[user_state][day][:chisqp]
+                  %div= result_data[user_state][day][:significance]
+                  %div= number_with_precision result_data[user_state][day][:pvalue]
 
             - test_data[:metric_filter].each do |metric|
               %td(data-metric="#{metric}")
-                %div= result_data[:metrics][metric][:chisqsig]
-                %div= number_with_precision result_data[:metrics][metric][:chisqp]
+                %div= result_data[:metrics][metric][:significance]
+                %div= number_with_precision result_data[:metrics][metric][:pvalue]
       %hr
 
 - unless @archived.empty?
