@@ -231,21 +231,7 @@ class ReportsController < ApplicationController
   end
 
   protected
-  def populate_result(test_results, variants, metrics, percent_success, count, variant_error, key, null_variant,total)
-
-    # :metrics -> metrics 
-    # :percent -> percent_success
-    # :users -> count #metrics
-    # :total -> total
-    # :error -> variant_error
-
-        #### 
-    # day -> key
-    # :metrics = user_status
-    # :retained -> percent_success
-    # :opened -> count #day
-
-
+  def populate_result(test_results, variants, metrics, percent_success, count, variant_error, key, null_variant, total)
 
     results = {}
     percent = variants.map { |variant| test_results[variant][metrics][key][percent_success] }
