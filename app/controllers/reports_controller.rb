@@ -101,7 +101,7 @@ class ReportsController < ApplicationController
 
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
       user_groups = user_groups ? JSON.parse(user_groups).map(&:to_sym) : [:new, :ea]
-      metric_filter = metric_filter ? JSON.parse(metric_filter).map(&:to_sym) : [:activation, :revenue,:referral, :signup]
+      metric_filter = metric_filter ? JSON.parse(metric_filter).map(&:to_sym) : [:activation, :revenue, :referral, :signup]
 
       result[test] = {
         :variants => variants,
