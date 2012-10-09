@@ -31,7 +31,7 @@ class ApiController < ApplicationController
   def acquisition
     time_key = Time.now.strftime "%Y-%m-%dT%H"
     $redis.sadd "acq:#{@account}:days", t
-    $redis.incr "acq:#{@account}:#{@client}:#{t}"
+    $redis.incr "acq:#{@account}:#{@client}:#{Date.today}"
     $redis.incr "acq:#{@account}:#{Date.today}"
     $redis.incr "acq:#{@account}:#{@client}:#{time_key}"
     $redis.expire "acq:#{@account}:#{time_key}", 3.weeks.to_i
