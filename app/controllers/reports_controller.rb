@@ -116,9 +116,9 @@ class ReportsController < ApplicationController
     end
 
     @archived.sort! do |a, b|
-      a_data = test_data[a]
-      b_data = test_data[b]
-      b_data[:dates].first <=> a_data[:dates].first
+      a_data = @test_data[a]
+      b_data = @test_data[b]
+      b_data[:dates].first.to_s <=> a_data[:dates].first.to_s
     end
 
     @tests = @tests - @archived
@@ -190,7 +190,7 @@ class ReportsController < ApplicationController
 
       #metrics
       test_results[:summary][:metrics] = {}
-      
+
       metric_filter.each do |key|
         test_results[:summary][:metrics][key] = signficance(test_results, variants, :metrics, :percent, :users, :error, key, null_variant, :total)
       end
@@ -201,7 +201,7 @@ class ReportsController < ApplicationController
           if day == 0
             user_results[day] = {}
           else
-            user_results[day] = signficance(test_results, variants, user_status, :percent, :opened, :error, day, null_variant, :total)    
+            user_results[day] = signficance(test_results, variants, user_status, :percent, :opened, :error, day, null_variant, :total)
           end
         end
         test_results[:summary][user_status] = user_results
@@ -263,7 +263,7 @@ class ReportsController < ApplicationController
       results[:significance] = results  [:pvalue] < 0.05 ? "YES" : "NO"
       results[:plusminus] = "" if results[:significance] != "YES"
     end
-    
+
     results
   end
 
