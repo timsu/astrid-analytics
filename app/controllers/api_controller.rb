@@ -74,9 +74,7 @@ class ApiController < ApplicationController
 
   # api/referral - record referral event
   #
-  # No parameters are requried for this call. Please make sure to
-  # send this only once for each unique non-user who receives an
-  # invitation from the system.
+  # Send once per referral event
   def referral
     time_key = Time.now.strftime "%Y-%m-%dT%H"
     $redis.sadd "rfr:#{@account}:days", Date.today
@@ -162,6 +160,7 @@ class ApiController < ApplicationController
 
       if event["referral"]
         $redis.incr "#{@account}:#{@test}:#{@variant}:rfr:referral"
+        $redis.sadd "#{@account}:#{@test}:#{@variant}:rfr:referrer", event[:user_id] if event[:user_id]
       elsif event["signup"]
         $redis.incr "#{@account}:#{@test}:#{@variant}:rfr:signup"
       end

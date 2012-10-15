@@ -101,7 +101,10 @@ class ReportsController < ApplicationController
 
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
       user_groups = user_groups ? JSON.parse(user_groups).map(&:to_sym) : [:new, :ea]
-      metric_filter = metric_filter ? JSON.parse(metric_filter).map(&:to_sym) : [:activation, :revenue, :referral, :signup]
+
+      selected_metrics = [:activation, :referrer, :revenue].select { |metric|
+        metric_filter ? metric_filter[metric.to_s] : true }
+      selected_metrics += [:referral, :signup] if selected_metrics.include? :referrer
 
       result[test] = {
         :variants => variants,
@@ -110,7 +113,7 @@ class ReportsController < ApplicationController
         :description => description,
         :null_variant => null_variant,
         :user_groups => user_groups,
-        :metric_filter => metric_filter
+        :selected_metrics => selected_metrics
       }
       result
     end
@@ -131,7 +134,7 @@ class ReportsController < ApplicationController
       days = data[:days]
       null_variant = data[:null_variant]
       user_groups = data[:user_groups]
-      metric_filter = data[:metric_filter]
+      selected_metrics = data[:selected_metrics]
 
       test_results = {}
 
@@ -179,7 +182,8 @@ class ReportsController < ApplicationController
 
         metrics = map_variant test, variant
         metrics.each do |key, value|
-          map_percent_and_total(value, key == :signup ? metrics[:referral][:users] : variant_results[:total_users])
+          total = key == :signup ? metrics[:referral][:users] : variant_results[:total_users]
+          map_percent_and_total(value, total)
         end
         variant_results[:metrics] = metrics
 
@@ -189,7 +193,7 @@ class ReportsController < ApplicationController
       test_results[:summary] = {}
 
       test_results[:summary][:metrics] = {}
-      metric_filter.each do |key|
+      selected_metrics.each do |key|
         test_results[:summary][:metrics][key] = signficance(test_results, variants, :metrics,
                                                             :percent, :users, :error, key, null_variant, :total)
       end
@@ -270,11 +274,12 @@ class ReportsController < ApplicationController
 
   protected
   def map_variant(test, variant)
+    referrer = { :users => $redis.scard("#{@account}:#{test}:#{variant}:rfr:referrer").to_i }
     referral = { :users => $redis.get("#{@account}:#{test}:#{variant}:rfr:referral").to_i }
     signup = { :users =>  $redis.get("#{@account}:#{test}:#{variant}:rfr:signup").to_i }
     revenue = { :users => $redis.get("#{@account}:#{test}:#{variant}:rev:revenue").to_i }
     activation = { :users => $redis.get("#{@account}:#{test}:#{variant}:atv:activation").to_i }
-    { :referral => referral, :signup => signup,
+    { :referral => referral, :signup => signup, :referrer => referrer,
       :revenue => revenue, :activation => activation }
   end
 

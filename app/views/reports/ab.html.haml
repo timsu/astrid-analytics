@@ -87,7 +87,7 @@
         %small.description= test_data[:description]
 
       = form_tag "/admin/edit_test", :method => :post, :class => "alert alert-info form-filter form-inline hide" do
-        %div(style="float: right")
+        %div(style="float: right; margin-left: 20px")
           = submit_tag "Save", :class => "btn btn-mini btn-success"
           %button.btn.btn-mini.btn-cancel(data-edit="filter") Cancel
         %strong Show Columns:
@@ -102,9 +102,9 @@
         %label.checkbox
           = check_box_tag "filter[eu]", "yes", test_data[:user_groups].include?(:eu)
           Existing Unactivated
-        - [:referral, :signup, :activation, :revenue].each do |metric|
+        - [:referrer, :activation, :revenue].each do |metric|
           %label.checkbox
-            = check_box_tag "metric_filter[#{metric}]", "yes", test_data[:metric_filter].include?(metric)
+            = check_box_tag "metric_filter[#{metric}]", "yes", test_data[:selected_metrics].include?(metric)
             = metric.to_s.capitalize
 
       %table.table
@@ -119,7 +119,7 @@
                   Existing Activated
                 - elsif user_state == :eu
                   Existing Unactivated
-            - test_data[:metric_filter].each do |metric|
+            - test_data[:selected_metrics].each do |metric|
               %th=  metric.to_s.capitalize
 
         - test_data[:variants].each do |variant|
@@ -138,7 +138,7 @@
               - test_data[:days].each do |day|
                 %td(data-day="#{day}") +#{day}
 
-            - test_data[:metric_filter].each do |metric|
+            - test_data[:selected_metrics].each do |metric|
               %td(data-metric="#{metric}") %
 
           %tr
@@ -147,7 +147,7 @@
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:total]
 
-            - test_data[:metric_filter].each do |metric|
+            - test_data[:selected_metrics].each do |metric|
               %td(data-metric="#{metric}")= metric_data[metric][:total]
 
           %tr
@@ -156,7 +156,7 @@
               - test_data[:days].each do |day|
                 %td(data-day="#{day}")= variant_data[user_state][day][:opened]
 
-            - test_data[:metric_filter].each do |metric|
+            - test_data[:selected_metrics].each do |metric|
               %td(data-metric="#{metric}")= metric_data[metric][:users]
 
           %tr
@@ -169,7 +169,7 @@
                   - else
                     = number_to_percentage variant_data[user_state][day][:percent]
 
-            - test_data[:metric_filter].each do |metric|
+            - test_data[:selected_metrics].each do |metric|
               %td(data-metric="#{metric}")= number_to_percentage metric_data[metric][:percent]
 
         - result_data = @variant_data[test][:summary]
@@ -178,7 +178,7 @@
           - test_data[:user_groups].each do |user_state|
             - test_data[:days].each do |day|
               %td(data-day="#{day}") +#{day}
-          - test_data[:metric_filter].each do |metric|
+          - test_data[:selected_metrics].each do |metric|
             %td(data-metric="#{metric}")= metric.to_s.capitalize
 
           %tr
@@ -190,7 +190,7 @@
                   - if result_data[user_state][day][:percent]
                     (#{number_to_percentage result_data[user_state][day][:percent], :precision => 0})
 
-            - test_data[:metric_filter].each do |metric|
+            - test_data[:selected_metrics].each do |metric|
               %td(data-metric="#{metric}" class="#{result_data[:metrics][metric][:plusminus]}")
                 = number_to_percentage result_data[:metrics][metric][:delta]
                 - if result_data[:metrics][metric][:percent]
@@ -203,7 +203,7 @@
                   %div= result_data[user_state][day][:significance]
                   %div= number_with_precision result_data[user_state][day][:pvalue]
 
-            - test_data[:metric_filter].each do |metric|
+            - test_data[:selected_metrics].each do |metric|
               %td(data-metric="#{metric}")
                 %div= result_data[:metrics][metric][:significance]
                 %div= number_with_precision result_data[:metrics][metric][:pvalue]
