@@ -188,11 +188,10 @@ class ReportsController < ApplicationController
 
       test_results[:summary] = {}
 
-      #metrics
       test_results[:summary][:metrics] = {}
-
       metric_filter.each do |key|
-        test_results[:summary][:metrics][key] = signficance(test_results, variants, :metrics, :percent, :users, :error, key, null_variant, :total)
+        test_results[:summary][:metrics][key] = signficance(test_results, variants, :metrics,
+                                                            :percent, :users, :error, key, null_variant, :total)
       end
 
       user_groups.each do |user_status|
@@ -201,7 +200,8 @@ class ReportsController < ApplicationController
           if day == 0
             user_results[day] = {}
           else
-            user_results[day] = signficance(test_results, variants, user_status, :percent, :opened, :error, day, null_variant, :total)
+            user_results[day] = signficance(test_results, variants, user_status,
+                                            :percent, :opened, :error, day, null_variant, :total)
           end
         end
         test_results[:summary][user_status] = user_results
