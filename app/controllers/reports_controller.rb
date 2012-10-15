@@ -115,6 +115,12 @@ class ReportsController < ApplicationController
       result
     end
 
+    @archived.sort! do |a, b|
+      a_data = test_data[a]
+      b_data = test_data[b]
+      b_data[:dates].first <=> a_data[:dates].first
+    end
+
     @tests = @tests - @archived
 
     @variant_data = {}
