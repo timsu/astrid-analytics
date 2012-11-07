@@ -1,10 +1,11 @@
 {
   "db_slaves": [
-    "ip-10-117-30-197.ec2.internal",
-    "ip-10-157-10-132.ec2.internal"
+    "ip-10-157-10-132.ec2.internal",
+    "ip-10-126-142-60.ec2.internal"
   ],
   "aws_secret_key": "9ltC6nSqYX7Br4rkIbhxFiXSAnOpwBq9f4xXOzjY",
   "ruby_version": "Ruby 1.9.3",
+  "quick": true,
   "user_ssh_key": [
     "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAwSy8FGIn0YqYPyn6PzztOVTIZzIzKQ/wLrMc98zp907E38QZzFggKgvO+MgT+njlvEYb8J/7S6sMRbWyWBXXtWuI/XZCHXsvteB8iMG/msiivLKn7XsNvq1l51EuM0qZToDyd9somZ1EXZ+1WeVGfj7a/JhP/WMtKdoKa76WK7HrPvhvoIrrrhaX/iPhqMtt96yfyrrsuF2wWNbRzO2xvQXgf/Ka0Ue+IfMnBNXFCQz0JdlsbRkVsNpf9PrBV5Kn14rxj6TS3YcomnON/vJrrpGdNeXdL2gjlrP2K4CGnMy6V0Jry6RYtF0cOqor8fvnaSeo0dlojGTLks9it4oqkQ== timsu@ayumi",
     "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAx5s/ohCYEg5HHcaV7GCoE61RHUDm5g7CQJLkVIVq4YiocTzk31cDexhwrb8b97NZQPagfQB0RKbz1xhCiBiZ9SgavjYaXt03Wa5c/sccIR9q3UF8Cjo+6klTd0vsiynRHTgwZG61J0IgqTPFZeNHPTC69lYHkaujgrDNlFFLhmw+FGEPrSLKUt5OPSSQsl+OphkzC9epL21y1++2cHFzPFtZBj+8CRPqJMDbMd7KFjvn31u8OdRXPFndmj9j64fE+6o8IuH5aBd9QhUN61uTOrOkbAWePTBgG44Z2dSziKL5zUML1fjEkLjaagAkNyQuvUnF5KTrEyigUXOnoN1PpQ== timsu@ps17623",
@@ -48,16 +49,7 @@
   ],
   "mailserver": "smtp.engineyard.com",
   "crons": [
-    {
-      "user": "deploy",
-      "name": "Premium Maintenance",
-      "month": "*",
-      "command": "cd /data/actfm/current && /usr/bin/bundle exec rake RAILS_ENV=production premium:all >> /data/actfm/current/log/premium.log 2>&1",
-      "weekday": "*",
-      "minute": "0",
-      "hour": "1",
-      "day": "*/1"
-    }
+
   ],
   "backup_window": 20,
   "members": [
@@ -81,7 +73,7 @@
       "repository_name": "git@github.com:todoroo/act.fm.git",
       "http_bind_port": 80,
       "run_deploy": false,
-      "revision": "5c2f15ddea490062be27d467883a775059dbf9be",
+      "revision": "2331922d124f061f7917cd8eb900fb800363dcbe",
       "branch": "prod",
       "run_migrations": false,
       "deploy_action": "deploy",
@@ -194,7 +186,7 @@
           "type": "rails3",
           "repository_name": "git@github.com:todoroo/act.fm.git",
           "run_deploy": false,
-          "revision": "5c2f15ddea490062be27d467883a775059dbf9be",
+          "revision": "2331922d124f061f7917cd8eb900fb800363dcbe",
           "bundled": null,
           "branch": "prod",
           "run_migrations": false,
@@ -387,37 +379,6 @@
             "base_url": "https://cloud.engineyard.com/instance_api"
           },
           "awsm_token": "e80071b9-ab5b-421c-a071-a2f3be35a105"
-        },
-        {
-          "name": null,
-          "public_hostname": "ec2-107-22-13-44.compute-1.amazonaws.com",
-          "components": [
-            {
-              "token": "ae5347de913c48f0bbdf415e04f7eb1728eb71fe",
-              "seed": "107.22.13.44",
-              "key": "newrelic"
-            },
-            {
-              "key": "ssmtp"
-            }
-          ],
-          "stonith_config": {
-            "endpoint_uri": "https://cloud.engineyard.com/stonith",
-            "endpoint_token": "3fa72596-5304-49ec-95ac-1c298edb1a69",
-            "monitor_host": "ip-10-125-77-168.ec2.internal",
-            "endpoint_id": "i-16a4556e"
-          },
-          "role": "db_slave",
-          "enabled": true,
-          "id": "i-16a4556e",
-          "private_hostname": "ip-10-117-30-197.ec2.internal",
-          "reporting_url": "https://cloud.engineyard.com/reporting/3fa72596-5304-49ec-95ac-1c298edb1a69",
-          "instance_api_config": {
-            "token": "3fa72596-5304-49ec-95ac-1c298edb1a69",
-            "instance_id": 169220,
-            "base_url": "https://cloud.engineyard.com/instance_api"
-          },
-          "awsm_token": "3fa72596-5304-49ec-95ac-1c298edb1a69"
         },
         {
           "name": "memcache02",
@@ -697,6 +658,37 @@
             "base_url": "https://cloud.engineyard.com/instance_api"
           },
           "awsm_token": "40f00e7b-b07f-4db9-88b3-e254f8086242"
+        },
+        {
+          "name": null,
+          "public_hostname": "ec2-23-23-34-62.compute-1.amazonaws.com",
+          "components": [
+            {
+              "token": "ff769141b15862a7bd63d223c472dc3c6f0c931e",
+              "seed": "23.23.34.62",
+              "key": "newrelic"
+            },
+            {
+              "key": "ssmtp"
+            }
+          ],
+          "stonith_config": {
+            "endpoint_uri": "https://cloud.engineyard.com/stonith",
+            "endpoint_token": "01c03039-8790-437e-8c09-ea5347fca046",
+            "monitor_host": "ip-10-125-77-168.ec2.internal",
+            "endpoint_id": "i-9ef706e1"
+          },
+          "role": "db_slave",
+          "enabled": true,
+          "id": "i-9ef706e1",
+          "private_hostname": "ip-10-126-142-60.ec2.internal",
+          "reporting_url": "https://cloud.engineyard.com/reporting/01c03039-8790-437e-8c09-ea5347fca046",
+          "instance_api_config": {
+            "token": "01c03039-8790-437e-8c09-ea5347fca046",
+            "instance_id": 196085,
+            "base_url": "https://cloud.engineyard.com/instance_api"
+          },
+          "awsm_token": "01c03039-8790-437e-8c09-ea5347fca046"
         }
       ],
       "framework_env": "production",
@@ -728,16 +720,7 @@
       ],
       "mailserver": "smtp.engineyard.com",
       "crons": [
-        {
-          "user": "deploy",
-          "name": "Premium Maintenance",
-          "month": "*",
-          "command": "cd /data/actfm/current && /usr/bin/bundle exec rake RAILS_ENV=production premium:all >> /data/actfm/current/log/premium.log 2>&1",
-          "weekday": "*",
-          "minute": "0",
-          "hour": "1",
-          "day": "*/1"
-        }
+
       ],
       "stats_password": "hZXHT3Peay",
       "stack_name": "nginx_unicorn",
