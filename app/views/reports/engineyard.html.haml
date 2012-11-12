@@ -4,7 +4,7 @@
   body { color: white; background: black; }
   a { color: #5bf }
   .container { width: auto }
-  table { width: 100% }
+  table { width: 100%; min-width: 1024px }
   img { width: 100%; display: block }
   thead { border-bottom: 1px solid white }
   th { font-size: 24px; line-height: 30px }
@@ -56,7 +56,7 @@
           - [ :hits, :misses, :evictions ].each do |type|
             = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dload%3Btype%3Dmemcached_ops%3Btype_instance%3D#{type}%3Bbegin%3D-#{@time}", :alt => "Memcached Ops"
 
-        - @solr.each do |instance|
+        - @util.each do |instance|
           - instance_id = instance["instance_api_config"]["instance_id"]
           = link_to "#{instance["name"]} (#{instance["id"]})", "ssh://deploy@#{instance["public_hostname"]}"
           = image_tag "https://cloud.engineyard.com/stats/graph/#{instance_id}?details=http%3A%2F%2Fcollect.noris.net%2Fcgi-bin%2Fcollection3%2Fbin%2Fgraph.cgi%3Fplugin%3Dload%3Btype%3Dload%3Bbegin%3D-#{@time}", :alt => "load"

@@ -230,7 +230,7 @@ class ReportsController < ApplicationController
     @db_slaves = instances.select { |instance| instance["role"] == "db_slave" }
 
     @memcache = instances.select { |instance| instance["name"].to_s["memcache"] }
-    @solr = instances.select { |instance| instance["name"].to_s["solr"] }
+    @util = instances.select { |instance| instance["role"] == "util" } - @memcache
   end
 
   ################################################################# HELPERS
