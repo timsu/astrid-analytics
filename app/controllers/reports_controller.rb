@@ -1,7 +1,5 @@
 class ReportsController < ApplicationController
 
-
-
   before_filter :validate_request
 
   ################################################################# ACTIONS
@@ -18,7 +16,8 @@ class ReportsController < ApplicationController
     @color = "#0A1327"
     @data = pirate_read "acq", true
 
-    chart_dates = (-30..-1).map { |i| Date.today + i }
+    @chart_start = params[:days] ? params[:days].to_i : 30
+    chart_dates = (-@chart_start..-1).map { |i| Date.today + i }
     charts = []
     @clients.each do |client|
       keys = chart_dates.map { |date| "acq:#{@account}:#{client}:#{date}" }
@@ -42,7 +41,8 @@ class ReportsController < ApplicationController
     @tag = "# of activated users on"
     @color = "#150127"
 
-    @data = retention_read
+    @chart_start = params[:days] ? params[:days].to_i : 30
+    @data = retention_read @chart_start
     @data[:last_week] = week_retention Time.now - 7.day
     @data[:four_weeks] = week_retention Time.now - 28.day
 
@@ -332,7 +332,7 @@ class ReportsController < ApplicationController
 
   # read dashboard stats for retention, where keys are sets
   protected
-  def retention_read
+  def retention_read(chart_start = 30)
     now = Time.now
 
     # build up user id union from hours today & 7 days ago + middle 5 days
@@ -349,7 +349,7 @@ class ReportsController < ApplicationController
     delta = yesterday == 0 ? "-" : (100.to_f * total / yesterday - 100)
 
     # build chart
-    chart_dates = (-30..-1).map { |i| Date.today + i }
+    chart_dates = (-chart_start..-1).map { |i| Date.today + i }
     chart_result_keys = chart_dates.map { |date| "ret:#{@account}:dayval:#{date}" }
     chart_result_values = $redis.mget *chart_result_keys
     chart_dates.each_with_index do |date, i|
