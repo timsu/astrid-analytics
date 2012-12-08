@@ -160,7 +160,7 @@ class ApiController < ApplicationController
 
       if event["referral"]
         $redis.incr "#{@account}:#{@test}:#{@variant}:rfr:referral"
-        $redis.sadd "#{@account}:#{@test}:#{@variant}:rfr:referrer", event[:user_id] if event[:user_id]
+        $redis.sadd "#{@account}:#{@test}:#{@variant}:rfr:referrer", event["user_id"] if event["user_id"]
       elsif event["signup"]
         $redis.incr "#{@account}:#{@test}:#{@variant}:rfr:signup"
       end
