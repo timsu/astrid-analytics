@@ -246,6 +246,8 @@ class ReportsController < ApplicationController
 
     results = {}
     percent = variants.map { |variant| test_results[variant][metrics][key][percent_success] }
+    percent = [0] if percent.length == 0
+
     results[:delta] = percent.max - percent.min
     sig_test = (key == :referral or key == :signup) ? :normal_dist : :chi_squared
     error = variants.map { |variant| test_results[variant][metrics][key][variant_error] }
