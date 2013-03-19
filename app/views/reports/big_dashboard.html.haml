@@ -39,7 +39,7 @@
     #data_chart
     :javascript
       $(function() {
-        Vanity.retention_graph('#data_chart').plot(#{@data[:chart]});
+        Vanity.retention_graph('#data_chart', params[:days] || 30).plot(#{@data[:chart]});
       })
 
   .span3

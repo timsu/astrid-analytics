@@ -7,7 +7,7 @@ Vanity.tooltip = function(event, pos, item) {
       $(".tooltip").remove();
       var y = item.datapoint[1].toFixed(2);
       var dt = new Date(parseInt(item.datapoint[0], 10));
-      $('<div class="tooltip">' + dt.getUTCFullYear() + '-' + (dt.getUTCMonth() + 1) + '-' + dt.getUTCDate() + "<br>" + 
+      $('<div class="tooltip">' + dt.getUTCFullYear() + '-' + (dt.getUTCMonth() + 1) + '-' + dt.getUTCDate() + "<br>" +
         "<b>" + item.series.label + "</b>: " + y + '</div>').css( {
         position: 'absolute', display: 'none',
         top: item.pageY + 5, left: item.pageX + 5 - 100,
@@ -16,22 +16,23 @@ Vanity.tooltip = function(event, pos, item) {
     }
   } else {
     $(".tooltip").remove();
-    this.previousPoint = null;            
+    this.previousPoint = null;
   }
 }
 
-Vanity.retention_graph = function(id) {
+Vanity.retention_graph = function(id, days_ago) {
   var metric = {};
   metric.chart = $(id);
   metric.markings = [];
 
-  var date = new Date();
+  var date = new Date().getTime();
+  days_ago ||= 30;
   var date_ticks = [
-    new Date(date - 4 * 7 * 24 * 3600 * 1000).getTime(),
-    new Date(date - 3 * 7 * 24 * 3600 * 1000).getTime(),
-    new Date(date - 2 * 7 * 24 * 3600 * 1000).getTime(),
-    new Date(date - 1 * 7 * 24 * 3600 * 1000).getTime(),
-    date.getTime()
+    date - days_ago * 24 * 3600 * 1000,
+    date - 3 * days_ago / 4 * 24 * 3600 * 1000,
+    date - days_ago / 2 * 24 * 3600 * 1000,
+    date - 1 * days_ago / 4 * 24 * 3600 * 1000,
+    date,
   ];
 
   metric.options = {
@@ -46,8 +47,8 @@ Vanity.retention_graph = function(id) {
   metric.plot = function(lines) {
     var min = 0, max = 0;
     $.each(lines, function(i, line) {
-      $.each(line.data, function(i, pair) { 
-        pair[0] = Date.parse(pair[0]) 
+      $.each(line.data, function(i, pair) {
+        pair[0] = Date.parse(pair[0])
         max = Math.max(max, pair[1]);
         min = Math.min(min, pair[1]);
       });
