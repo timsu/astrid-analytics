@@ -8,7 +8,7 @@ gem 'rails', '3.2.11'
 gem 'redis'
 gem 'haml-rails'
 gem 'airbrake', '3.0.9'
-gem 'mysql2'
+gem 'sqlite3'
 
 # Gems used only for assets and not required
 # in production environments by default.

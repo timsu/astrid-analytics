@@ -49,6 +49,30 @@ class ReportsController < ApplicationController
     render 'big_dashboard'
   end
 
+  def revenue
+    @account = params[:account]
+    @account_data = JSON.parse($redis.get "#{@account}:data")
+
+    @type = "Revenue"
+    @tag = "# of premium accounts on"
+    @color = "#152701"
+
+    @chart_start = params[:days] ? params[:days].to_i : 30
+    chart_dates = (-@chart_start..-1).map { |i| Date.today + i }
+    keys = chart_dates.map { |date| "rvn:#{@account}:#{date}" }
+    chart_result_values = $redis.mget(*keys).map { |value| value || 0 }
+    charts = [{ :label => "# of accounts",
+                :color => "#9AE14D",
+                :data => chart_dates.map { |date| date.to_time.httpdate }.zip(chart_result_values) }]
+
+    @data = pirate_read "rvn"
+    @data[:chart] = charts.to_json
+    @data[:last_week] = pirate_week "rvn", Time.now - 7.days
+    @data[:four_weeks] = pirate_week "rvn", Time.now - 28.days
+
+    render 'big_dashboard'
+  end
+
   def pirate
     @account = params[:account]
     @account_data = JSON.parse($redis.get "#{@account}:data")
@@ -388,7 +412,6 @@ class ReportsController < ApplicationController
         last
       end
     end
-    p data
 
     total = last
     yesterday = data[-2]
