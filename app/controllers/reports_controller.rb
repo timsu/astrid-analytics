@@ -65,7 +65,7 @@ class ReportsController < ApplicationController
                 :color => "#9AE14D",
                 :data => chart_dates.map { |date| date.to_time.httpdate }.zip(chart_result_values) }]
 
-    @data = pirate_read "rvn"
+    @data = revenue_read
     @data[:chart] = charts.to_json
     @data[:last_week] = pirate_week "rvn", Time.now - 7.days
     @data[:four_weeks] = pirate_week "rvn", Time.now - 28.days
