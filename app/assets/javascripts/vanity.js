@@ -26,7 +26,7 @@ Vanity.retention_graph = function(id, days_ago) {
   metric.markings = [];
 
   var date = new Date().getTime();
-  days_ago ||= 30;
+  days_ago = days_ago || 30;
   var date_ticks = [
     date - days_ago * 24 * 3600 * 1000,
     date - 3 * days_ago / 4 * 24 * 3600 * 1000,
