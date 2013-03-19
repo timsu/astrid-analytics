@@ -67,8 +67,8 @@ class ReportsController < ApplicationController
 
     @data = revenue_read
     @data[:chart] = charts.to_json
-    @data[:last_week] = pirate_week "rvn", Time.now - 7.days
-    @data[:four_weeks] = pirate_week "rvn", Time.now - 28.days
+    @data[:last_week] = $redis.get("rvn:#{@account}:#{Date.today - 7.days}")
+    @data[:four_weeks] = $redis.get("rvn:#{@account}:#{Date.today - 28.days}")
 
     render 'big_dashboard'
   end
