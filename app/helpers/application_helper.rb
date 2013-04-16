@@ -22,4 +22,8 @@ module ApplicationHelper
     end
   end
 
+  def ph(instance)
+    instance["private_hostname"].gsub /\..*/, ""
+  end
+
 end
