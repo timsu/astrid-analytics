@@ -257,6 +257,11 @@ class ReportsController < ApplicationController
     @util = instances.select { |instance| instance["role"] == "util" } - @memcache
   end
 
+  def disk_space
+    @time = params[:time] || 1.day
+    engineyard
+  end
+
   ################################################################# HELPERS
   protected
   def map_percent_and_total(hash, total_users)
