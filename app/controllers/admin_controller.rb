@@ -65,7 +65,7 @@ class AdminController < ApplicationController
       secret = rand(36**6).to_s(36)
         
       $redis.sadd "#{account}:apikeys", apikey
-      $redis.set "apikeys:#{apikey}", [account, client, secret]
+      $redis.set "apikeys:#{apikey}", [account, client, secret].to_json
     end
 
     redirect_to "/admin"
