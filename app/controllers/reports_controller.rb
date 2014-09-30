@@ -124,7 +124,15 @@ class ReportsController < ApplicationController
       metric_filter = $redis.get("#{@account}:#{test}:metric_filter")
 
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
-      user_groups = user_groups ? JSON.parse(user_groups).map(&:to_sym) : [:new, :ea]
+      if user_groups
+        if user_groups[","]
+          user_groups = JSON.parse(user_groups).map(&:to_sym)
+        else
+          user_groups = [user_groups.to_sym]
+        end
+      else
+        user_groups = [:new, :ea]
+      end
 
       selected_metrics = [:activation, :referrer, :revenue].select { |metric|
         metric_filter ? metric_filter[metric.to_s] : true }
