@@ -94,11 +94,11 @@ class AdminController < ApplicationController
     $redis.set "#{account}:#{test}:null_variant", params[:null_variant] if params[:null_variant]
 
     if params[:filter]
-      $redis.set "#{account}:#{test}:user_groups", params[:filter].keys.compact
+      $redis.set "#{account}:#{test}:user_groups", params[:filter].keys.compact.to_json
     end
     if params[:metric_filter]
       keys = params[:metric_filter].keys.compact
-      $redis.set "#{account}:#{test}:metric_filter", keys
+      $redis.set "#{account}:#{test}:metric_filter", keys.to_json
     end
 
     respond_to do |format|

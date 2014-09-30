@@ -125,7 +125,7 @@ class ReportsController < ApplicationController
 
       variants = [null_variant] + variants.reject { |v| v == null_variant } if null_variant
       if user_groups
-        if user_groups[","]
+        if user_groups["["]
           user_groups = JSON.parse(user_groups).map(&:to_sym)
         else
           user_groups = [user_groups.to_sym]
