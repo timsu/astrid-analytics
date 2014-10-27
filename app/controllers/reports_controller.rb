@@ -197,7 +197,7 @@ class ReportsController < ApplicationController
               if err_sqr >= 0
                 day_results[:error] = Math.sqrt(err_sqr)
               else
-                print "ERRSQR was < 0: #{err_sqr}, #{day_results[:percent]}, #{day_results[:total]}"
+                # print "ERRSQR was < 0: #{err_sqr}, #{day_results[:percent]}, #{day_results[:total]}"
               end
             end
             user_results[day] = day_results
@@ -384,7 +384,6 @@ class ReportsController < ApplicationController
 
     # build up user id union for minor graphs
     yesterday = week_retention now - 1.day
-    p "#{yesterday.class} and #{total.class}"
     delta = yesterday == 0 ? "-" : (100.to_f * total / yesterday - 100)
 
     # build chart
