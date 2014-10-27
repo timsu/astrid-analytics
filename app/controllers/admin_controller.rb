@@ -98,7 +98,12 @@ class AdminController < ApplicationController
     end
     if params[:metric_filter]
       keys = params[:metric_filter].keys.compact
-      $redis.set "#{account}:#{test}:metric_filter", keys.to_json
+      begin
+        $redis.set "#{account}:#{test}:metric_filter", keys.to_json
+      rescue => e
+        p "Error saving metric filter: " + keys.to_json
+        p e
+      end
     end
 
     respond_to do |format|
