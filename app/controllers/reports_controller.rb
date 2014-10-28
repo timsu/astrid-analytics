@@ -191,8 +191,9 @@ class ReportsController < ApplicationController
 
             day_results[:percent] = 0
             day_results[:error] = 0
-            if day_results[:total] > 0 && day_results[:opened] <= day_results[:total]
+            if day_results[:total] > 0
               day_results[:percent] = day_results[:opened] * 100.0 / day_results[:total]
+              day_results[:percent] = 100.0 if day_results[:percent] > 100
               err_sqr = (day_results[:percent]/100 * (1 - day_results[:percent]/100)) / day_results[:total]
               if err_sqr >= 0
                 day_results[:error] = Math.sqrt(err_sqr)
