@@ -104,7 +104,8 @@
           Existing Unactivated
         - [:referrer, :activation, :revenue].each do |metric|
           %label.checkbox
-            = check_box_tag "metric_filter[#{metric}]", "yes", test_data[:selected_metrics].include?(metric)
+            = hidden_field_tag "metric_filter[#{metric}]", ""
+            = check_box_tag "metric_filter[#{metric}]", metric, test_data[:selected_metrics].include?(metric)
             = metric.to_s.capitalize
 
       %table.table
