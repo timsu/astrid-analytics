@@ -330,15 +330,20 @@ class ReportsController < ApplicationController
   protected
   def chi_squared(variants, test_results, first_hash_key, second_hash_key, stat_key, total_key)
     overall_total = variants.reduce(0) do |result, variant|
-      result += test_results[variant][first_hash_key][second_hash_key][total_key]
+      value = test_results[variant][first_hash_key][second_hash_key][total_key]
+      result += value if value
+      result
     end
 
     overall_total_retained = variants.reduce(0) do |result, variant|
-      result += test_results[variant][first_hash_key][second_hash_key][stat_key]
+      value = test_results[variant][first_hash_key][second_hash_key][stat_key]
+      result += value if value
+      result
     end
 
     chi_sq = variants.reduce(0) do |result, variant|
-      #expected total = row total * column total / table total
+      next unless test_results[variant][first_hash_key][second_hash_key][total_key]
+      # expected total = row total * column total / table total
       exp_retained = test_results[variant][first_hash_key][second_hash_key][total_key] *
         overall_total_retained / overall_total.to_f
       exp_not_retained = (test_results[variant][first_hash_key][second_hash_key][total_key] *
