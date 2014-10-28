@@ -227,7 +227,7 @@ class ReportsController < ApplicationController
 
       test_results[:summary][:metrics] = {}
       selected_metrics.each do |key|
-        test_results[:summary][:metrics][key] = signficance(test_results, variants, :metrics,
+        test_results[:summary][:metrics][key] = significance(test_results, variants, :metrics,
                                                             :percent, :users, :error, key, null_variant, :total)
       end
 
@@ -237,7 +237,7 @@ class ReportsController < ApplicationController
           if day == 0
             user_results[day] = {}
           else
-            user_results[day] = signficance(test_results, variants, user_status,
+            user_results[day] = significance(test_results, variants, user_status,
                                             :percent, :opened, :error, day, null_variant, :total)
           end
         end
@@ -280,12 +280,12 @@ class ReportsController < ApplicationController
   end
 
   protected
-  def signficance(test_results, variants, metrics, percent_success, count, variant_error, key, null_variant, total)
+  def significance(test_results, variants, metrics, percent_success, count, variant_error, key, null_variant, total)
 
     results = {}
     percent = variants.map { |variant| test_results[variant][metrics][key][percent_success] }
     percent = [0] if percent.length == 0
-    total = variants.map { |variant| test_results[variant][metrics][key][:total] }.sum
+    total_users = variants.map { |variant| test_results[variant][metrics][key][total] }.sum
 
     results[:delta] = percent.max - percent.min
     sig_test = (key == :referral or key == :signup) ? :normal_dist : :chi_squared
@@ -301,7 +301,7 @@ class ReportsController < ApplicationController
       end
     end
 
-    if total < 100
+    if total_users < 100
       results[:significance] = "-"
       return results
     end
