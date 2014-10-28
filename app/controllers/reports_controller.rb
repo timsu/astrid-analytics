@@ -191,7 +191,7 @@ class ReportsController < ApplicationController
 
             day_results[:percent] = 0
             day_results[:error] = 0
-            if day_results[:total] > 0
+            if day_results[:total] > 0 && day_results[:opened] <= day_results[:total]
               day_results[:percent] = day_results[:opened] * 100.0 / day_results[:total]
               err_sqr = (day_results[:percent]/100 * (1 - day_results[:percent]/100)) / day_results[:total]
               if err_sqr >= 0
@@ -284,6 +284,7 @@ class ReportsController < ApplicationController
     results = {}
     percent = variants.map { |variant| test_results[variant][metrics][key][percent_success] }
     percent = [0] if percent.length == 0
+    total = variants.map { |variant| test_results[variant][metrics][key][:total] }.sum
 
     results[:delta] = percent.max - percent.min
     sig_test = (key == :referral or key == :signup) ? :normal_dist : :chi_squared
@@ -297,6 +298,10 @@ class ReportsController < ApplicationController
       if sig_test == :chi_squared
         results[:plusminus] = results[:delta] > 0 ? "plus" : (results[:delta] < 0 ? "minus" : "")
       end
+    end
+
+    if total < 100
+      return results
     end
 
     if percent.sum > 0 and sig_test == :chi_squared
