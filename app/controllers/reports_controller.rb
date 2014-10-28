@@ -135,7 +135,7 @@ class ReportsController < ApplicationController
       end
 
       selected_metrics = [:activation, :referrer, :revenue].select { |metric|
-        metric_filter ? metric_filter[metric.to_s] : true }
+        metric_filter ? metric_filter[metric.to_s] : false }
       selected_metrics += [:referral, :signup] if selected_metrics.include? :referrer
 
       result[test] = {
