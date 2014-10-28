@@ -301,6 +301,7 @@ class ReportsController < ApplicationController
     end
 
     if total < 100
+      results[:significance] = "-"
       return results
     end
 
