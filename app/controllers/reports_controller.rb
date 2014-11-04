@@ -179,12 +179,12 @@ class ReportsController < ApplicationController
           days.each do |day|
             day_results = {}
 
-            valid_dates = dates.select { |date| date <= Date.today - day }
+            valid_dates = dates.select { |date| date < Date.today - day }
             keys = generate_ab_keys test, variant, user_status, 0, valid_dates
             sum = $redis.mget(*keys + [nil]).compact.map(&:to_i).sum
             day_results[:total] = sum
 
-            valid_dates = dates.select { |date| date <= Date.today }
+            valid_dates = dates.select { |date| date < Date.today }
             keys = generate_ab_keys test, variant, user_status, day, valid_dates
             sum = $redis.mget(*keys + [nil]).compact.map(&:to_i).sum
             day_results[:opened] = sum
@@ -207,7 +207,7 @@ class ReportsController < ApplicationController
           variant_results[user_status] = user_results
         end
         ([:new, :ea, :eu] - user_groups).each do |user_status|
-          valid_dates = dates.select { |date| date <= Date.today }
+          valid_dates = dates.select { |date| date < Date.today }
           keys = generate_ab_keys test, variant, user_status, 0, valid_dates
           sum = $redis.mget(*keys + [nil]).compact.map(&:to_i).sum
           variant_results[:total_users] += sum
