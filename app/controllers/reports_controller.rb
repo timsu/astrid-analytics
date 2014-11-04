@@ -320,7 +320,7 @@ class ReportsController < ApplicationController
       null_variant ||= variants[0]
       null_percent = test_results[null_variant][metrics][key][percent_success] / 100.0
       null_size = test_results[null_variant][metrics][key][total]
-      delta = if results[:delta] > 0 then results[:delta].abs / 100.0 else 0.01 end
+      delta = if results[:delta].abs > 0.001 then results[:delta] / 100.0 else 0.01 end
       results[:power] = num_subjects(0.05, 0.8, null_percent, delta)
       if results[:power] > null_size
         results[:significance] = "WAIT"
