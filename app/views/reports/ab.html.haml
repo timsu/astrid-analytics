@@ -197,6 +197,16 @@
                 - if result_data[:metrics][metric][:percent]
                   (#{number_to_percentage result_data[:metrics][metric][:percent], :precision => 0})
           %tr.significance
+            %td Sample Power
+            - test_data[:user_groups].each do |user_state|
+              - test_data[:days].each do |day|
+                %td(data-day="#{day}")
+                  %div= result_data[user_state][day][:power]
+            - test_data[:selected_metrics].each do |metric|
+              %td(data-metric="#{metric}")
+                %div= result_data[:metrics][metric][:power]
+
+          %tr.significance
             %td Significant to 95%?
             - test_data[:user_groups].each do |user_state|
               - test_data[:days].each do |day|

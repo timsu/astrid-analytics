@@ -2,6 +2,8 @@ class ReportsController < ApplicationController
 
   before_filter :validate_request
 
+  require 'samplesize'
+
   ################################################################# ACTIONS
 
   def acquisition
@@ -310,8 +312,19 @@ class ReportsController < ApplicationController
       chi_sq = chi_squared(variants, test_results, metrics, key, count, total)
       results[:chisq] = chi_sq
       results[:pvalue] = Distribution::ChiSquare.q_chi2(variants.size - 1, chi_sq)
-      results[:significance] = results  [:pvalue] < 0.05 ? "YES" : "NO"
+      results[:significance] = results[:pvalue] < 0.05 ? "YES" : "NO"
       results[:plusminus] = "" if results[:significance] != "YES"
+    end
+
+    if percent.sum > 0
+      null_variant ||= variants[0]
+      null_percent = test_results[null_variant][metrics][key][percent_success] / 100.0
+      null_size = test_results[null_variant][metrics][key][total]
+      delta = if results[:delta] > 0 then results[:delta] / 100.0 else 0.01 end
+      results[:power] = num_subjects(0.05, 0.8, null_percent, delta)
+      if results[:power] > null_size
+        results[:significance] = "WAIT"
+      end
     end
 
     results
