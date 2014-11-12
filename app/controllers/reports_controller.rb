@@ -322,7 +322,11 @@ class ReportsController < ApplicationController
       null_size = test_results[null_variant][metrics][key][total]
       delta = if results[:delta].abs > 0.001 then results[:delta] / 100.0 else 0.01 end
       results[:power] = num_subjects(0.05, 0.8, null_percent, delta)
-      if results[:power] > null_size
+      not_significant = variants.reduce(false) do |result, variant|
+        size = test_results[variant][metrics][key][total]
+        result || size < results[:power]
+      end
+      if not_significant
         results[:significance] = "WAIT"
       end
     end
