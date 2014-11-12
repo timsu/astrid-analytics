@@ -30,9 +30,9 @@ def ppnd(p)
     # R = min ( P, 1-P )
   elsif 0.0 < p && p < 1.0
     if 0.5 < p
-      r = Math.sqrt( 0 - Math.log( 1.0 - p ) );
+      r = Math.sqrt( (0 - Math.log( 1.0 - p )).abs );
     else
-      r = Math.sqrt( 0 - Math.log( p ) );
+      r = Math.sqrt( (0 - Math.log( p )).abs );
     end
 
     value = ( ( (c3   * r + c2 ) * r + c1 ) * r + c0 ) /
@@ -60,8 +60,9 @@ def num_subjects(alpha = 0.05, beta = 0.80, p = 0.40, delta = 0.01)
   t_alpha2 = ppnd(1.0-alpha/2);
   t_beta = ppnd(beta);
 
-  sd1 = Math.sqrt(2 * p * (1.0 - p));
-  sd2 = Math.sqrt(p * (1.0 - p) + (p + delta) * (1.0 - p - delta));
+  p = [p, 1.0].min
+  sd1 = Math.sqrt((2 * p * (1.0 - p)).abs);
+  sd2 = Math.sqrt((p * (1.0 - p) + (p + delta) * (1.0 - p - delta)).abs);
 
   result = (t_alpha2 * sd1 + t_beta * sd2) * (t_alpha2 * sd1 + t_beta * sd2) / (delta * delta);
   result.round
