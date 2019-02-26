@@ -32,11 +32,9 @@ To set up the server:
 10. See results
 
 
-## API
+## API Authentication
 
 All API methods are in api_controller.rb
-
-### Authentication
 
 Aside from parameters required for each method, the following parameters are required for every method:
 * apkikey: API application id
@@ -52,7 +50,7 @@ so your final param might look like:
 
 `app_id=1&title=baz&tag[]=foo&tag[]=bar&time=1297216408&sig=c7e14a38df42...`
 
-### Counting API commands
+## Counting API commands
 
 ### `POST api/2/acquisition` - record aquisition event
 
@@ -89,11 +87,50 @@ to send the number of new or removed subscriptions. To initialize
 the count, or if subscription events are not visible to your system,
 you can send the total.
 
-### A/B API commands
+## A/B API commands
 
 ### `POST api/2/ab_retention` - record a/b retention event
 
+Parameters
+- payload - array of events
+
+Each event contains the following fields:
+- test - name of A/B test
+- variant - name of variant
+- new - whether the user was a new user
+- activated - whether user was activated (took whatever activation steps you require)
+- days - array of days since signup that the user showed up (e.g. [1, 2, 3])
+
+### `POST api/2/ab_referral` - record a/b referral event
+
+Parameters
+- payload - array of events
+
+Each event contains the following fields:
+- test - name of A/B test
+- variant - name of variant
+- referral - if true, this was a referral event
+- signup - if true, this was a signup event
+
 ### `POST api/2/ab_revenue` - record a/b revenue event
+
+Parameters
+- payload - array of events
+
+Each event contains the following fields:
+- test - name of A/B test
+- variant - name of variant
+- initial - if true, the user showed up in the bucket
+- revenue - if true, the user paid / subscribed
+
 
 ### `POST api/2/ab_activation` - record a/b activation event
 
+Parameters
+- payload - array of events
+
+Each event contains the following fields:
+- test - name of A/B test
+- variant - name of variant
+- initial - if true, the user showed up in the bucket
+- activation - if true, the user became activated
