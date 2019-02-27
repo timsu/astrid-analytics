@@ -26,7 +26,7 @@ Example of multi-variant A/B test of re-engagement emails (tracked on the backen
 
 In this case, we learned that a particular version of email was better for re-engaging users.
 
-Example of counting stats dashboard. Note that we always take a live sample over the past 7 days (168 hours), so these 
+Example of counting stats dashboard. We track the metric over the past 7 days (168 hours), and compare to last week and 4 weeks ago.
 
 ![screen shot 2019-02-27 at 09 58 23](https://user-images.githubusercontent.com/126260/53511874-3d451400-3a76-11e9-950d-d3dff2dae652.png)
 
