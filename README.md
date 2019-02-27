@@ -6,6 +6,30 @@ Astrid Analytics is a redis-based backend for collecting and displaying the resu
 
 Created for Astrid, the world's best todo list (RIP).
 
+**Features:**
+- p-value calculator
+- as many buckets as you want
+- full-screen counting stats UI
+- once a test is done, you can write a summary and archive the test
+
+**Document your learnings, get smarter.**
+
+Example of an A/B test of a feature on Android:
+
+![image](https://user-images.githubusercontent.com/126260/53511372-27831f00-3a75-11e9-8663-957999579b93.png)
+
+In this case, we learned that removing shortcuts for "Today", "Tomorrow", etc increased retention, helping show that a simpler UI was better.
+
+Example of multi-variant A/B test of re-engagement emails (tracked on the backend)
+
+![image](https://user-images.githubusercontent.com/126260/53511130-7a100b80-3a74-11e9-8976-b95d54c77874.png)
+
+In this case, we learned that a particular version of email was better for re-engaging users.
+
+Example of counting stats dashboard. Note that we always take a live sample over the past 7 days (168 hours), so these 
+
+![screen shot 2019-02-27 at 09 58 23](https://user-images.githubusercontent.com/126260/53511874-3d451400-3a76-11e9-950d-d3dff2dae652.png)
+
 
 ## Getting Started
 
@@ -49,6 +73,14 @@ your signature string will be: "apikey1tag[]bartag[]footime=1297216408titlebaz<A
 so your final param might look like:
 
 `app_id=1&title=baz&tag[]=foo&tag[]=bar&time=1297216408&sig=c7e14a38df42...`
+
+## API Commands
+
+The analytics API is divided into two parts. The first part is the counting statistics, which produce pretty full-screen graphs that show the metric over the past week.
+
+The second part is the A/B testing statistics, which track tests with metrics that you care about and will produce reports with statistical significance (see screenshot above).
+
+This library does not include bucketing - you will need to handle bucketing on your own, either on the client or the server side. That's a whole other can of worms, but for independent, client-side tests, you can generally use persistent client-side random bucket.
 
 ## Counting API commands
 
