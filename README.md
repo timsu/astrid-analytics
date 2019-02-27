@@ -2,7 +2,7 @@
 
 A/B Testing for Retention and other metrics
 
-Astrid Analytics is a redis-based backend for collecting and displaying the results of A/B tests. Your application (web or mobile) makes HTTP 
+Astrid Analytics is a redis-based backend for collecting and displaying the results of A/B tests. Your application (web or mobile) makes HTTP POST calls to the server, which collects counting stats. It's a thin layer over redis, so it's highly scalable!
 
 Created for Astrid, the world's best todo list (RIP).
 
