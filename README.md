@@ -57,25 +57,24 @@ so your final param might look like:
 No parameters are required for this call. Please make sure to
 send this only once for each new user
 
-### `POST api/2/activation - record activation event`
+### `POST api/2/activation` - record activation event
 
 No parameters are requried for this call. Please make sure to
 send this only once for each activated user
 
-### `POST api/2/retention - record retention event`
+### `POST api/2/retention` - record retention event
 
 Parameters:
 - user_id - unique user identifier for calculating unique retention
 
 The minimum reporting threshold for this API is once per hour per user.
-def retention
 
 
-### `POST api/2/referral - record referral event`
+### `POST api/2/referral` - record referral event
 
  Send once per referral event
 
-### POST `api/2/revenue - record revenue event`
+### `POST api/2/revenue` - record revenue event
 
 Parameters
 - delta - record a change in the # of paid users
